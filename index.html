@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>crubs - farming game</title>
     <meta name="description" content="Small, black and white, text based farming game. ">
+    <link rel="icon" href="./favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
     <style>
         * {
             box-sizing: border-box;
@@ -44,6 +47,7 @@
         }
 
         #startScreen {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -77,6 +81,14 @@
             display: flex;
             align-items: stretch;
             gap: 8px;
+        }
+
+        /* install button positioning */
+        #installBtn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: none; /* shown when install prompt available */
         }
 
         .icon-btn {
@@ -336,6 +348,9 @@
                 <button class="start-btn" id="startBtn">> START</button>
                 <button class="icon-btn" id="discordBtn" title="Discord">
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
+                </button>
+                <button class="icon-btn" id="installBtn" title="Install App">
+                    <img src="logo.png" alt="Install">
                 </button>
             </div>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
@@ -726,6 +741,31 @@
                 document.getElementById('startScreen').style.display = 'flex';
                 document.getElementById('gameScreen').style.display = 'none';
             });
+
+            // PWA install button handling
+            const installBtn = document.getElementById('installBtn');
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'inline-flex';
+            });
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const choice = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    installBtn.style.display = 'none';
+                }
+            });
+
+            // register service worker for offline support
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(() => console.log('Service Worker registered'))
+                    .catch(console.error);
+            }
+
             renderGrid();
             updateUI();
             for (let i = 0; i < COUNT; i++) {
