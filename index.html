@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>crubs - farming game</title>
+    <meta name="description" content="Small, black and white, text based farming game. ">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            border: 2px solid #fff;
+            background: #000;
+            padding: 4px;
+        }
+
+        .screen {
+            border: 2px solid #fff;
+            background: #000;
+            padding: 16px;
+        }
+
+        #startScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        #startScreen h1 {
+            font-size: 4rem;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            padding-bottom: 10px;
+        }
+
+        .start-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 2rem;
+            padding: 12px 30px;
+            cursor: pointer;
+        }
+
+        .start-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .start-controls {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 12px 10px;
+            /* match start button vertical padding */
+            cursor: pointer;
+            /* margin-left removed, spacing from container */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .icon-btn img {
+            width: 16px;
+            height: 16px;
+            filter: invert(1) brightness(2);
+        }
+
+        .icon-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        #gameScreen {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+
+        .hud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border: 2px solid #fff;
+            padding: 4px 6px;
+            font-size: 0.9rem;
+            gap: 4px;
+        }
+
+        .wallet {
+            border: 2px solid #fff;
+            padding: 2px 6px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 2px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 2px 8px;
+            cursor: pointer;
+            min-width: 32px;
+            position: relative;
+            /* for tooltip positioning */
+        }
+
+        .tool-btn.active {
+            background: #fff;
+            color: #000;
+        }
+
+        /* custom tooltip styling */
+        .tool-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            border: 1px solid #fff;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .tool-btn:hover[data-tooltip]::after {
+            opacity: 1;
+        }
+
+        .selected-seed {
+            border: 2px solid #fff;
+            padding: 2px 6px;
+        }
+
+        .main-area {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .farm-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 1px;
+            border: 2px solid #fff;
+            padding: 2px;
+            background: #000;
+            flex: 2 1 260px;
+            width: 100%;
+        }
+
+        .tile {
+            aspect-ratio: 1 / 1;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(9px, 3vw, 13px);
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.1s;
+        }
+
+        .tile.empty {
+            color: #666;
+        }
+
+        .tile.info-hover {
+            background: #333;
+            border-color: #fff;
+        }
+
+        .panel {
+            border: 2px solid #fff;
+            padding: 6px;
+            background: #000;
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        .panel h3 {
+            border-bottom: 2px solid #fff;
+            margin: 0 0 4px;
+            padding-bottom: 2px;
+            font-size: 0.9rem;
+        }
+
+        .inv-section {
+            border: 2px solid #fff;
+            padding: 2px;
+            margin-bottom: 6px;
+        }
+
+        .inv-title {
+            font-weight: bold;
+            margin-bottom: 2px;
+            font-size: 0.8rem;
+        }
+
+        .inv-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            max-height: 70px;
+            overflow-y: auto;
+            border: 1px solid #fff;
+            padding: 2px;
+        }
+
+        .inv-badge {
+            border: 2px solid #fff;
+            padding: 2px 4px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .inv-badge.selected {
+            background: #fff;
+            color: #000;
+        }
+
+        .shop-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #fff;
+            padding: 2px 4px;
+            margin: 4px 0;
+            font-size: 10px;
+        }
+
+        .shop-row button {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 9px;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+
+        .footer {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .footer button {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .debug-bar {
+            border: 2px solid #fff;
+            padding: 2px 4px;
+            font-size: 0.7rem;
+            color: #0f0;
+            margin-top: 4px;
+        }
+
+        .legend {
+            border: 2px solid #fff;
+            padding: 4px;
+            margin-top: 6px;
+            font-size: 0.7rem;
+        }
+
+        .legend span {
+            display: block;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-wrapper">
+        <div id="startScreen" class="screen">
+            <h1>crubs</h1>
+            <div class="start-controls" style="display: flex; align-items: stretch; gap: 8px;">
+                <button class="start-btn" id="startBtn">> START</button>
+                <button class="icon-btn" id="discordBtn" title="Discord">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
+                </button>
+            </div>
+            <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
+                Small text based farming game.
+            </div>
+        </div>
+
+        <div id="gameScreen">
+            <div class="hud">
+                <div class="wallet">$<span id="coinDisplay">200</span></div>
+                <div class="toolbar">
+                    <button class="tool-btn" id="toolHand" title="Harvest (H)"
+                        data-tooltip="Harvest crops (shortcut H)">H</button>
+                    <button class="tool-btn" id="toolWater" title="Water (W)"
+                        data-tooltip="Water a plot (shortcut W)">W</button>
+                    <button class="tool-btn" id="toolInfo" title="Info (I)"
+                        data-tooltip="Show plot info (shortcut I)">I</button>
+                    <button class="tool-btn" id="toolHoe" title="Plant (P)"
+                        data-tooltip="Plant selected seed (shortcut P)">P</button>
+                    <button class="tool-btn" id="toolDelete" title="Delete (D)"
+                        data-tooltip="Remove crop from plot (shortcut D)">D</button>
+                </div>
+                <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
+            </div>
+
+            <div class="main-area">
+                <div class="farm-grid" id="farmGrid"></div>
+                <div class="panel">
+                    <div class="inv-section">
+                        <div class="inv-title">> CROPS (SELL)</div>
+                        <div class="inv-items" id="cropInvList"></div>
+                    </div>
+                    <div class="inv-section">
+                        <div class="inv-title">> SEEDS</div>
+                        <div class="inv-items" id="seedInvList"></div>
+                    </div>
+                    <h3>> BUY SEEDS</h3>
+                    <div id="buyList"
+                        style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
+                    </div>
+                    <h3>> SELL CROPS</h3>
+                    <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
+                    </div>
+                    <div class="footer">
+                        <button id="resetBtn">RESET</button>
+                        <button id="menuBtn">MENU</button>
+                    </div>
+                    <div class="debug-bar" id="debugMsg">ready</div>
+                    <div class="legend">
+                        <span>. = seed + = growing # = mature</span>
+                        <span>0-9 = water level P = perennial</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const NAMES = [
+                "CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT",
+                "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY",
+                "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB",
+                "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL",
+                "SUNFLOWER", "BLUEBERRY"
+            ];
+            const COUNT = 42;
+            const DATA = [];
+            const PERENNIAL_INDICES = [4, 5, 14, 15, 30, 31, 32, 33, 40, 41];
+            for (let i = 0; i < COUNT; i++) {
+                const base = 8 + Math.floor(i * 1.2) + (i % 5);
+                DATA.push({
+                    id: i,
+                    name: NAMES[i],
+                    abbr: NAMES[i].substring(0, 3).toUpperCase(),
+                    buy: Math.max(2, Math.floor(base * 0.6)),
+                    sell: base,
+                    waterUse: 0.3 + (i % 5) * 0.2,
+                    growthSpeed: 0.7 + (i % 4) * 0.4,
+                    perennial: PERENNIAL_INDICES.includes(i)
+                });
+            }
+            let coins = 200;
+            let seeds = new Array(COUNT).fill(0);
+            seeds[0] = 6;
+            seeds[1] = 4;
+            let crops = new Array(COUNT).fill(0);
+            const SIZE = 10;
+            let grid = [];
+            let tool = 'hand';
+            let selected = 0;
+            class Plot {
+                constructor() {
+                    this.plantId = null;
+                    this.water = 50;
+                    this.stage = 0;
+                    this.prog = 0;
+                    this.age = 0;
+                }
+                tick() {
+                    if (this.plantId === null) return;
+                    const p = DATA[this.plantId];
+                    this.water = Math.max(0, this.water - p.waterUse);
+                    if (this.water > 0) {
+                        if (this.stage < 2) {
+                            let factor = Math.min(1, this.water / 100);
+                            this.prog += p.growthSpeed * factor;
+                            if (this.prog >= 100) {
+                                this.stage++;
+                                this.prog = 0;
+                            }
+                        } else if (p.perennial && this.stage === 2) {
+                            this.age++;
+                            if (this.age > 20) {
+                                crops[this.plantId] = (crops[this.plantId] || 0) + 1;
+                                this.age = 0;
+                            }
+                        }
+                    }
+                    if (this.water > 100) this.water = 100;
+                }
+                waterPlot(amt = 20) {
+                    if (this.plantId !== null) this.water = Math.min(100, this.water + amt);
+                }
+                harvest() {
+                    if (this.plantId === null || this.stage < 2) return false;
+                    crops[this.plantId] = (crops[this.plantId] || 0) + 1;
+                    if (DATA[this.plantId].perennial) {
+                        this.stage = 1;
+                        this.prog = 0;
+                        this.age = 0;
+                    } else {
+                        this.plantId = null;
+                        this.water = 50;
+                        this.stage = 0;
+                        this.prog = 0;
+                        this.age = 0;
+                    }
+                    return true;
+                }
+                plant(id) {
+                    if (this.plantId !== null) return false;
+                    this.plantId = id;
+                    this.water = 50;
+                    this.stage = 0;
+                    this.prog = 0;
+                    this.age = 0;
+                    return true;
+                }
+                delete() {
+                    if (this.plantId === null) return false;
+                    this.plantId = null;
+                    this.water = 50;
+                    this.stage = 0;
+                    this.prog = 0;
+                    this.age = 0;
+                    return true;
+                }
+                getTimeRemaining() {
+                    if (this.plantId === null || this.stage >= 2) return 0;
+                    const p = DATA[this.plantId];
+                    const remaining = 100 - this.prog;
+                    const ticks = Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
+                    return ticks;
+                }
+            }
+            function initGrid() {
+                grid = [];
+                for (let r = 0; r < SIZE; r++) {
+                    let row = [];
+                    for (let c = 0; c < SIZE; c++) row.push(new Plot());
+                    grid.push(row);
+                }
+            }
+            initGrid();
+            function renderGrid() {
+                const el = document.getElementById('farmGrid');
+                el.innerHTML = '';
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        let plot = grid[r][c];
+                        let tile = document.createElement('div');
+                        tile.className = 'tile';
+                        tile.dataset.row = r;
+                        tile.dataset.col = c;
+                        if (plot.plantId !== null) {
+                            let p = DATA[plot.plantId];
+                            let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
+                            let waterDigit = Math.floor(plot.water / 10);
+                            let perennialMark = p.perennial ? 'P' : '';
+                            tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}`;
+                        } else {
+                            tile.textContent = '···';
+                            tile.classList.add('empty');
+                        }
+                        tile.addEventListener('click', (e) => {
+                            let row = parseInt(e.currentTarget.dataset.row);
+                            let col = parseInt(e.currentTarget.dataset.col);
+                            handleTile(row, col);
+                        });
+                        tile.addEventListener('mouseenter', (e) => {
+                            if (tool === 'info') {
+                                let row = parseInt(e.currentTarget.dataset.row);
+                                let col = parseInt(e.currentTarget.dataset.col);
+                                let plot = grid[row][col];
+                                if (plot.plantId !== null && plot.stage < 2) {
+                                    let remaining = plot.getTimeRemaining();
+                                    document.getElementById('debugMsg').innerText = `grows in ${remaining}s`;
+                                } else if (plot.plantId !== null && plot.stage >= 2) {
+                                    document.getElementById('debugMsg').innerText = `ready to harvest`;
+                                }
+                            }
+                        });
+                        el.appendChild(tile);
+                    }
+                }
+            }
+            function handleTile(row, col) {
+                let plot = grid[row][col];
+                let debug = document.getElementById('debugMsg');
+                if (tool === 'hand') {
+                    if (plot.harvest()) {
+                        debug.innerText = `harvested at (${row},${col})`;
+                        updateUI();
+                        renderGrid();
+                    } else {
+                        debug.innerText = `not ready (${row},${col})`;
+                    }
+                } else if (tool === 'water') {
+                    plot.waterPlot(20);
+                    debug.innerText = `watered (${row},${col})`;
+                    updateUI();
+                    renderGrid();
+                } else if (tool === 'info') {
+                    if (plot.plantId !== null) {
+                        if (plot.stage < 2) {
+                            let remaining = plot.getTimeRemaining();
+                            debug.innerText = `${DATA[plot.plantId].abbr}: grows in ${remaining}s`;
+                        } else {
+                            debug.innerText = `${DATA[plot.plantId].abbr}: ready to harvest`;
+                        }
+                    } else {
+                        debug.innerText = `empty plot`;
+                    }
+                } else if (tool === 'hoe') {
+                    if (plot.plantId === null && seeds[selected] > 0) {
+                        plot.plant(selected);
+                        seeds[selected]--;
+                        debug.innerText = `planted ${DATA[selected].abbr} at (${row},${col})`;
+                        updateUI();
+                        renderGrid();
+                    } else {
+                        if (plot.plantId !== null) debug.innerText = `tile occupied (${row},${col})`;
+                        else if (seeds[selected] <= 0) debug.innerText = `no ${DATA[selected].abbr} seeds`;
+                    }
+                } else if (tool === 'delete') {
+                    if (plot.delete()) {
+                        debug.innerText = `deleted at (${row},${col})`;
+                        updateUI();
+                        renderGrid();
+                    } else {
+                        debug.innerText = `nothing to delete`;
+                    }
+                }
+            }
+            function tick() {
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        grid[r][c].tick();
+                    }
+                }
+                renderGrid();
+            }
+            function updateUI() {
+                document.getElementById('coinDisplay').innerText = coins;
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                if (tool === 'hand') document.getElementById('toolHand').classList.add('active');
+                else if (tool === 'water') document.getElementById('toolWater').classList.add('active');
+                else if (tool === 'info') document.getElementById('toolInfo').classList.add('active');
+                else if (tool === 'hoe') document.getElementById('toolHoe').classList.add('active');
+                else if (tool === 'delete') document.getElementById('toolDelete').classList.add('active');
+                let s = DATA[selected];
+                document.getElementById('selectedSeedDisplay').innerText = `${s.abbr} (${seeds[selected]})`;
+                let seedDiv = document.getElementById('seedInvList');
+                seedDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) {
+                    if (seeds[i] > 0) {
+                        let b = document.createElement('span');
+                        b.className = `inv-badge ${i === selected ? 'selected' : ''}`;
+                        b.textContent = `${DATA[i].abbr} ${seeds[i]}`;
+                        b.dataset.id = i;
+                        b.addEventListener('click', (e) => {
+                            selected = parseInt(e.target.dataset.id);
+                            updateUI();
+                        });
+                        seedDiv.appendChild(b);
+                    }
+                }
+                let cropDiv = document.getElementById('cropInvList');
+                cropDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) {
+                    if (crops[i] > 0) {
+                        let b = document.createElement('span');
+                        b.className = 'inv-badge';
+                        b.textContent = `${DATA[i].abbr} ${crops[i]}`;
+                        cropDiv.appendChild(b);
+                    }
+                }
+                let buyDiv = document.getElementById('buyList');
+                buyDiv.innerHTML = '';
+                DATA.forEach((p, i) => {
+                    let row = document.createElement('div');
+                    row.className = 'shop-row';
+                    let perennialMark = p.perennial ? ' (P)' : '';
+                    row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span>
+                <button class="buy-btn" data-id="${i}">BUY</button>`;
+                    buyDiv.appendChild(row);
+                });
+                document.querySelectorAll('.buy-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let id = parseInt(e.target.dataset.id);
+                        let price = DATA[id].buy;
+                        if (coins >= price) {
+                            coins -= price;
+                            seeds[id]++;
+                            updateUI();
+                            renderGrid();
+                        }
+                    });
+                });
+                let sellDiv = document.getElementById('sellList');
+                sellDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) {
+                    if (crops[i] > 0) {
+                        let p = DATA[i];
+                        let row = document.createElement('div');
+                        row.className = 'shop-row';
+                        row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span>
+                    <button class="sell-btn" data-id="${i}">SELL</button>`;
+                        sellDiv.appendChild(row);
+                    }
+                }
+                document.querySelectorAll('.sell-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let id = parseInt(e.target.dataset.id);
+                        if (crops[id] > 0) {
+                            crops[id]--;
+                            coins += DATA[id].sell;
+                            updateUI();
+                            renderGrid();
+                        }
+                    });
+                });
+            }
+            document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); });
+            document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); });
+            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); });
+            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; updateUI(); });
+            document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; updateUI(); });
+            function resetGame() {
+                coins = 200;
+                seeds = new Array(COUNT).fill(0);
+                seeds[0] = 6;
+                seeds[1] = 4;
+                crops = new Array(COUNT).fill(0);
+                selected = 0;
+                tool = 'hand';
+                initGrid();
+                updateUI();
+                renderGrid();
+                document.getElementById('debugMsg').innerText = 'reset';
+            }
+            document.getElementById('startBtn').addEventListener('click', () => {
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'flex';
+                resetGame();
+                if (window._interval) clearInterval(window._interval);
+                window._interval = setInterval(() => tick(), 1000);
+            });
+            document.getElementById('discordBtn').addEventListener('click', () => {
+                window.open('https://discord.gg/74c9RBYD4R', '_blank');
+            });
+            document.getElementById('resetBtn').addEventListener('click', resetGame);
+            document.getElementById('menuBtn').addEventListener('click', () => {
+                clearInterval(window._interval);
+                document.getElementById('startScreen').style.display = 'flex';
+                document.getElementById('gameScreen').style.display = 'none';
+            });
+            renderGrid();
+            updateUI();
+            for (let i = 0; i < COUNT; i++) {
+                for (let s = 0; s < 3; s++) {
+                    let img = new Image();
+                    img.src = `./img/${NAMES[i].toLowerCase()}_stage${s}.png`;
+                    img.onerror = () => { };
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>
