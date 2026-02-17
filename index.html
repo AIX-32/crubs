@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>crubs - farming game</title>
-    <meta name="description" content="Small, black and white, text based farming game. ">
+    <meta name="description" content="Small, black and white, text based farming game.">
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
@@ -114,7 +114,6 @@
             color: #000;
         }
 
-        /* top-left reset cookies button on homescreen */
         #clearCookiesBtn {
             position: absolute;
             top: 8px;
@@ -325,7 +324,7 @@
             border: 2px solid #fff;
             padding: 4px 6px;
             font-size: 0.8rem;
-            color: #0f0;
+            color: rgb(255, 255, 255);
             margin-top: 4px;
             min-height: 28px;
         }
@@ -337,6 +336,11 @@
             font-size: 0.7rem;
             max-height: 80px;
             overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
         }
 
         .achievement-badge {
@@ -347,11 +351,58 @@
             font-size: 9px;
             background: #000;
             color: #fff;
+            position: relative;
+            cursor: pointer;
         }
 
         .achievement-badge.unlocked {
             background: #fff;
             color: #000;
+        }
+
+        .achievement-badge.new {
+            animation: glow 1s ease-in-out;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 0 #fff; }
+            50% { box-shadow: 0 0 5px rgb(255, 255, 255); }
+            100% { box-shadow: 0 0 0 #fff; }
+        }
+
+        .achievement-badge[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            border: 1px solid #fff;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .achievement-badge:hover[data-tooltip]::after {
+            opacity: 1;
+        }
+
+        .progress-container {
+            background: #222;
+            border: 1px solid #fff;
+            height: 8px;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            background: #fff;
+            height: 100%;
+            width: 0;
         }
 
         .modal {
@@ -421,12 +472,27 @@
             border: 2px solid #fff;
             padding: 8px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            cursor: pointer;
         }
 
         .achievement-item.unlocked {
             background: #fff;
             color: #000;
+        }
+
+        .achievement-item .main-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .achievement-detail {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid currentColor;
+            font-size: 0.8rem;
+            white-space: pre-line;
         }
 
         .info-tooltip {
@@ -441,6 +507,13 @@
             display: none;
             white-space: nowrap;
         }
+
+        .grow-all-progress {
+            font-size: 0.8rem;
+            margin: 4px 0;
+            padding: 4px;
+            border: 1px solid currentColor;
+        }
     </style>
 </head>
 
@@ -450,7 +523,7 @@
     <div class="game-wrapper">
         <div id="startScreen" class="screen">
             <h1>crubs</h1>
-            <div class="start-controls" style="display: flex; align-items: stretch; gap: 8px;">
+            <div class="start-controls">
                 <button class="start-btn" id="startBtn">> START</button>
                 <button class="icon-btn" id="discordBtn" title="Discord">
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
@@ -459,7 +532,6 @@
                     <img src="logo.png" alt="Install">
                 </button>
             </div>
-            <!-- clear cookies button placed absolute top-left of home screen -->
             <button class="icon-btn" id="clearCookiesBtn" title="Clear cookies and reload">CC</button>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
                 Small text based farming game.
@@ -470,11 +542,11 @@
             <div class="hud">
                 <div class="wallet">$<span id="coinDisplay">40</span></div>
                 <div class="toolbar">
-                    <button class="tool-btn" id="toolHand" title="Harvest (H)" data-tooltip="Harvest crops (H)">H</button>
-                    <button class="tool-btn" id="toolWater" title="Water (W)" data-tooltip="Water a plot (W)">W</button>
-                    <button class="tool-btn" id="toolInfo" title="Info (I)" data-tooltip="Show plot info (I)">I</button>
-                    <button class="tool-btn" id="toolHoe" title="Plant (P)" data-tooltip="Plant selected seed (P)">P</button>
-                    <button class="tool-btn" id="toolDelete" title="Delete (D)" data-tooltip="Remove crop (D)">D</button>
+                    <button class="tool-btn" id="toolHand" data-tooltip="Harvest crops (H)">H</button>
+                    <button class="tool-btn" id="toolWater" data-tooltip="Water a plot (W)">W</button>
+                    <button class="tool-btn" id="toolInfo" data-tooltip="Show plot info (I)">I</button>
+                    <button class="tool-btn" id="toolHoe" data-tooltip="Plant selected seed (P)">P</button>
+                    <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
                 </div>
                 <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
             </div>
@@ -574,7 +646,7 @@
             
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
-                { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[14] >= 1000 },
+                { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[14] >= 1000 }, // Bean is index 14
                 { id: 2, name: "Green Thumb", desc: "Harvest 100 total crops", check: (s) => s.totalHarvested >= 100 },
                 { id: 3, name: "Master Farmer", desc: "Harvest 1000 total crops", check: (s) => s.totalHarvested >= 1000 },
                 { id: 4, name: "Collector", desc: "Grow one of every plant", check: (s) => s.grownPlants.size >= COUNT },
@@ -635,9 +707,12 @@
                         } else if (p.perennial && this.stage === 2) {
                             this.age++;
                             if (this.age > 20) {
+                                // Add to crops inventory when perennial produces
                                 crops[this.plantId] = (crops[this.plantId] || 0) + 1;
                                 stats.totalHarvested++;
+                                stats.cropCounts[this.plantId]++;
                                 stats.perennialHarvested++;
+                                stats.grownPlants.add(this.plantId);
                                 this.age = 0;
                                 checkAchievements();
                             }
@@ -655,6 +730,7 @@
                     if (this.plantId === null || this.stage < 2) return false;
                     
                     let id = this.plantId;
+                    // Add to crops inventory (harvested amount)
                     crops[id] = (crops[id] || 0) + 1;
                     stats.totalHarvested++;
                     stats.cropCounts[id]++;
@@ -730,21 +806,75 @@
                 return stats.fullFarm;
             }
             
+            function renderAchievementBanner() {
+                const banner = document.getElementById('achievementBanner');
+                if (!banner) return;
+                banner.innerHTML = '';
+
+                // counter badge
+                const counter = document.createElement('span');
+                counter.className = 'achievement-badge';
+                counter.id = 'achievementCounter';
+                const unlocked = achievements.filter(Boolean).length;
+                counter.innerText = `${unlocked}/${ACHIEVEMENTS.length}`;
+                banner.appendChild(counter);
+
+                // individual small badges
+                ACHIEVEMENTS.forEach((ach, i) => {
+                    const badge = document.createElement('span');
+                    badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : '');
+                    badge.dataset.tooltip = ach.name;
+                    badge.dataset.index = i;
+                    badge.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openAchievementsModal(i);
+                    });
+                    banner.appendChild(badge);
+                });
+            }
+
             function checkAchievements() {
                 stats.coins = coins;
                 stats.totalSeeds = seeds.reduce((a, b) => a + b, 0);
                 checkFullFarm();
                 
                 let unlocked = 0;
+                const newlyUnlocked = [];
                 for (let i = 0; i < ACHIEVEMENTS.length; i++) {
                     if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) {
                         achievements[i] = true;
+                        newlyUnlocked.push(i);
                         showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`);
                     }
                     if (achievements[i]) unlocked++;
                 }
-                
-                document.getElementById('achievementCounter').innerText = `${unlocked}/${ACHIEVEMENTS.length}`;
+
+                renderAchievementBanner();
+                // animate new badges
+                newlyUnlocked.forEach(i => {
+                    const badge = document.querySelector(`.achievement-badge[data-index="${i}"]`);
+                    if (badge) {
+                        badge.classList.add('new');
+                        setTimeout(() => badge.classList.remove('new'), 2000);
+                    }
+                });
+            }
+
+            function openAchievementsModal(focusIndex) {
+                const modal = document.getElementById('achievementsModal');
+                modal.classList.add('active');
+                updateAchievementsModal();
+                if (focusIndex !== undefined) {
+                    const list = document.getElementById('achievementsList');
+                    const items = list.querySelectorAll('.achievement-item');
+                    if (items[focusIndex]) {
+                        items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+
+            function closeAchievements() {
+                document.getElementById('achievementsModal').classList.remove('active');
             }
             
             function showMessage(msg) {
@@ -856,6 +986,7 @@
                     }
                 }
                 renderGrid();
+                updateUI();
             }
             
             function updateUI() {
@@ -948,6 +1079,110 @@
                     });
                 });
                 checkAchievements();
+            }
+            
+            function updateAchievementsModal() {
+                let list = document.getElementById('achievementsList');
+                if (!list) return;
+                list.innerHTML = '';
+                for (let i = 0; i < ACHIEVEMENTS.length; i++) {
+                    let item = document.createElement('div');
+                    item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
+                    
+                    let mainRow = document.createElement('div');
+                    mainRow.className = 'main-row';
+                    mainRow.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span>`;
+                    
+                    let detailDiv = document.createElement('div');
+                    detailDiv.className = 'achievement-detail';
+                    detailDiv.style.display = 'none';
+                    
+                    let detailText = ACHIEVEMENTS[i].desc;
+                    
+                    // Add specific details for certain achievements
+                    if (i === 1) { // Bean Man
+                        detailText += `\nCurrent: ${stats.cropCounts[14] || 0}/1000 beans harvested`;
+                    } else if (i === 4) { // Collector
+                        let grown = stats.grownPlants.size;
+                        let missing = [];
+                        for (let j = 0; j < COUNT; j++) {
+                            if (!stats.grownPlants.has(j)) {
+                                missing.push(DATA[j].abbr);
+                            }
+                        }
+                        detailText += `\nProgress: ${grown}/${COUNT}`;
+                        if (missing.length > 0) {
+                            detailText += `\nMissing: ${missing.slice(0, 10).join(', ')}${missing.length > 10 ? '...' : ''}`;
+                        }
+                    } else if (i === 2) { // Green Thumb
+                        detailText += `\nProgress: ${stats.totalHarvested}/100`;
+                    } else if (i === 3) { // Master Farmer
+                        detailText += `\nProgress: ${stats.totalHarvested}/1000`;
+                    } else if (i === 5) { // Rich
+                        detailText += `\nCurrent: $${coins}/1000`;
+                    } else if (i === 6) { // Millionaire
+                        detailText += `\nCurrent: $${coins}/10000`;
+                    } else if (i === 7) { // Water Boy
+                        detailText += `\nProgress: ${stats.waterCount}/100`;
+                    } else if (i === 8) { // Perennial Lover
+                        detailText += `\nProgress: ${stats.perennialHarvested}/100`;
+                    } else if (i === 9) { // Seed Hoarder
+                        detailText += `\nProgress: ${stats.totalSeeds}/1000`;
+                    }
+                    
+                    // build detail content text
+                    detailDiv.innerText = detailText;
+
+                    // add progress bar for numeric-achievement items
+                    let progressValue = null;
+                    switch (i) {
+                        case 1: // Bean Man
+                            progressValue = (stats.cropCounts[14] || 0) / 1000;
+                            break;
+                        case 2: // Green Thumb
+                            progressValue = stats.totalHarvested / 100;
+                            break;
+                        case 3: // Master Farmer
+                            progressValue = stats.totalHarvested / 1000;
+                            break;
+                        case 5: // Rich
+                            progressValue = coins / 1000;
+                            break;
+                        case 6: // Millionaire
+                            progressValue = coins / 10000;
+                            break;
+                        case 7: // Water Boy
+                            progressValue = stats.waterCount / 100;
+                            break;
+                        case 8: // Perennial Lover
+                            progressValue = stats.perennialHarvested / 100;
+                            break;
+                        case 9: // Seed Hoarder
+                            progressValue = stats.totalSeeds / 1000;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (progressValue !== null) {
+                        const container = document.createElement('div');
+                        container.className = 'progress-container';
+                        const bar = document.createElement('div');
+                        bar.className = 'progress-bar';
+                        bar.style.width = Math.min(progressValue, 1) * 100 + '%';
+                        container.appendChild(bar);
+                        detailDiv.appendChild(container);
+                    }
+
+                    item.appendChild(mainRow);
+                    item.appendChild(detailDiv);
+
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        detailDiv.style.display = detailDiv.style.display === 'none' ? 'block' : 'none';
+                    });
+
+                    list.appendChild(item);
+                }
             }
             
             document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); showMessage('harvest tool'); });
@@ -1048,6 +1283,7 @@
                 
                 updateUI();
                 renderGrid();
+                updateAchievementsModal();
                 
                 if (window._interval) clearInterval(window._interval);
                 window._interval = setInterval(() => {
@@ -1079,6 +1315,7 @@
                 initGrid();
                 updateUI();
                 renderGrid();
+                updateAchievementsModal();
                 showMessage('fresh start');
                 saveGame();
             }
@@ -1124,24 +1361,26 @@
             });
             
             document.getElementById('achievementsBtn').addEventListener('click', () => {
-                let list = document.getElementById('achievementsList');
-                list.innerHTML = '';
-                for (let i = 0; i < ACHIEVEMENTS.length; i++) {
-                    let item = document.createElement('div');
-                    item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
-                    item.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span><br><small>${ACHIEVEMENTS[i].desc}</small>`;
-                    list.appendChild(item);
-                }
-                document.getElementById('achievementsModal').classList.add('active');
+                openAchievementsModal();
+            });
+
+            document.getElementById('achievementBanner').addEventListener('click', () => {
+                openAchievementsModal();
             });
             
             document.getElementById('closeAchievementsBtn').addEventListener('click', () => {
-                document.getElementById('achievementsModal').classList.remove('active');
+                closeAchievements();
             });
             
             document.getElementById('achievementsModal').addEventListener('click', (e) => {
                 if (e.target.id === 'achievementsModal') {
-                    document.getElementById('achievementsModal').classList.remove('active');
+                    closeAchievements();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAchievements();
                 }
             });
             
