@@ -1,5 +1,6 @@
 const CACHE_NAME = 'crubs-cache-v1';
 const urlsToCache = [
+  '/',          // ensure root route is cached
   '.',
   'index.html',
   'manifest.json', // manifest must be cached so install works offline
