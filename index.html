@@ -121,6 +121,19 @@
             filter: invert(1) brightness(2);
         }
 
+        /* specific styles for install button */
+        #installBtn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+        }
+
+        #installBtn .install-text {
+            display: inline-block;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
         .icon-btn:hover {
             background: #fff;
             color: #000;
@@ -514,7 +527,7 @@
             padding-top: 8px;
             border-top: 1px solid currentColor;
             font-size: 0.8rem;
-            white-space: pre-line;
+            whiteth-space: pre-line;
         }
 
         .info-tooltip {
@@ -566,7 +579,8 @@
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
                 </button>
                 <button class="icon-btn" id="installBtn" title="Install App">
-                    <img src="logo.png" alt="Install">
+                    <img src="logo.png" alt="Logo">
+                    <span class="install-text">Install</span>
                 </button>
             </div>
             <button style="display: none;" class="icon-btn" id="clearCookiesBtn"
@@ -1010,9 +1024,10 @@
             let installBtn = document.getElementById('installBtn'); let deferredPrompt;
             window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'inline-flex'; });
             installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installBtn.style.display = 'none'; } });
+            // register the service worker once and let the browser handle updates
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => { for (let reg of registrations) reg.unregister(); });
-                navigator.serviceWorker.register('sw.js?v=' + Date.now()).catch(console.error);
+                navigator.serviceWorker.register('sw.js?v=' + Date.now())
+                    .catch(console.error);
             }
         })();
     </script>

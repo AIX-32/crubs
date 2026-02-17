@@ -2,8 +2,10 @@ const CACHE_NAME = 'crubs-cache-v1';
 const urlsToCache = [
   '.',
   'index.html',
+  'manifest.json', // manifest must be cached so install works offline
   'logo.png',
-  'favicon.png',];
+  'favicon.png',
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(
