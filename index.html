@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -29,6 +30,17 @@
             justify-content: center;
             align-items: center;
             padding: 2px;
+        }
+
+        /* version counter shown bottom-left */
+        .version {
+            position: fixed;
+            bottom: 4px;
+            left: 4px;
+            font-size: 0.7rem;
+            color: #fff;
+            pointer-events: none;
+            opacity: 0.8;
         }
 
         .game-wrapper {
@@ -308,6 +320,7 @@
             gap: 4px;
             justify-content: center;
             margin-top: 6px;
+            flex-wrap: wrap;
         }
 
         .footer button {
@@ -324,9 +337,10 @@
             border: 2px solid #fff;
             padding: 4px 6px;
             font-size: 0.8rem;
-            color: rgb(255, 255, 255);
+            color: #fff;
             margin-top: 4px;
             min-height: 28px;
+            transition: opacity 0.3s;
         }
 
         .achievement-banner {
@@ -365,9 +379,17 @@
         }
 
         @keyframes glow {
-            0% { box-shadow: 0 0 0 #fff; }
-            50% { box-shadow: 0 0 5px rgb(255, 255, 255); }
-            100% { box-shadow: 0 0 0 #fff; }
+            0% {
+                box-shadow: 0 0 0 #fff;
+            }
+
+            50% {
+                box-shadow: 0 0 5px #fff;
+            }
+
+            100% {
+                box-shadow: 0 0 0 #fff;
+            }
         }
 
         .achievement-badge[data-tooltip]::after {
@@ -508,18 +530,33 @@
             white-space: nowrap;
         }
 
-        .grow-all-progress {
-            font-size: 0.8rem;
-            margin: 4px 0;
-            padding: 4px;
-            border: 1px solid currentColor;
+        .upgrade-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #fff;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        .upgrade-row button {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .upgrade-row button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
     </style>
 </head>
 
 <body>
     <div id="infoTooltip" class="info-tooltip"></div>
-
+    <div id="version" class="version"></div>
     <div class="game-wrapper">
         <div id="startScreen" class="screen">
             <h1>crubs</h1>
@@ -532,12 +569,12 @@
                     <img src="logo.png" alt="Install">
                 </button>
             </div>
-            <button class="icon-btn" id="clearCookiesBtn" title="Clear cookies and reload">CC</button>
+            <button style="display: none;" class="icon-btn" id="clearCookiesBtn"
+                title="Clear cookies and reload">CC</button>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
                 Small text based farming game.
             </div>
         </div>
-
         <div id="gameScreen">
             <div class="hud">
                 <div class="wallet">$<span id="coinDisplay">40</span></div>
@@ -547,10 +584,11 @@
                     <button class="tool-btn" id="toolInfo" data-tooltip="Show plot info (I)">I</button>
                     <button class="tool-btn" id="toolHoe" data-tooltip="Plant selected seed (P)">P</button>
                     <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
+                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)"
+                        style="display:none;">B</button>
                 </div>
                 <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
             </div>
-
             <div class="main-area">
                 <div class="farm-grid" id="farmGrid"></div>
                 <div class="panel">
@@ -563,7 +601,8 @@
                         <div class="inv-items" id="seedInvList"></div>
                     </div>
                     <h3>> BUY SEEDS</h3>
-                    <div id="buyList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
+                    <div id="buyList"
+                        style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
                     </div>
                     <h3>> SELL CROPS</h3>
                     <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
@@ -572,866 +611,411 @@
                         <button id="resetBtn">RESET</button>
                         <button id="helpBtn">HELP</button>
                         <button id="achievementsBtn">ACHIEVEMENTS</button>
+                        <button id="exoticBtn">EXOTIC</button>
+                        <button id="toolShopBtn">TOOL SHOP</button>
                         <button id="menuBtn">MENU</button>
                     </div>
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
                     <div class="achievement-banner" id="achievementBanner">
-                        <span class="achievement-badge" id="achievementCounter">0/12</span>
+                        <span class="achievement-badge" id="achievementCounter">0/15</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
             <p><strong>How to Play:</strong> Click tiles on your farm to perform actions based on the selected tool.</p>
-            <p><strong>Tools:</strong><br/>
-            H - Harvest mature crops (#)<br/>
-            W - Water a plot (increases water level)<br/>
-            I - Info (shows growth progress on hover)<br/>
-            P - Plant seeds (uses selected seed)<br/>
-            D - Delete a crop
-            </p>
-            <p><strong>Water:</strong> Watering crops makes them grow faster, if the water level goes under 4 it will stop growing.</p>
-            <p><strong>Crops:</strong> Seeds take time to grow through stages (. + #). Perennials (*P*) produce repeatedly after harvest.</p>
-            <p><strong>Shop:</strong> Buy seeds with coins. Sell crops for cash.</p>
-            <p><strong>Achievements:</strong> Complete challenges to unlock special badges.</p>
-            <p><strong>Game Goal:</strong> Grow and harvest crops to earn coins and unlock achievements!</p>
+            <p><strong>Tools:</strong><br /> H - Harvest mature crops (#)<br /> W - Water a plot (increases water
+                level)<br /> I - Info (shows growth progress on hover)<br /> P - Plant seeds (uses selected seed)<br />
+                D - Delete a crop<br /> B - Bonemeal (costs 10 coins, boosts growth)</p>
+            <p><strong>Upgrades:</strong> Visit the Tool Shop to unlock area watering, area harvesting, and the bonemeal
+                tool.</p>
+            <p><strong>Water:</strong> Watering crops makes them grow faster, if the water level goes under 4 it will
+                stop growing.</p>
+            <p><strong>Crops:</strong> Seeds take time to grow through stages (. + #). Perennials (*P*) produce
+                repeatedly after harvest.</p>
+            <p><strong>Exotic Plants:</strong> Rare plants obtained by rolling in the Exotic modal (200 coins). They
+                grow slowly but need little water.</p>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
-
     <div id="achievementsModal" class="modal">
         <div class="modal-content">
             <h2>> ACHIEVEMENTS</h2>
-            <div class="achievement-list" id="achievementsList">
-            </div>
+            <div class="achievement-list" id="achievementsList"></div>
             <button class="close-btn" id="closeAchievementsBtn">CLOSE</button>
         </div>
     </div>
-
+    <div id="exoticModal" class="modal">
+        <div class="modal-content">
+            <h2>> EXOTIC PLANTS</h2>
+            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer
+                plants have lower chance.</p>
+            <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
+                <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:4px;" id="exoticList"></div>
+            </div>
+            <div style="text-align:center; margin:10px 0;">
+                <button class="tool-btn" id="rollExoticBtn" style="font-size:1.2rem;">ROLL (200)</button>
+            </div>
+            <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
+                <h3>Your Exotic Seeds:</h3>
+                <div id="exoticInventory" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+            </div>
+            <button class="close-btn" id="closeExoticBtn">CLOSE</button>
+        </div>
+    </div>
+    <div id="toolShopModal" class="modal">
+        <div class="modal-content">
+            <h2>> TOOL SHOP</h2>
+            <div class="upgrade-row">
+                <span>Bigger Water Bucket (3x3 area)</span>
+                <span>500 coins</span>
+                <button id="buyWaterUpgrade" class="tool-btn">BUY</button>
+            </div>
+            <div class="upgrade-row">
+                <span>Bigger Harvest Tool (3x3 area)</span>
+                <span>800 coins</span>
+                <button id="buyHarvestUpgrade" class="tool-btn">BUY</button>
+            </div>
+            <div class="upgrade-row">
+                <span>Bonemeal Tool (unlock, then 10 coins per use)</span>
+                <span>200 coins</span>
+                <button id="buyBonemealUpgrade" class="tool-btn">BUY</button>
+            </div>
+            <div style="margin-top:16px;">
+                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins
+                    per use).</p>
+            </div>
+            <button class="close-btn" id="closeToolShopBtn">CLOSE</button>
+        </div>
+    </div>
     <script>
         (function () {
-            const NAMES = [
-                "CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT",
-                "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY",
-                "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB",
-                "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL",
-                "SUNFLOWER", "BLUEBERRY"
-            ];
-            const COUNT = 42;
+            const VERSION = '0.3';
+            let NAMES = ["CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT", "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY", "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB", "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL", "SUNFLOWER", "BLUEBERRY"];
+            let COUNT = 42;
             const DATA = [];
             const PERENNIAL_INDICES = [4, 5, 14, 15, 30, 31, 32, 33, 40, 41];
             for (let i = 0; i < COUNT; i++) {
-                const base = 8 + Math.floor(i * 1.2) + (i % 5);
-                DATA.push({
-                    id: i,
-                    name: NAMES[i],
-                    abbr: NAMES[i].substring(0, 3).toUpperCase(),
-                    buy: Math.max(2, Math.floor(base * 0.6)),
-                    sell: base,
-                    waterUse: 0.3 + (i % 5) * 0.2,
-                    growthSpeed: 0.7 + (i % 4) * 0.4,
-                    perennial: PERENNIAL_INDICES.includes(i)
-                });
+                let base = 8 + Math.floor(i * 1.2) + (i % 5);
+                DATA.push({ id: i, name: NAMES[i], abbr: NAMES[i].substring(0, 3).toUpperCase(), buy: Math.max(2, Math.floor(base * 0.6)), sell: base, waterUse: 0.3 + (i % 5) * 0.2, growthSpeed: 0.7 + (i % 4) * 0.4, perennial: PERENNIAL_INDICES.includes(i) });
             }
-            
+            const EXOTIC_NAMES = ["COBO", "SPIRO", "TORIA", "POPZ", "KONK", "UZZY"];
+            const EXOTIC_PRICES = [50, 100, 150, 200, 250, 300];
+            const EXOTIC_START_ID = COUNT;
+            for (let i = 0; i < EXOTIC_NAMES.length; i++) {
+                DATA.push({ id: EXOTIC_START_ID + i, name: EXOTIC_NAMES[i], abbr: EXOTIC_NAMES[i].substring(0, 3).toUpperCase(), buy: 9999, sell: EXOTIC_PRICES[i] * 2, waterUse: 0.1, growthSpeed: 0.25, perennial: false });
+            }
+            COUNT = DATA.length;
+
             let coins = 40;
             let seeds = new Array(COUNT).fill(0);
-            seeds[0] = 6;
-            seeds[1] = 4;
+            seeds[0] = 6; seeds[1] = 4;
             let crops = new Array(COUNT).fill(0);
-            
+            let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
-                { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[14] >= 1000 }, // Bean is index 14
+                { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[15] >= 1000 },
                 { id: 2, name: "Green Thumb", desc: "Harvest 100 total crops", check: (s) => s.totalHarvested >= 100 },
                 { id: 3, name: "Master Farmer", desc: "Harvest 1000 total crops", check: (s) => s.totalHarvested >= 1000 },
-                { id: 4, name: "Collector", desc: "Grow one of every plant", check: (s) => s.grownPlants.size >= COUNT },
+                { id: 4, name: "Collector", desc: "Grow one of every original plant", check: (s) => s.grownOriginalCount >= 42 },
                 { id: 5, name: "Rich", desc: "Have $1000", check: (s) => s.coins >= 1000 },
                 { id: 6, name: "Millionaire", desc: "Have $10000", check: (s) => s.coins >= 10000 },
                 { id: 7, name: "Water Boy", desc: "Water plots 100 times", check: (s) => s.waterCount >= 100 },
                 { id: 8, name: "Perennial Lover", desc: "Harvest 100 perennial crops", check: (s) => s.perennialHarvested >= 100 },
                 { id: 9, name: "Seed Hoarder", desc: "Own 1000 total seeds", check: (s) => s.totalSeeds >= 1000 },
                 { id: 10, name: "Full Farm", desc: "Have all 100 plots planted", check: (s) => s.fullFarm },
-                { id: 11, name: "Speed Runner", desc: "Harvest a crop in under 10 seconds", check: (s) => s.fastHarvest }
+                { id: 11, name: "Speed Runner", desc: "Harvest a crop in under 10 seconds", check: (s) => s.fastHarvest },
+                { id: 12, name: "Exotic Beginner", desc: "Obtain your first exotic seed", check: (s) => s.exoticObtained.some(v => v) },
+                { id: 13, name: "Uzzy Hunter", desc: "Obtain the rare Uzzy seed", check: (s) => s.exoticObtained[5] },
+                { id: 14, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) }
             ];
-            
             let stats = {
-                totalHarvested: 0,
-                cropCounts: new Array(COUNT).fill(0),
-                grownPlants: new Set(),
-                coins: 40,
-                waterCount: 0,
-                perennialHarvested: 0,
-                totalSeeds: 6 + 4,
-                fullFarm: false,
-                fastHarvest: false
+                totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), grownOriginalCount: 0,
+                coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false,
+                exoticObtained: new Array(6).fill(false)
             };
-            
             let achievements = new Array(ACHIEVEMENTS.length).fill(false);
-            
             const SIZE = 10;
             let grid = [];
             let tool = 'hand';
             let selected = 0;
             let infoTooltip = document.getElementById('infoTooltip');
-            
+            let messageTimeout = null;
+
             class Plot {
-                constructor() {
-                    this.plantId = null;
-                    this.water = 50;
-                    this.stage = 0;
-                    this.prog = 0;
-                    this.age = 0;
-                    this.plantTime = 0;
-                }
+                constructor() { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = 0; }
                 tick() {
                     if (this.plantId === null) return;
-                    const p = DATA[this.plantId];
+                    let p = DATA[this.plantId];
                     this.water = Math.max(0, this.water - p.waterUse);
-                    if (this.water > 0) {
-                        if (this.stage < 2) {
-                            let factor = Math.min(1, this.water / 100);
-                            this.prog += p.growthSpeed * factor;
-                            if (this.prog >= 100) {
-                                this.stage++;
-                                this.prog = 0;
-                                if (this.stage === 2) {
-                                    let growTime = Math.floor(Date.now() / 1000) - this.plantTime;
-                                    if (growTime < 10) stats.fastHarvest = true;
-                                }
-                            }
-                        } else if (p.perennial && this.stage === 2) {
-                            this.age++;
-                            if (this.age > 20) {
-                                // Add to crops inventory when perennial produces
-                                crops[this.plantId] = (crops[this.plantId] || 0) + 1;
-                                stats.totalHarvested++;
-                                stats.cropCounts[this.plantId]++;
-                                stats.perennialHarvested++;
-                                stats.grownPlants.add(this.plantId);
-                                this.age = 0;
-                                checkAchievements();
-                            }
+                    if (this.water > 0 && this.stage < 2) {
+                        let factor = Math.min(1, this.water / 100);
+                        this.prog += p.growthSpeed * factor;
+                        if (this.prog >= 100) {
+                            this.stage++; this.prog = 0;
+                            if (this.stage === 2) { let growTime = Math.floor(Date.now() / 1000) - this.plantTime; if (growTime < 10) stats.fastHarvest = true; }
+                        }
+                    } else if (p.perennial && this.stage === 2) {
+                        this.age++;
+                        if (this.age > 20) {
+                            crops[this.plantId]++; stats.totalHarvested++; stats.cropCounts[this.plantId]++; stats.perennialHarvested++; stats.grownPlants.add(this.plantId); this.age = 0;
+                            updateExoticObtained(); checkAchievements();
                         }
                     }
                     if (this.water > 100) this.water = 100;
                 }
-                waterPlot(amt = 20) {
-                    if (this.plantId !== null) {
-                        this.water = Math.min(100, this.water + amt);
-                        stats.waterCount++;
-                    }
-                }
+                waterPlot(amt = 20) { if (this.plantId !== null) { this.water = Math.min(100, this.water + amt); stats.waterCount++; } }
                 harvest() {
                     if (this.plantId === null || this.stage < 2) return false;
-                    
                     let id = this.plantId;
-                    // Add to crops inventory (harvested amount)
-                    crops[id] = (crops[id] || 0) + 1;
-                    stats.totalHarvested++;
-                    stats.cropCounts[id]++;
-                    stats.grownPlants.add(id);
-                    
-                    if (DATA[id].perennial) {
-                        this.stage = 1;
-                        this.prog = 0;
-                        this.age = 0;
-                    } else {
-                        this.plantId = null;
-                        this.water = 50;
-                        this.stage = 0;
-                        this.prog = 0;
-                        this.age = 0;
-                    }
-                    
-                    checkAchievements();
-                    return true;
+                    crops[id]++; stats.totalHarvested++; stats.cropCounts[id]++; stats.grownPlants.add(id);
+                    if (DATA[id].perennial) { this.stage = 1; this.prog = 0; this.age = 0; }
+                    else { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; }
+                    updateExoticObtained(); checkAchievements(); return true;
                 }
-                plant(id) {
-                    if (this.plantId !== null) return false;
-                    this.plantId = id;
-                    this.water = 50;
-                    this.stage = 0;
-                    this.prog = 0;
-                    this.age = 0;
-                    this.plantTime = Math.floor(Date.now() / 1000);
-                    return true;
-                }
-                delete() {
-                    if (this.plantId === null) return false;
-                    this.plantId = null;
-                    this.water = 50;
-                    this.stage = 0;
-                    this.prog = 0;
-                    this.age = 0;
-                    return true;
-                }
+                plant(id) { if (this.plantId !== null) return false; this.plantId = id; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = Math.floor(Date.now() / 1000); return true; }
+                delete() { if (this.plantId === null) return false; this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; return true; }
                 getTimeToNextStage() {
                     if (this.plantId === null || this.stage >= 2) return 0;
-                    const p = DATA[this.plantId];
-                    const remaining = 100 - this.prog;
-                    return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
+                    let p = DATA[this.plantId]; let remaining = 100 - this.prog; return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
                 }
                 getTimeToHarvest() {
-                    if (this.plantId === null) return 0;
-                    if (this.stage >= 2) return 0;
-                    const p = DATA[this.plantId];
-                    const remaining = (2 - this.stage) * 100 - this.prog;
-                    return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
+                    if (this.plantId === null) return 0; if (this.stage >= 2) return 0;
+                    let p = DATA[this.plantId]; let remaining = (2 - this.stage) * 100 - this.prog; return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
                 }
             }
-            
-            function initGrid() {
-                grid = [];
-                for (let r = 0; r < SIZE; r++) {
-                    let row = [];
-                    for (let c = 0; c < SIZE; c++) row.push(new Plot());
-                    grid.push(row);
-                }
-            }
+            function initGrid() { grid = []; for (let r = 0; r < SIZE; r++) { let row = []; for (let c = 0; c < SIZE; c++) row.push(new Plot()); grid.push(row); } }
             initGrid();
-            
+
             function checkFullFarm() {
-                let planted = 0;
-                for (let r = 0; r < SIZE; r++) {
-                    for (let c = 0; c < SIZE; c++) {
-                        if (grid[r][c].plantId !== null) planted++;
-                    }
-                }
-                stats.fullFarm = planted === 100;
-                return stats.fullFarm;
+                let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++;
+                stats.fullFarm = planted === 100; return stats.fullFarm;
             }
-            
-            function renderAchievementBanner() {
-                const banner = document.getElementById('achievementBanner');
-                if (!banner) return;
-                banner.innerHTML = '';
-
-                // counter badge
-                const counter = document.createElement('span');
-                counter.className = 'achievement-badge';
-                counter.id = 'achievementCounter';
-                const unlocked = achievements.filter(Boolean).length;
-                counter.innerText = `${unlocked}/${ACHIEVEMENTS.length}`;
-                banner.appendChild(counter);
-
-                // individual small badges
-                ACHIEVEMENTS.forEach((ach, i) => {
-                    const badge = document.createElement('span');
-                    badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : '');
-                    badge.dataset.tooltip = ach.name;
-                    badge.dataset.index = i;
-                    badge.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openAchievementsModal(i);
-                    });
-                    banner.appendChild(badge);
-                });
+            function updateExoticObtained() { for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; stats.exoticObtained[i] = (seeds[idx] > 0 || crops[idx] > 0); } }
+            function showMessage(msg, isToast = true) {
+                let bar = document.getElementById('messageDisplay'); bar.innerText = msg;
+                if (messageTimeout) clearTimeout(messageTimeout);
+                if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000);
             }
-
-            function checkAchievements() {
-                stats.coins = coins;
-                stats.totalSeeds = seeds.reduce((a, b) => a + b, 0);
-                checkFullFarm();
-                
-                let unlocked = 0;
-                const newlyUnlocked = [];
-                for (let i = 0; i < ACHIEVEMENTS.length; i++) {
-                    if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) {
-                        achievements[i] = true;
-                        newlyUnlocked.push(i);
-                        showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`);
-                    }
-                    if (achievements[i]) unlocked++;
-                }
-
-                renderAchievementBanner();
-                // animate new badges
-                newlyUnlocked.forEach(i => {
-                    const badge = document.querySelector(`.achievement-badge[data-index="${i}"]`);
-                    if (badge) {
-                        badge.classList.add('new');
-                        setTimeout(() => badge.classList.remove('new'), 2000);
-                    }
-                });
-            }
-
-            function openAchievementsModal(focusIndex) {
-                const modal = document.getElementById('achievementsModal');
-                modal.classList.add('active');
-                updateAchievementsModal();
-                if (focusIndex !== undefined) {
-                    const list = document.getElementById('achievementsList');
-                    const items = list.querySelectorAll('.achievement-item');
-                    if (items[focusIndex]) {
-                        items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }
-
-            function closeAchievements() {
-                document.getElementById('achievementsModal').classList.remove('active');
-            }
-            
-            function showMessage(msg) {
-                document.getElementById('messageDisplay').innerText = msg;
-            }
-            
             function renderGrid() {
-                const el = document.getElementById('farmGrid');
-                el.innerHTML = '';
-                for (let r = 0; r < SIZE; r++) {
-                    for (let c = 0; c < SIZE; c++) {
-                        let plot = grid[r][c];
-                        let tile = document.createElement('div');
-                        tile.className = 'tile';
-                        tile.dataset.row = r;
-                        tile.dataset.col = c;
-                        if (plot.plantId !== null) {
-                            let p = DATA[plot.plantId];
-                            let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
-                            let waterDigit = Math.floor(plot.water / 10);
-                            let perennialMark = p.perennial ? 'P' : '';
-                            tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}`;
-                        } else {
-                            tile.textContent = '···';
-                            tile.classList.add('empty');
-                        }
-                        tile.addEventListener('click', (e) => {
-                            let row = parseInt(e.currentTarget.dataset.row);
-                            let col = parseInt(e.currentTarget.dataset.col);
-                            handleTile(row, col);
-                        });
-                        tile.addEventListener('mouseenter', (e) => {
-                            if (tool === 'info') {
-                                let row = parseInt(e.currentTarget.dataset.row);
-                                let col = parseInt(e.currentTarget.dataset.col);
-                                let plot = grid[row][col];
-                                if (plot.plantId !== null) {
-                                    let p = DATA[plot.plantId];
-                                    if (plot.stage < 2) {
-                                        let toNext = plot.getTimeToNextStage();
-                                        let toHarvest = plot.getTimeToHarvest();
-                                        infoTooltip.style.display = 'block';
-                                        infoTooltip.innerHTML = `${p.abbr}<br>next: ${toNext}s<br>harvest: ${toHarvest}s`;
-                                    } else {
-                                        infoTooltip.style.display = 'block';
-                                        infoTooltip.innerHTML = `${p.abbr}<br>ready to harvest!`;
-                                    }
-                                } else {
-                                    infoTooltip.style.display = 'block';
-                                    infoTooltip.innerHTML = `empty plot`;
-                                }
-                            }
-                        });
-                        tile.addEventListener('mousemove', (e) => {
-                            if (tool === 'info') {
-                                infoTooltip.style.left = (e.clientX + 15) + 'px';
-                                infoTooltip.style.top = (e.clientY + 15) + 'px';
-                            }
-                        });
-                        tile.addEventListener('mouseleave', () => {
-                            infoTooltip.style.display = 'none';
-                        });
-                        el.appendChild(tile);
-                    }
+                let el = document.getElementById('farmGrid'); el.innerHTML = '';
+                for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
+                    let plot = grid[r][c]; let tile = document.createElement('div'); tile.className = 'tile'; tile.dataset.row = r; tile.dataset.col = c;
+                    if (plot.plantId !== null) { let p = DATA[plot.plantId]; let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#'); let waterDigit = Math.floor(plot.water / 10); let perennialMark = p.perennial ? 'P' : ''; tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}`; }
+                    else { tile.textContent = '···'; tile.classList.add('empty'); }
+                    tile.addEventListener('click', (e) => { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); handleTile(row, col); });
+                    tile.addEventListener('mouseenter', (e) => { if (tool === 'info') { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); let plot = grid[row][col]; if (plot.plantId !== null) { let p = DATA[plot.plantId]; if (plot.stage < 2) { let toNext = plot.getTimeToNextStage(); let toHarvest = plot.getTimeToHarvest(); infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>next: ${toNext}s<br>harvest: ${toHarvest}s`; } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>ready to harvest!`; } } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = 'empty plot'; } } });
+                    tile.addEventListener('mousemove', (e) => { if (tool === 'info') { infoTooltip.style.left = (e.clientX + 15) + 'px'; infoTooltip.style.top = (e.clientY + 15) + 'px'; } });
+                    tile.addEventListener('mouseleave', () => { infoTooltip.style.display = 'none'; });
+                    el.appendChild(tile);
                 }
             }
-            
             function handleTile(row, col) {
                 let plot = grid[row][col];
                 if (tool === 'hand') {
-                    if (plot.harvest()) {
-                        showMessage(`harvested ${DATA[plot.plantId].abbr}`);
-                        updateUI();
-                        renderGrid();
-                    } else {
-                        showMessage(`not ready to harvest`);
-                    }
+                    if (upgrades.harvestArea) {
+                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+                            let nr = row + dr, nc = col + dc;
+                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].harvest();
+                        }
+                        showMessage('area harvested', true);
+                    } else { if (plot.harvest()) showMessage(`harvested ${DATA[plot.plantId].abbr}`, true); else showMessage('not ready to harvest', true); }
                 } else if (tool === 'water') {
-                    plot.waterPlot(20);
-                    showMessage(`watered plot`);
-                    updateUI();
-                    renderGrid();
+                    if (upgrades.waterArea) {
+                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+                            let nr = row + dr, nc = col + dc;
+                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(20);
+                        }
+                    } else { plot.waterPlot(20); }
                 } else if (tool === 'hoe') {
-                    if (plot.plantId === null && seeds[selected] > 0) {
-                        plot.plant(selected);
-                        seeds[selected]--;
-                        showMessage(`planted ${DATA[selected].abbr}`);
-                        updateUI();
-                        renderGrid();
-                    } else {
-                        if (plot.plantId !== null) showMessage(`plot already used`);
-                        else if (seeds[selected] <= 0) showMessage(`no ${DATA[selected].abbr} seeds`);
-                    }
-                } else if (tool === 'delete') {
-                    if (plot.delete()) {
-                        showMessage(`cleared plot`);
-                        updateUI();
-                        renderGrid();
-                    } else {
-                        showMessage(`nothing to clear`);
-                    }
+                    if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; } else { if (plot.plantId !== null) showMessage('plot already used', true); else if (seeds[selected] <= 0) showMessage(`no ${DATA[selected].abbr} seeds`, true); }
+                } else if (tool === 'delete') { if (plot.delete()) showMessage('cleared plot', true); else showMessage('nothing to clear', true); }
+                else if (tool === 'bonemeal' && upgrades.bonemealUnlocked) {
+                    if (plot.plantId !== null && coins >= 10) { coins -= 10; plot.prog = Math.min(100, plot.prog + 30); if (plot.prog >= 100 && plot.stage < 2) { plot.stage++; plot.prog = 0; if (plot.stage === 2) { let growTime = Math.floor(Date.now() / 1000) - plot.plantTime; if (growTime < 10) stats.fastHarvest = true; } } showMessage('bonemeal applied', true); }
+                    else if (plot.plantId === null) showMessage('no plant here', true); else showMessage('need 10 coins', true);
                 }
+                updateUI(); renderGrid();
             }
-            
-            function tick() {
-                for (let r = 0; r < SIZE; r++) {
-                    for (let c = 0; c < SIZE; c++) {
-                        grid[r][c].tick();
-                    }
-                }
-                renderGrid();
-                updateUI();
-            }
-            
+            function tick() { for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) grid[r][c].tick(); renderGrid(); updateUI(); }
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
                 document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                if (tool === 'hand') document.getElementById('toolHand').classList.add('active');
-                else if (tool === 'water') document.getElementById('toolWater').classList.add('active');
-                else if (tool === 'info') document.getElementById('toolInfo').classList.add('active');
-                else if (tool === 'hoe') document.getElementById('toolHoe').classList.add('active');
-                else if (tool === 'delete') document.getElementById('toolDelete').classList.add('active');
-                let s = DATA[selected];
-                document.getElementById('selectedSeedDisplay').innerText = `${s.abbr} (${seeds[selected]})`;
-                let seedDiv = document.getElementById('seedInvList');
-                seedDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) {
-                    if (seeds[i] > 0) {
-                        let b = document.createElement('span');
-                        b.className = `inv-badge ${i === selected ? 'selected' : ''}`;
-                        b.textContent = `${DATA[i].abbr} ${seeds[i]}`;
-                        b.dataset.id = i;
-                        b.addEventListener('click', (e) => {
-                            selected = parseInt(e.target.dataset.id);
-                            showMessage(`selected ${DATA[selected].abbr} seeds`);
-                            updateUI();
-                        });
-                        seedDiv.appendChild(b);
-                    }
-                }
-                let cropDiv = document.getElementById('cropInvList');
-                cropDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) {
-                    if (crops[i] > 0) {
-                        let b = document.createElement('span');
-                        b.className = 'inv-badge';
-                        b.textContent = `${DATA[i].abbr} ${crops[i]}`;
-                        cropDiv.appendChild(b);
-                    }
-                }
-                let buyDiv = document.getElementById('buyList');
-                buyDiv.innerHTML = '';
-                DATA.forEach((p, i) => {
-                    let row = document.createElement('div');
-                    row.className = 'shop-row';
-                    let perennialMark = p.perennial ? ' (P)' : '';
-                    row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span>
-                <button class="buy-btn" data-id="${i}">BUY</button>`;
-                    buyDiv.appendChild(row);
-                });
-                document.querySelectorAll('.buy-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        let id = parseInt(e.target.dataset.id);
-                        let price = DATA[id].buy;
-                        if (coins >= price) {
-                            coins -= price;
-                            seeds[id]++;
-                            showMessage(`bought ${DATA[id].abbr} seeds`);
-                            updateUI();
-                            renderGrid();
-                            checkAchievements();
-                        } else {
-                            showMessage(`need $${price - coins} more`);
-                        }
-                    });
-                });
-                let sellDiv = document.getElementById('sellList');
-                sellDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) {
-                    if (crops[i] > 0) {
-                        let p = DATA[i];
-                        let row = document.createElement('div');
-                        row.className = 'shop-row';
-                        row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span>
-                    <button class="sell-btn" data-id="${i}">SELL</button>`;
-                        sellDiv.appendChild(row);
-                    }
-                }
-                document.querySelectorAll('.sell-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        let id = parseInt(e.target.dataset.id);
-                        if (crops[id] > 0) {
-                            crops[id]--;
-                            coins += DATA[id].sell;
-                            showMessage(`sold ${DATA[id].abbr} for $${DATA[id].sell}`);
-                            updateUI();
-                            renderGrid();
-                            checkAchievements();
-                        }
-                    });
-                });
-                checkAchievements();
+                document.getElementById('toolHand').classList.toggle('active', tool === 'hand');
+                document.getElementById('toolWater').classList.toggle('active', tool === 'water');
+                document.getElementById('toolInfo').classList.toggle('active', tool === 'info');
+                document.getElementById('toolHoe').classList.toggle('active', tool === 'hoe');
+                document.getElementById('toolDelete').classList.toggle('active', tool === 'delete');
+                let bonemealBtn = document.getElementById('toolBonemeal');
+                if (upgrades.bonemealUnlocked) { bonemealBtn.style.display = 'inline-block'; bonemealBtn.classList.toggle('active', tool === 'bonemeal'); } else bonemealBtn.style.display = 'none';
+                let s = DATA[selected]; document.getElementById('selectedSeedDisplay').innerText = `${s.abbr} (${seeds[selected]})`;
+                let seedDiv = document.getElementById('seedInvList'); seedDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) if (seeds[i] > 0) { let b = document.createElement('span'); b.className = `inv-badge ${i === selected ? 'selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i; b.addEventListener('click', (e) => { selected = parseInt(e.target.dataset.id); showMessage(`selected ${DATA[selected].abbr} seeds`, true); updateUI(); }); seedDiv.appendChild(b); }
+                let cropDiv = document.getElementById('cropInvList'); cropDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) { let b = document.createElement('span'); b.className = 'inv-badge'; b.textContent = `${DATA[i].abbr} ${crops[i]}`; cropDiv.appendChild(b); }
+                let buyDiv = document.getElementById('buyList'); buyDiv.innerHTML = '';
+                DATA.forEach((p, i) => { if (i < 42) { let row = document.createElement('div'); row.className = 'shop-row'; let perennialMark = p.perennial ? ' (P)' : ''; row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`; buyDiv.appendChild(row); } });
+                document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(e.target.dataset.id); let price = DATA[id].buy; if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr} seeds`, true); updateUI(); renderGrid(); checkAchievements(); } else showMessage(`need $${price - coins} more`, true); }));
+                let sellDiv = document.getElementById('sellList'); sellDiv.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) { let p = DATA[i]; let row = document.createElement('div'); row.className = 'shop-row'; row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span><button class="sell-btn" data-id="${i}">SELL</button>`; sellDiv.appendChild(row); }
+                document.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(e.target.dataset.id); if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} for $${DATA[id].sell}`, true); updateUI(); renderGrid(); checkAchievements(); } }));
+                updateExoticModal(); checkAchievements();
+                document.getElementById('buyWaterUpgrade').disabled = upgrades.waterArea;
+                document.getElementById('buyHarvestUpgrade').disabled = upgrades.harvestArea;
+                document.getElementById('buyBonemealUpgrade').disabled = upgrades.bonemealUnlocked;
             }
-            
+            function updateExoticModal() {
+                let exoticListDiv = document.getElementById('exoticList'); if (!exoticListDiv) return; exoticListDiv.innerHTML = '';
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; let p = DATA[idx]; let div = document.createElement('div'); div.style.border = '2px solid #fff'; div.style.padding = '4px'; div.style.textAlign = 'center'; div.innerHTML = `<strong>${p.abbr}</strong><br>${p.name}<br>worth $${p.sell}<br>rarity ${EXOTIC_PRICES[i]}`; exoticListDiv.appendChild(div); }
+                let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr} seeds`, true); updateUI(); closeExoticModal(); }); invDiv.appendChild(badge); } }
+            }
+            function checkAchievements() {
+                stats.coins = coins; stats.totalSeeds = seeds.reduce((a, b) => a + b, 0); checkFullFarm(); updateExoticObtained();
+                stats.grownOriginalCount = 0; stats.grownPlants.forEach(id => { if (id < 42) stats.grownOriginalCount++; });
+                let newly = [];
+                for (let i = 0; i < ACHIEVEMENTS.length; i++) { if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); } }
+                renderAchievementBanner(); newly.forEach(i => { let badge = document.querySelector(`.achievement-badge[data-index="${i}"]`); if (badge) { badge.classList.add('new'); setTimeout(() => badge.classList.remove('new'), 2000); } });
+            }
+            function renderAchievementBanner() {
+                let banner = document.getElementById('achievementBanner'); if (!banner) return; banner.innerHTML = '';
+                let counter = document.createElement('span'); counter.className = 'achievement-badge'; counter.id = 'achievementCounter'; let unlocked = achievements.filter(Boolean).length; counter.innerText = `${unlocked}/${ACHIEVEMENTS.length}`; banner.appendChild(counter);
+                ACHIEVEMENTS.forEach((ach, i) => { let badge = document.createElement('span'); badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : ''); badge.dataset.tooltip = ach.name; badge.dataset.index = i; badge.addEventListener('click', (e) => { e.stopPropagation(); openAchievementsModal(i); }); banner.appendChild(badge); });
+            }
+            function openAchievementsModal(focusIndex) { document.getElementById('achievementsModal').classList.add('active'); updateAchievementsModal(); if (focusIndex !== undefined) { let items = document.querySelectorAll('#achievementsList .achievement-item'); if (items[focusIndex]) items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+            function closeAchievements() { document.getElementById('achievementsModal').classList.remove('active'); }
             function updateAchievementsModal() {
-                let list = document.getElementById('achievementsList');
-                if (!list) return;
-                list.innerHTML = '';
+                let list = document.getElementById('achievementsList'); if (!list) return; list.innerHTML = '';
                 for (let i = 0; i < ACHIEVEMENTS.length; i++) {
-                    let item = document.createElement('div');
-                    item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
-                    
-                    let mainRow = document.createElement('div');
-                    mainRow.className = 'main-row';
-                    mainRow.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span>`;
-                    
-                    let detailDiv = document.createElement('div');
-                    detailDiv.className = 'achievement-detail';
-                    detailDiv.style.display = 'none';
-                    
+                    let item = document.createElement('div'); item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
+                    let mainRow = document.createElement('div'); mainRow.className = 'main-row'; mainRow.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span>`;
+                    let detailDiv = document.createElement('div'); detailDiv.className = 'achievement-detail'; detailDiv.style.display = 'none';
                     let detailText = ACHIEVEMENTS[i].desc;
-                    
-                    // Add specific details for certain achievements
-                    if (i === 1) { // Bean Man
-                        detailText += `\nCurrent: ${stats.cropCounts[14] || 0}/1000 beans harvested`;
-                    } else if (i === 4) { // Collector
-                        let grown = stats.grownPlants.size;
-                        let missing = [];
-                        for (let j = 0; j < COUNT; j++) {
-                            if (!stats.grownPlants.has(j)) {
-                                missing.push(DATA[j].abbr);
-                            }
-                        }
-                        detailText += `\nProgress: ${grown}/${COUNT}`;
-                        if (missing.length > 0) {
-                            detailText += `\nMissing: ${missing.slice(0, 10).join(', ')}${missing.length > 10 ? '...' : ''}`;
-                        }
-                    } else if (i === 2) { // Green Thumb
-                        detailText += `\nProgress: ${stats.totalHarvested}/100`;
-                    } else if (i === 3) { // Master Farmer
-                        detailText += `\nProgress: ${stats.totalHarvested}/1000`;
-                    } else if (i === 5) { // Rich
-                        detailText += `\nCurrent: $${coins}/1000`;
-                    } else if (i === 6) { // Millionaire
-                        detailText += `\nCurrent: $${coins}/10000`;
-                    } else if (i === 7) { // Water Boy
-                        detailText += `\nProgress: ${stats.waterCount}/100`;
-                    } else if (i === 8) { // Perennial Lover
-                        detailText += `\nProgress: ${stats.perennialHarvested}/100`;
-                    } else if (i === 9) { // Seed Hoarder
-                        detailText += `\nProgress: ${stats.totalSeeds}/1000`;
-                    }
-                    
-                    // build detail content text
+                    if (i === 1) detailText += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans harvested`;
+                    else if (i === 2) detailText += `\nProgress: ${stats.totalHarvested}/100`;
+                    else if (i === 3) detailText += `\nProgress: ${stats.totalHarvested}/1000`;
+                    else if (i === 4) detailText += `\nProgress: ${stats.grownOriginalCount}/42`;
+                    else if (i === 5) detailText += `\nCurrent: $${coins}/1000`;
+                    else if (i === 6) detailText += `\nCurrent: $${coins}/10000`;
+                    else if (i === 7) detailText += `\nProgress: ${stats.waterCount}/100`;
+                    else if (i === 8) detailText += `\nProgress: ${stats.perennialHarvested}/100`;
+                    else if (i === 9) detailText += `\nProgress: ${stats.totalSeeds}/1000`;
+                    else if (i === 12) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
+                    else if (i === 13) detailText += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
+                    else if (i === 14) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
                     detailDiv.innerText = detailText;
-
-                    // add progress bar for numeric-achievement items
                     let progressValue = null;
-                    switch (i) {
-                        case 1: // Bean Man
-                            progressValue = (stats.cropCounts[14] || 0) / 1000;
-                            break;
-                        case 2: // Green Thumb
-                            progressValue = stats.totalHarvested / 100;
-                            break;
-                        case 3: // Master Farmer
-                            progressValue = stats.totalHarvested / 1000;
-                            break;
-                        case 5: // Rich
-                            progressValue = coins / 1000;
-                            break;
-                        case 6: // Millionaire
-                            progressValue = coins / 10000;
-                            break;
-                        case 7: // Water Boy
-                            progressValue = stats.waterCount / 100;
-                            break;
-                        case 8: // Perennial Lover
-                            progressValue = stats.perennialHarvested / 100;
-                            break;
-                        case 9: // Seed Hoarder
-                            progressValue = stats.totalSeeds / 1000;
-                            break;
-                        default:
-                            break;
-                    }
-                    if (progressValue !== null) {
-                        const container = document.createElement('div');
-                        container.className = 'progress-container';
-                        const bar = document.createElement('div');
-                        bar.className = 'progress-bar';
-                        bar.style.width = Math.min(progressValue, 1) * 100 + '%';
-                        container.appendChild(bar);
-                        detailDiv.appendChild(container);
-                    }
-
-                    item.appendChild(mainRow);
-                    item.appendChild(detailDiv);
-
-                    item.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        detailDiv.style.display = detailDiv.style.display === 'none' ? 'block' : 'none';
-                    });
-
+                    if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
+                    else if (i === 2) progressValue = stats.totalHarvested / 100;
+                    else if (i === 3) progressValue = stats.totalHarvested / 1000;
+                    else if (i === 5) progressValue = coins / 1000;
+                    else if (i === 6) progressValue = coins / 10000;
+                    else if (i === 7) progressValue = stats.waterCount / 100;
+                    else if (i === 8) progressValue = stats.perennialHarvested / 100;
+                    else if (i === 9) progressValue = stats.totalSeeds / 1000;
+                    else if (i === 12) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                    else if (i === 14) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                    if (progressValue !== null) { let container = document.createElement('div'); container.className = 'progress-container'; let bar = document.createElement('div'); bar.className = 'progress-bar'; bar.style.width = Math.min(progressValue, 1) * 100 + '%'; container.appendChild(bar); detailDiv.appendChild(container); }
+                    item.appendChild(mainRow); item.appendChild(detailDiv);
+                    item.addEventListener('click', (e) => { e.stopPropagation(); detailDiv.style.display = detailDiv.style.display === 'none' ? 'block' : 'none'; });
                     list.appendChild(item);
                 }
             }
-            
-            document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); showMessage('harvest tool'); });
-            document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); showMessage('water tool'); });
-            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('info tool - hover over plots'); });
-            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; updateUI(); showMessage('plant tool'); });
-            document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; updateUI(); showMessage('delete tool'); });
-            
+            function openExoticModal() { document.getElementById('exoticModal').classList.add('active'); updateExoticModal(); }
+            function closeExoticModal() { document.getElementById('exoticModal').classList.remove('active'); }
+            function rollExotic() {
+                if (coins < 200) { showMessage('need 200 coins to roll', true); return; }
+                coins -= 200; let weights = EXOTIC_PRICES.map(p => 1000 / p); let totalWeight = weights.reduce((a, b) => a + b, 0); let r = Math.random() * totalWeight; let cum = 0, chosen = 0;
+                for (let i = 0; i < weights.length; i++) { cum += weights[i]; if (r < cum) { chosen = i; break; } }
+                let exoticIdx = EXOTIC_START_ID + chosen; seeds[exoticIdx]++; showMessage(`You obtained a rare ${DATA[exoticIdx].name} seed!`, true);
+                updateExoticObtained(); checkAchievements(); updateUI(); updateExoticModal();
+            }
+            function openToolShop() { document.getElementById('toolShopModal').classList.add('active'); }
+            function closeToolShop() { document.getElementById('toolShopModal').classList.remove('active'); }
             function saveGame() {
-                const save = {
-                    coins,
-                    seeds,
-                    crops,
-                    selected,
-                    tool,
-                    achievements,
-                    stats: {
-                        totalHarvested: stats.totalHarvested,
-                        cropCounts: stats.cropCounts,
-                        grownPlants: Array.from(stats.grownPlants),
-                        waterCount: stats.waterCount,
-                        perennialHarvested: stats.perennialHarvested,
-                        fastHarvest: stats.fastHarvest
-                    },
-                    gridData: grid.map(row => row.map(plot => ({
-                        plantId: plot.plantId,
-                        water: plot.water,
-                        stage: plot.stage,
-                        prog: plot.prog,
-                        age: plot.age,
-                        plantTime: plot.plantTime
-                    })))
+                let save = {
+                    coins, seeds, crops, selected, tool, achievements, upgrades,
+                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, fastHarvest: stats.fastHarvest, exoticObtained: stats.exoticObtained },
+                    gridData: grid.map(row => row.map(plot => ({ plantId: plot.plantId, water: plot.water, stage: plot.stage, prog: plot.prog, age: plot.age, plantTime: plot.plantTime })))
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
             }
-            
             function loadGame() {
-                const save = localStorage.getItem('crubsSave');
-                if (!save) return false;
+                let save = localStorage.getItem('crubsSave'); if (!save) return false;
                 try {
-                    const data = JSON.parse(save);
-                    coins = data.coins;
-                    seeds = data.seeds;
-                    crops = data.crops;
-                    selected = data.selected;
-                    tool = data.tool;
-                    achievements = data.achievements || new Array(ACHIEVEMENTS.length).fill(false);
+                    let data = JSON.parse(save);
+                    coins = data.coins; seeds = data.seeds; if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
+                    crops = data.crops; if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
+                    selected = data.selected; tool = data.tool; achievements = data.achievements || new Array(ACHIEVEMENTS.length).fill(false);
+                    upgrades = data.upgrades || { waterArea: false, harvestArea: false, bonemealUnlocked: false };
                     stats = data.stats ? {
-                        totalHarvested: data.stats.totalHarvested || 0,
-                        cropCounts: data.stats.cropCounts || new Array(COUNT).fill(0),
-                        grownPlants: new Set(data.stats.grownPlants || []),
-                        coins: coins,
-                        waterCount: data.stats.waterCount || 0,
-                        perennialHarvested: data.stats.perennialHarvested || 0,
-                        totalSeeds: seeds.reduce((a, b) => a + b, 0),
-                        fullFarm: false,
-                        fastHarvest: data.stats.fastHarvest || false
-                    } : {
-                        totalHarvested: 0,
-                        cropCounts: new Array(COUNT).fill(0),
-                        grownPlants: new Set(),
-                        coins: coins,
-                        waterCount: 0,
-                        perennialHarvested: 0,
-                        totalSeeds: seeds.reduce((a, b) => a + b, 0),
-                        fullFarm: false,
-                        fastHarvest: false
-                    };
-                    grid = data.gridData.map(row => row.map(plotData => {
-                        const plot = new Plot();
-                        plot.plantId = plotData.plantId;
-                        plot.water = plotData.water;
-                        plot.stage = plotData.stage;
-                        plot.prog = plotData.prog;
-                        plot.age = plotData.age;
-                        plot.plantTime = plotData.plantTime || 0;
-                        return plot;
-                    }));
-                    showMessage('loaded your farm');
-                    return true;
-                } catch (e) {
-                    return false;
-                }
+                        totalHarvested: data.stats.totalHarvested || 0, cropCounts: data.stats.cropCounts || new Array(COUNT).fill(0),
+                        grownPlants: new Set(data.stats.grownPlants || []), coins: coins, waterCount: data.stats.waterCount || 0,
+                        perennialHarvested: data.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
+                        fullFarm: false, fastHarvest: data.stats.fastHarvest || false, exoticObtained: data.stats.exoticObtained || new Array(6).fill(false), grownOriginalCount: 0
+                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0 };
+                    if (stats.cropCounts.length < COUNT) { let old = stats.cropCounts; stats.cropCounts = old.concat(new Array(COUNT - old.length).fill(0)); }
+                    grid = data.gridData.map(row => row.map(plotData => { let plot = new Plot(); plot.plantId = plotData.plantId; plot.water = plotData.water; plot.stage = plotData.stage; plot.prog = plotData.prog; plot.age = plotData.age; plot.plantTime = plotData.plantTime || 0; return plot; }));
+                    showMessage('loaded your farm', true); return true;
+                } catch (e) { return false; }
             }
-            
-            function startGame(continueGame = false) {
-                document.getElementById('startScreen').style.display = 'none';
-                document.getElementById('gameScreen').style.display = 'flex';
-                
-                if (continueGame) {
-                    const loaded = loadGame();
-                    if (!loaded) {
-                        resetGame();
-                    }
-                } else {
-                    resetGame();
-                }
-                
-                updateUI();
-                renderGrid();
-                updateAchievementsModal();
-                
-                if (window._interval) clearInterval(window._interval);
-                window._interval = setInterval(() => {
-                    tick();
-                    saveGame();
-                }, 1000);
-            }
-            
             function resetGame() {
-                coins = 40;
-                seeds = new Array(COUNT).fill(0);
-                seeds[0] = 6;
-                seeds[1] = 4;
-                crops = new Array(COUNT).fill(0);
-                selected = 0;
-                tool = 'hand';
-                achievements = new Array(ACHIEVEMENTS.length).fill(false);
-                stats = {
-                    totalHarvested: 0,
-                    cropCounts: new Array(COUNT).fill(0),
-                    grownPlants: new Set(),
-                    coins: 40,
-                    waterCount: 0,
-                    perennialHarvested: 0,
-                    totalSeeds: 6 + 4,
-                    fullFarm: false,
-                    fastHarvest: false
-                };
-                initGrid();
-                updateUI();
-                renderGrid();
-                updateAchievementsModal();
-                showMessage('fresh start');
-                saveGame();
+                coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4; crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
+                achievements = new Array(ACHIEVEMENTS.length).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
+                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0 };
+                initGrid(); updateUI(); renderGrid(); updateAchievementsModal(); showMessage('fresh start', true); saveGame();
             }
-            
-            const startBtn = document.getElementById('startBtn');
-            startBtn.addEventListener('click', () => {
-                const hasSave = localStorage.getItem('crubsSave') !== null;
-                startGame(hasSave);
-            });
-
-            document.getElementById('discordBtn').addEventListener('click', () => {
-                window.open('https://discord.gg/74c9RBYD4R', '_blank');
-            });
-            
-            document.getElementById('clearCookiesBtn').addEventListener('click', () => {
-                if (confirm('Clear all cookies, local storage and reload the site?')) {
-                    document.cookie.split(';').forEach(c => {
-                        document.cookie = c.replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
-                    });
-                    localStorage.clear();
-                    location.reload();
-                }
-            });
-            
-            document.getElementById('resetBtn').addEventListener('click', () => {
-                if (confirm('reset farm?')) {
-                    resetGame();
-                }
-            });
-            
-            document.getElementById('helpBtn').addEventListener('click', () => {
-                document.getElementById('helpModal').classList.add('active');
-            });
-            
-            document.getElementById('closeHelpBtn').addEventListener('click', () => {
-                document.getElementById('helpModal').classList.remove('active');
-            });
-            
-            document.getElementById('helpModal').addEventListener('click', (e) => {
-                if (e.target.id === 'helpModal') {
-                    document.getElementById('helpModal').classList.remove('active');
-                }
-            });
-            
-            document.getElementById('achievementsBtn').addEventListener('click', () => {
-                openAchievementsModal();
-            });
-
-            document.getElementById('achievementBanner').addEventListener('click', () => {
-                openAchievementsModal();
-            });
-            
-            document.getElementById('closeAchievementsBtn').addEventListener('click', () => {
-                closeAchievements();
-            });
-            
-            document.getElementById('achievementsModal').addEventListener('click', (e) => {
-                if (e.target.id === 'achievementsModal') {
-                    closeAchievements();
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeAchievements();
-                }
-            });
-            
-            document.getElementById('menuBtn').addEventListener('click', () => {
-                clearInterval(window._interval);
-                document.getElementById('startScreen').style.display = 'flex';
-                document.getElementById('gameScreen').style.display = 'none';
-                infoTooltip.style.display = 'none';
-                
-                if (localStorage.getItem('crubsSave') !== null) {
-                    startBtn.textContent = '> CONTINUE';
-                } else {
-                    startBtn.textContent = '> START';
-                }
-            });
-
-            function updateStartButtonText() {
-                if (localStorage.getItem('crubsSave') !== null) {
-                    startBtn.textContent = '> CONTINUE';
-                } else {
-                    startBtn.textContent = '> START';
-                }
+            function startGame(continueGame) {
+                document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'flex';
+                if (continueGame) { if (!loadGame()) resetGame(); } else resetGame();
+                updateUI(); renderGrid(); updateAchievementsModal();
+                if (window._interval) clearInterval(window._interval);
+                window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
             }
-
+            document.getElementById('startBtn').addEventListener('click', () => { let hasSave = localStorage.getItem('crubsSave') !== null; startGame(hasSave); });
+            document.getElementById('discordBtn').addEventListener('click', () => window.open('https://discord.gg/74c9RBYD4R', '_blank'));
+            document.getElementById('clearCookiesBtn').addEventListener('click', () => { if (confirm('Clear all cookies, local storage and reload?')) { document.cookie.split(';').forEach(c => document.cookie = c.replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/')); localStorage.clear(); location.reload(); } });
+            document.getElementById('resetBtn').addEventListener('click', () => { if (confirm('reset farm?')) resetGame(); });
+            document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
+            document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
+            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('active'); });
+            document.getElementById('achievementsBtn').addEventListener('click', () => openAchievementsModal());
+            document.getElementById('achievementBanner').addEventListener('click', () => openAchievementsModal());
+            document.getElementById('closeAchievementsBtn').addEventListener('click', closeAchievements);
+            document.getElementById('achievementsModal').addEventListener('click', (e) => { if (e.target.id === 'achievementsModal') closeAchievements(); });
+            document.getElementById('exoticBtn').addEventListener('click', openExoticModal);
+            document.getElementById('closeExoticBtn').addEventListener('click', closeExoticModal);
+            document.getElementById('exoticModal').addEventListener('click', (e) => { if (e.target.id === 'exoticModal') closeExoticModal(); });
+            document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
+            document.getElementById('toolShopBtn').addEventListener('click', openToolShop);
+            document.getElementById('closeToolShopBtn').addEventListener('click', closeToolShop);
+            document.getElementById('toolShopModal').addEventListener('click', (e) => { if (e.target.id === 'toolShopModal') closeToolShop(); });
+            document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade purchased!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
+            document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade purchased!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
+            document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal tool unlocked!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
+            document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); });
+            document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); });
+            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('info tool - hover over plots', true); });
+            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; updateUI(); });
+            document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; updateUI(); });
+            document.getElementById('toolBonemeal').addEventListener('click', () => { if (upgrades.bonemealUnlocked) { tool = 'bonemeal'; updateUI(); } });
+            document.getElementById('menuBtn').addEventListener('click', () => { clearInterval(window._interval); document.getElementById('startScreen').style.display = 'flex'; document.getElementById('gameScreen').style.display = 'none'; infoTooltip.style.display = 'none'; document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') !== null ? '> CONTINUE' : '> START'; });
             window.addEventListener('DOMContentLoaded', () => {
-                updateStartButtonText();
-                renderGrid();
-                updateUI();
+                updateUI(); renderGrid();
+                let verEl = document.getElementById('version');
+                if (verEl) verEl.textContent = 'v' + VERSION;
             });
-
-            const installBtn = document.getElementById('installBtn');
-            let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.style.display = 'inline-flex';
-            });
-            
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const choice = await deferredPrompt.userChoice;
-                    deferredPrompt = null;
-                    installBtn.style.display = 'none';
-                }
-            });
-
+            let installBtn = document.getElementById('installBtn'); let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'inline-flex'; });
+            installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installBtn.style.display = 'none'; } });
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(console.error);
+                navigator.serviceWorker.getRegistrations().then(registrations => { for (let reg of registrations) reg.unregister(); });
+                navigator.serviceWorker.register('sw.js?v=' + Date.now()).catch(console.error);
             }
         })();
     </script>
 </body>
+
 </html>
