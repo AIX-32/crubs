@@ -1,4 +1,6 @@
-const CACHE_NAME = 'crubs-cache-v1';
+// use application version to namespace caches, so updates don't require cookie clearing
+const VERSION = '0.3';
+const CACHE_NAME = 'crubs-cache-v' + VERSION;
 const urlsToCache = [
   '/',          // ensure root route is cached
   '.',
@@ -19,12 +21,13 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keyList => 
+    caches.keys().then(keyList =>
       Promise.all(keyList.map(key => {
         if (key !== CACHE_NAME) return caches.delete(key);
       }))
     )
   );
+  self.clients.claim(); // take control immediately
 });
 
 self.addEventListener('fetch', event => {

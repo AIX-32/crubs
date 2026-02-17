@@ -708,6 +708,14 @@
     <script>
         (function () {
             const VERSION = '0.3';
+            // automatic local storage migration: clear old data once per version bump
+            let savedVer = localStorage.getItem('appVersion');
+            if (savedVer !== VERSION) {
+                console.log('version changed from', savedVer, 'to', VERSION, '- resetting storage');
+                // if you have any complex state you can migrate here instead of wiping
+                localStorage.clear();
+                localStorage.setItem('appVersion', VERSION);
+            }
             let NAMES = ["CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT", "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY", "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB", "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL", "SUNFLOWER", "BLUEBERRY"];
             let COUNT = 42;
             const DATA = [];
@@ -1044,7 +1052,8 @@
 
             // register the service worker once and let the browser handle updates
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js?v=' + Date.now())
+                // append version query so SW updates only when VERSION changes
+                navigator.serviceWorker.register('sw.js?v=' + VERSION)
                     .catch(console.error);
             }
         })();
