@@ -9,7 +9,10 @@
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
+    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- JSZip for CBZ support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -117,6 +120,24 @@
             gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
+        }
+
+        .update-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            position: absolute;
+            top: 10px;
+        }
+
+        .update-btn:hover {
+            background: #fff;
+            color: #000;
         }
 
         #installBtn {
@@ -547,26 +568,51 @@
             white-space: nowrap;
         }
 
+        /* TOOL SHOP improvements: taller cards, better spacing on mobile */
         .upgrade-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            /* stack on mobile */
+            align-items: flex-start;
             border: 2px solid #fff;
-            padding: 8px;
-            margin: 8px 0;
+            padding: 16px;
+            /* increased padding */
+            margin: 12px 0;
+            font-size: 1rem;
+            gap: 10px;
+        }
+
+        .upgrade-row>span {
+            width: 100%;
         }
 
         .upgrade-row button {
             background: #000;
             color: #fff;
             border: 2px solid #fff;
-            padding: 4px 8px;
+            padding: 8px 16px;
+            /* larger button */
             cursor: pointer;
+            font-size: 1rem;
+            align-self: flex-end;
         }
 
         .upgrade-row button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+        }
+
+        /* on larger screens, revert to row layout */
+        @media (min-width: 480px) {
+            .upgrade-row {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .upgrade-row>span {
+                width: auto;
+            }
         }
 
         .pdf-toolbar {
@@ -593,15 +639,32 @@
             margin-top: 8px;
         }
 
-        .file-input-label {
-            border: 2px solid #fff;
-            padding: 4px 8px;
-            cursor: pointer;
-            display: inline-block;
-            font-size: 0.8rem;
+        /* reader file inputs */
+        .file-input-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            justify-content: center;
         }
 
-        #pdfFileInput {
+        .file-input-label {
+            border: 2px solid #fff;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9rem;
+            background: #000;
+            color: #fff;
+        }
+
+        .file-input-label:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        #pdfFileInput,
+        #cbzFileInput {
             display: none;
         }
 
@@ -620,6 +683,8 @@
 </head>
 
 <body>
+    <button class="update-btn" id="updateCheckBtn">> CHECK FOR UPDATES</button>
+
     <div id="infoTooltip" class="info-tooltip"></div>
     <div id="version" class="version"></div>
     <div class="game-wrapper">
@@ -641,7 +706,7 @@
             <button style="display: none;" class="icon-btn" id="clearCookiesBtn"
                 title="Clear cookies and reload">CC</button>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
-                Small text based farming game + reader.
+                Small text based farming game + reader (now with CBZ support).
             </div>
         </div>
 
@@ -677,20 +742,20 @@
                     <h3>> SELL CROPS</h3>
                     <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
                     </div>
-<div class="footer">
-    <div class="footer-grid" style="grid-template-columns: 1fr 1fr 1fr;">
-        <button id="exoticBtn">EXOTIC</button>
-        <button id="toolShopBtn">SHOP</button>
-        <button id="blackMarketBtn">BLACK MKT</button>
-        <button id="pdfReaderBtn">READER</button>
-        <button id="achievementsBtn">ACHIEVE</button>
-    </div>
-    <div class="footer-meta">
-        <button id="menuBtn">MENU</button>
-        <button id="helpBtn">HELP</button>
-        <button id="resetBtn">RESET</button>
-    </div>
-</div>  
+                    <div class="footer">
+                        <div class="footer-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <button id="exoticBtn">EXOTIC</button>
+                            <button id="toolShopBtn">SHOP</button>
+                            <button id="blackMarketBtn">BLACK MKT</button>
+                            <button id="pdfReaderBtn">READER</button>
+                            <button id="achievementsBtn">ACHIEVE</button>
+                        </div>
+                        <div class="footer-meta">
+                            <button id="menuBtn">MENU</button>
+                            <button id="helpBtn">HELP</button>
+                            <button id="resetBtn">RESET</button>
+                        </div>
+                    </div>
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
 
                 </div>
@@ -698,6 +763,7 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
@@ -713,11 +779,13 @@
                 repeatedly after harvest. Exotics (*X*) are rare.</p>
             <p><strong>Black Market:</strong> Every day a random crop is wanted. Sell 3 of that crop for 6x the normal
                 price. No limit.</p>
-            <p><strong>PDF Reader:</strong> Upload a PDF and read while you wait. Remembers last page.</p>
+            <p><strong>PDF / CBZ Reader:</strong> Upload a PDF or CBZ file and read while you wait. Remembers last page
+                for PDFs.</p>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
 
+    <!-- Achievements Modal -->
     <div id="achievementsModal" class="modal">
         <div class="modal-content">
             <h2>> ACHIEVEMENTS</h2>
@@ -726,6 +794,7 @@
         </div>
     </div>
 
+    <!-- Exotic Modal -->
     <div id="exoticModal" class="modal">
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
@@ -745,6 +814,7 @@
         </div>
     </div>
 
+    <!-- Tool Shop Modal (improved layout) -->
     <div id="toolShopModal" class="modal">
         <div class="modal-content">
             <h2>> TOOL SHOP</h2>
@@ -762,6 +832,7 @@
         </div>
     </div>
 
+    <!-- Black Market Modal -->
     <div id="blackMarketModal" class="modal">
         <div class="modal-content">
             <h2>> BLACK MARKET</h2>
@@ -771,11 +842,16 @@
         </div>
     </div>
 
+    <!-- PDF/CBZ Reader Modal -->
     <div id="pdfReaderModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
-            <h2>> PDF READER</h2>
-            <label for="pdfFileInput" class="file-input-label">Choose PDF</label>
-            <input type="file" id="pdfFileInput" accept=".pdf">
+            <h2>> READER (PDF/CBZ)</h2>
+            <div class="file-input-group">
+                <label for="pdfFileInput" class="file-input-label">Choose PDF</label>
+                <input type="file" id="pdfFileInput" accept=".pdf">
+                <label for="cbzFileInput" class="file-input-label">Choose CBZ</label>
+                <input type="file" id="cbzFileInput" accept=".cbz,.zip">
+            </div>
             <div class="pdf-toolbar">
                 <button class="tool-btn" id="pdfPrevPage">◀</button>
                 <span id="pdfPageInfo">- / -</span>
@@ -790,7 +866,8 @@
 
     <script>
         (function () {
-            const VERSION = '0.5';
+            // UPDATED VERSION for update check
+            const VERSION = '0.6';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -1110,27 +1187,49 @@
                 }
             }
 
+            // --- PDF & CBZ reader state ---
             let pdfDoc = null, pageNum = 1, pageCount = 0, canvas = document.getElementById('pdfCanvas'), ctx = canvas.getContext('2d');
             let currentPdfFile = null;
+            // CBZ state
+            let cbzImages = []; // array of data URLs
+            let cbzCurrentPage = 1;
+            let currentCbzFile = null;
+
             function renderPage(num) {
-                if (!pdfDoc) return;
-                pdfDoc.getPage(num).then(page => {
-                    let viewport = page.getViewport({ scale: 1.5 });
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    let renderContext = { canvasContext: ctx, viewport: viewport };
-                    page.render(renderContext);
-                    document.getElementById('pdfPageInfo').innerText = num + ' / ' + pageCount;
+                if (pdfDoc) {
+                    pdfDoc.getPage(num).then(page => {
+                        let viewport = page.getViewport({ scale: 1.5 });
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        let renderContext = { canvasContext: ctx, viewport: viewport };
+                        page.render(renderContext);
+                        document.getElementById('pdfPageInfo').innerText = num + ' / ' + pageCount;
+                        document.getElementById('pdfPageInput').value = num;
+                        if (currentPdfFile) {
+                            let key = 'pdf_' + currentPdfFile;
+                            localStorage.setItem(key, num);
+                        }
+                    });
+                } else if (cbzImages.length > 0) {
+                    let img = new Image();
+                    img.onload = function () {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = cbzImages[num - 1];
+                    document.getElementById('pdfPageInfo').innerText = num + ' / ' + cbzImages.length;
                     document.getElementById('pdfPageInput').value = num;
-                    if (currentPdfFile) {
-                        let key = 'pdf_' + currentPdfFile;
-                        localStorage.setItem(key, num);
-                    }
-                });
+                }
             }
+
+            // PDF file input
             document.getElementById('pdfFileInput').addEventListener('change', function (e) {
                 let file = e.target.files[0];
                 if (!file) return;
+                // reset CBZ state
+                cbzImages = [];
+                currentCbzFile = null;
                 let fileKey = file.name + '_' + file.size;
                 currentPdfFile = fileKey;
                 let fileReader = new FileReader();
@@ -1148,21 +1247,65 @@
                 };
                 fileReader.readAsArrayBuffer(file);
             });
-            document.getElementById('pdfPrevPage').addEventListener('click', () => {
-                if (!pdfDoc) return;
-                if (pageNum > 1) { pageNum--; renderPage(pageNum); }
-            });
-            document.getElementById('pdfNextPage').addEventListener('click', () => {
-                if (!pdfDoc) return;
-                if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
-            });
-            document.getElementById('pdfGoPage').addEventListener('click', () => {
-                if (!pdfDoc) return;
-                let inp = document.getElementById('pdfPageInput');
-                let p = parseInt(inp.value);
-                if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(pageNum); }
+
+            // CBZ file input
+            document.getElementById('cbzFileInput').addEventListener('change', async function (e) {
+                let file = e.target.files[0];
+                if (!file) return;
+                // reset PDF state
+                pdfDoc = null;
+                currentPdfFile = null;
+                currentCbzFile = file.name;
+
+                let zip = new JSZip();
+                let loadedZip = await zip.loadAsync(file);
+                let imageFiles = [];
+                loadedZip.forEach((relativePath, zipEntry) => {
+                    if (!zipEntry.dir) {
+                        let ext = relativePath.split('.').pop().toLowerCase();
+                        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+                            imageFiles.push(zipEntry.name);
+                        }
+                    }
+                });
+                imageFiles.sort(); // natural order by filename
+                cbzImages = [];
+                for (let name of imageFiles) {
+                    let blob = await loadedZip.file(name).async('blob');
+                    let url = URL.createObjectURL(blob);
+                    cbzImages.push(url);
+                }
+                cbzCurrentPage = 1;
+                pageCount = cbzImages.length;
+                if (pageCount > 0) renderPage(1);
+                else showMessage('No images found in CBZ', true);
             });
 
+            document.getElementById('pdfPrevPage').addEventListener('click', () => {
+                if (pdfDoc) {
+                    if (pageNum > 1) { pageNum--; renderPage(pageNum); }
+                } else if (cbzImages.length > 0) {
+                    if (cbzCurrentPage > 1) { cbzCurrentPage--; renderPage(cbzCurrentPage); }
+                }
+            });
+            document.getElementById('pdfNextPage').addEventListener('click', () => {
+                if (pdfDoc) {
+                    if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
+                } else if (cbzImages.length > 0) {
+                    if (cbzCurrentPage < cbzImages.length) { cbzCurrentPage++; renderPage(cbzCurrentPage); }
+                }
+            });
+            document.getElementById('pdfGoPage').addEventListener('click', () => {
+                let inp = document.getElementById('pdfPageInput');
+                let p = parseInt(inp.value);
+                if (pdfDoc) {
+                    if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(pageNum); }
+                } else if (cbzImages.length > 0) {
+                    if (p >= 1 && p <= cbzImages.length) { cbzCurrentPage = p; renderPage(p); }
+                }
+            });
+
+            // Modal functions
             function openModal(modalId) {
                 document.getElementById(modalId).classList.add('active');
                 document.body.classList.add('modal-open');
@@ -1172,6 +1315,36 @@
                 document.body.classList.remove('modal-open');
             }
 
+            // Update check function
+            async function checkForUpdates() {
+                try {
+                    let response = await fetch('version.json?t=' + Date.now());
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    let data = await response.json();
+                    if (data.version && data.version !== VERSION) {
+                        if (confirm(`New version ${data.version} available. Update now? Your game will be saved.`)) {
+                            // Save current game (already auto-saved, but ensure)
+                            saveGame();
+                            // Redirect to new URL if provided, else reload with query param?
+                            if (data.url) {
+                                window.location.href = data.url;
+                            } else {
+                                // fallback: reload with version param
+                                window.location.reload(true);
+                            }
+                        }
+                    } else {
+                        showMessage('You have the latest version.', true);
+                    }
+                } catch (e) {
+                    showMessage('Update check failed.', true);
+                    console.error(e);
+                }
+            }
+
+            document.getElementById('updateCheckBtn').addEventListener('click', checkForUpdates);
+
+            // Other modal assignments
             document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
             document.getElementById('closeHelpBtn').addEventListener('click', () => closeModal('helpModal'));
             document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') closeModal('helpModal'); });
