@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>crubs - farming game</title>
-    <meta name="description" content="Black & white text farm, now with reader & black market.">
+    <title>crubs</title>
+    <meta name="description" content="Small text based farming game.">
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <!-- JSZip for CBZ support -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
@@ -122,24 +119,6 @@
             justify-content: center;
         }
 
-        .update-btn {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
-            font-family: inherit;
-            font-size: 1.2rem;
-            padding: 8px 16px;
-            cursor: pointer;
-            margin-bottom: 12px;
-            position: absolute;
-            top: 10px;
-        }
-
-        .update-btn:hover {
-            background: #fff;
-            color: #000;
-        }
-
         #installBtn {
             position: absolute;
             top: 8px;
@@ -182,14 +161,6 @@
         .icon-btn:hover {
             background: #fff;
             color: #000;
-        }
-
-        #clearCookiesBtn {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            font-size: 1.2rem;
-            display: none;
         }
 
         #gameScreen {
@@ -453,36 +424,12 @@
             0% {
                 box-shadow: 0 0 0 #fff;
             }
-
             50% {
                 box-shadow: 0 0 5px #fff;
             }
-
             100% {
                 box-shadow: 0 0 0 #fff;
             }
-        }
-
-        .achievement-badge[data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #fff;
-            color: #000;
-            padding: 2px 6px;
-            font-size: 0.7rem;
-            white-space: nowrap;
-            border: 1px solid #fff;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            z-index: 1000;
-        }
-
-        .achievement-badge:hover[data-tooltip]::after {
-            opacity: 1;
         }
 
         .progress-container {
@@ -568,49 +515,39 @@
             white-space: nowrap;
         }
 
-        /* TOOL SHOP improvements: taller cards, better spacing on mobile */
         .upgrade-row {
             display: flex;
             flex-direction: column;
-            /* stack on mobile */
             align-items: flex-start;
             border: 2px solid #fff;
             padding: 16px;
-            /* increased padding */
             margin: 12px 0;
             font-size: 1rem;
             gap: 10px;
         }
-
-        .upgrade-row>span {
+        .upgrade-row > span {
             width: 100%;
         }
-
         .upgrade-row button {
             background: #000;
             color: #fff;
             border: 2px solid #fff;
             padding: 8px 16px;
-            /* larger button */
             cursor: pointer;
             font-size: 1rem;
             align-self: flex-end;
         }
-
         .upgrade-row button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
-
-        /* on larger screens, revert to row layout */
         @media (min-width: 480px) {
             .upgrade-row {
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
             }
-
-            .upgrade-row>span {
+            .upgrade-row > span {
                 width: auto;
             }
         }
@@ -639,7 +576,6 @@
             margin-top: 8px;
         }
 
-        /* reader file inputs */
         .file-input-group {
             display: flex;
             gap: 8px;
@@ -647,7 +583,6 @@
             margin-bottom: 10px;
             justify-content: center;
         }
-
         .file-input-label {
             border: 2px solid #fff;
             padding: 8px 12px;
@@ -657,14 +592,11 @@
             background: #000;
             color: #fff;
         }
-
         .file-input-label:hover {
             background: #fff;
             color: #000;
         }
-
-        #pdfFileInput,
-        #cbzFileInput {
+        #pdfFileInput, #cbzFileInput {
             display: none;
         }
 
@@ -679,12 +611,88 @@
             font-size: 1.2rem;
             margin: 10px 0;
         }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .achievement-card {
+            border: 2px solid #fff;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .achievement-card.unlocked {
+            background: #fff;
+            color: #000;
+        }
+
+        .achievement-card.missing {
+            border-color: #666;
+            opacity: 0.7;
+        }
+
+        .achievement-detail-panel {
+            border: 2px solid #fff;
+            padding: 12px;
+            margin-top: 12px;
+            background: #111;
+        }
+
+        .missing-crops-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #fff;
+            padding: 4px;
+        }
+
+        .crop-tag {
+            border: 1px solid #fff;
+            padding: 2px 4px;
+            font-size: 0.7rem;
+        }
+
+        .help-section {
+            border: 2px solid #fff;
+            padding: 12px;
+            margin: 8px 0;
+        }
+
+        .help-section h3 {
+            border-bottom: 1px solid #fff;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+        }
+
+        .help-item {
+            border: 1px solid #fff;
+            padding: 6px;
+        }
     </style>
 </head>
 
 <body>
-    <button class="update-btn" id="updateCheckBtn">> CHECK FOR UPDATES</button>
-
     <div id="infoTooltip" class="info-tooltip"></div>
     <div id="version" class="version"></div>
     <div class="game-wrapper">
@@ -703,10 +711,8 @@
                     <span class="install-text">Install</span>
                 </button>
             </div>
-            <button style="display: none;" class="icon-btn" id="clearCookiesBtn"
-                title="Clear cookies and reload">CC</button>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
-                Small text based farming game + reader (now with CBZ support).
+                Small text based farming game.
             </div>
         </div>
 
@@ -719,8 +725,7 @@
                     <button class="tool-btn" id="toolInfo" data-tooltip="Show plot info (I)">I</button>
                     <button class="tool-btn" id="toolHoe" data-tooltip="Plant selected seed (P)">P</button>
                     <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
-                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)"
-                        style="display:none;">B</button>
+                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)" style="display:none;">B</button>
                 </div>
                 <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
             </div>
@@ -736,8 +741,7 @@
                         <div class="inv-items" id="seedInvList"></div>
                     </div>
                     <h3>> BUY SEEDS</h3>
-                    <div id="buyList"
-                        style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
+                    <div id="buyList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
                     </div>
                     <h3>> SELL CROPS</h3>
                     <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
@@ -757,49 +761,84 @@
                         </div>
                     </div>
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Help Modal -->
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
-            <p><strong>How to Play:</strong> Click tiles on your farm to perform actions based on the selected tool.</p>
-            <p><strong>Tools:</strong><br /> H - Harvest mature crops (#)<br /> W - Water a plot (increases water
-                level)<br /> I - Info (shows growth progress on hover)<br /> P - Plant seeds (uses selected seed)<br />
-                D - Delete a crop<br /> B - Bonemeal (costs 10 coins, boosts growth)</p>
-            <p><strong>Upgrades:</strong> Visit the Tool Shop to unlock area watering, area harvesting, and the bonemeal
-                tool.</p>
-            <p><strong>Water:</strong> Watering crops makes them grow faster, if the water level goes under 4 it will
-                stop growing.</p>
-            <p><strong>Crops:</strong> Seeds take time to grow through stages (. + #). Perennials (*P*) produce
-                repeatedly after harvest. Exotics (*X*) are rare.</p>
-            <p><strong>Black Market:</strong> Every day a random crop is wanted. Sell 3 of that crop for 6x the normal
-                price. No limit.</p>
-            <p><strong>PDF / CBZ Reader:</strong> Upload a PDF or CBZ file and read while you wait. Remembers last page
-                for PDFs.</p>
+            
+            <div class="help-section">
+                <h3>Getting Started</h3>
+                <p>Click tiles on your farm to perform actions with the selected tool. Start with carrot seeds and work your way up!</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Tools</h3>
+                <div class="help-grid">
+                    <div class="help-item">H - Harvest crops</div>
+                    <div class="help-item">W - Water plots</div>
+                    <div class="help-item">I - Info on hover</div>
+                    <div class="help-item">P - Plant seeds</div>
+                    <div class="help-item">D - Delete crop</div>
+                    <div class="help-item">B - Bonemeal (boost)</div>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h3>Upgrades</h3>
+                <p>Tool Shop unlocks area watering, area harvesting, and bonemeal.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Water</h3>
+                <p>Water level affects growth speed. Below 4 stops growth.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Crops</h3>
+                <p>Stages: . (seed) → + (growing) → # (ready). P = perennial, X = exotic.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Black Market</h3>
+                <p>Sell 10 of the daily special crop for 10x normal price.</p>
+            </div>
+
+            <div class="help-section">
+                <h3>Reader</h3>
+                <p>Upload PDF or CBZ files to read while you wait.</p>
+            </div>
+
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
 
-    <!-- Achievements Modal -->
     <div id="achievementsModal" class="modal">
         <div class="modal-content">
             <h2>> ACHIEVEMENTS</h2>
-            <div class="achievement-list" id="achievementsList"></div>
+            <div class="achievement-grid" id="achievementsGrid"></div>
+            <div class="achievement-detail-panel" id="achievementDetail">
+                <div id="achievementDetailTitle" style="font-weight: bold; margin-bottom: 4px;">Select an achievement</div>
+                <div id="achievementDetailDesc"></div>
+                <div id="achievementDetailProgress" class="progress-container" style="margin-top: 8px; display: none;">
+                    <div id="achievementDetailBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div id="achievementMissingCrops" style="margin-top: 8px; display: none;">
+                    <div style="margin-bottom: 4px;">Missing crops:</div>
+                    <div id="missingCropsList" class="missing-crops-list"></div>
+                </div>
+            </div>
             <button class="close-btn" id="closeAchievementsBtn">CLOSE</button>
         </div>
     </div>
 
-    <!-- Exotic Modal -->
     <div id="exoticModal" class="modal">
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
-            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer
-                plants have lower chance. (Marked with X on farm)</p>
+            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer plants have lower chance.</p>
             <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
                 <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:4px;" id="exoticList"></div>
             </div>
@@ -814,38 +853,31 @@
         </div>
     </div>
 
-    <!-- Tool Shop Modal (improved layout) -->
     <div id="toolShopModal" class="modal">
         <div class="modal-content">
             <h2>> TOOL SHOP</h2>
-            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button
-                    id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button
-                    id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200
-                    coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200 coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
             <div style="margin-top:16px;">
-                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins
-                    per use).</p>
+                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins per use).</p>
             </div>
             <button class="close-btn" id="closeToolShopBtn">CLOSE</button>
         </div>
     </div>
 
-    <!-- Black Market Modal -->
     <div id="blackMarketModal" class="modal">
         <div class="modal-content">
             <h2>> BLACK MARKET</h2>
-            <p>Today's special: sell 3 of the same crop for 6x the normal price</p>
+            <p>Today's special: sell 10 of the same crop for 10x the normal price</p>
             <div id="marketDeal" class="market-deal">Loading deal...</div>
             <button class="close-btn" id="closeBlackMarketBtn">CLOSE</button>
         </div>
     </div>
 
-    <!-- PDF/CBZ Reader Modal -->
     <div id="pdfReaderModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
-            <h2>> READER (PDF/CBZ)</h2>
+            <h2>> READER</h2>
             <div class="file-input-group">
                 <label for="pdfFileInput" class="file-input-label">Choose PDF</label>
                 <input type="file" id="pdfFileInput" accept=".pdf">
@@ -856,8 +888,7 @@
                 <button class="tool-btn" id="pdfPrevPage">◀</button>
                 <span id="pdfPageInfo">- / -</span>
                 <button class="tool-btn" id="pdfNextPage">▶</button>
-                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn"
-                    id="pdfGoPage">GO</button>
+                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn" id="pdfGoPage">GO</button>
             </div>
             <canvas id="pdfCanvas"></canvas>
             <button class="close-btn" id="closePdfBtn">CLOSE</button>
@@ -866,8 +897,7 @@
 
     <script>
         (function () {
-            // UPDATED VERSION for update check
-            const VERSION = '0.6';
+            const VERSION = '0.8';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -906,7 +936,8 @@
                 { id: 11, name: "Exotic Beginner", desc: "Obtain your first exotic seed", check: (s) => s.exoticObtained.some(v => v) },
                 { id: 12, name: "Uzzy Hunter", desc: "Obtain the rare Uzzy seed", check: (s) => s.exoticObtained[5] },
                 { id: 13, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) },
-                { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 }
+                { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 },
+                { id: 15, name: "Ultimate Farmer", desc: "Reach 5000 total harvests", check: (s) => s.totalHarvested >= 5000 }
             ];
             const ACHIEVEMENT_COUNT = ACHIEVEMENTS.length;
 
@@ -927,6 +958,7 @@
             let selected = 0;
             let infoTooltip = document.getElementById('infoTooltip');
             let messageTimeout = null;
+            let cheatActive = false;
 
             class Plot {
                 constructor() { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = 0; }
@@ -963,11 +995,14 @@
                 getTimeToNextStage() { return 0; }
                 getTimeToHarvest() { return 0; }
             }
+            
             function initGrid() { grid = []; for (let r = 0; r < SIZE; r++) { let row = []; for (let c = 0; c < SIZE; c++) row.push(new Plot()); grid.push(row); } }
             initGrid();
 
             function checkFullFarm() { let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++; stats.fullFarm = (planted === 100); return stats.fullFarm; }
+            
             function updateExoticObtained() { for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; stats.exoticObtained[i] = (seeds[idx] > 0 || crops[idx] > 0); } }
+            
             function showMessage(msg, isToast = true) { let bar = document.getElementById('messageDisplay'); bar.innerText = msg; if (messageTimeout) clearTimeout(messageTimeout); if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000); }
 
             function renderGrid() {
@@ -1081,59 +1116,93 @@
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
                     if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); }
                 }
-                renderAchievementBanner();
-                newly.forEach(i => { let badge = document.querySelector(`.achievement-badge[data-index="${i}"]`); if (badge) { badge.classList.add('new'); setTimeout(() => badge.classList.remove('new'), 2000); } });
-            }
-            function renderAchievementBanner() {
-                let banner = document.getElementById('achievementBanner'); if (!banner) return; banner.innerHTML = '';
-                let counter = document.createElement('span'); counter.className = 'achievement-badge'; counter.id = 'achievementCounter';
-                let unlocked = achievements.filter(Boolean).length; counter.innerText = `${unlocked}/${ACHIEVEMENT_COUNT}`; banner.appendChild(counter);
-                ACHIEVEMENTS.forEach((ach, i) => {
-                    let badge = document.createElement('span'); badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : ''); badge.dataset.tooltip = ach.name; badge.dataset.index = i;
-                    badge.addEventListener('click', (e) => { e.stopPropagation(); openAchievementsModal(i); });
-                    banner.appendChild(badge);
+                newly.forEach(i => { 
+                    let card = document.querySelector(`.achievement-card[data-index="${i}"]`); 
+                    if (card) { 
+                        card.classList.add('new'); 
+                        setTimeout(() => card.classList.remove('new'), 2000); 
+                    } 
                 });
             }
-            function openAchievementsModal(focusIndex) { openModal('achievementsModal'); updateAchievementsModal(); if (focusIndex !== undefined) { let items = document.querySelectorAll('#achievementsList .achievement-item'); if (items[focusIndex]) items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+
             function updateAchievementsModal() {
-                let list = document.getElementById('achievementsList'); if (!list) return; list.innerHTML = '';
+                let grid = document.getElementById('achievementsGrid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
-                    let item = document.createElement('div'); item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
-                    let mainRow = document.createElement('div'); mainRow.className = 'main-row'; mainRow.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span>`;
-                    let detailDiv = document.createElement('div'); detailDiv.className = 'achievement-detail'; detailDiv.style.display = 'none';
-                    let detailText = ACHIEVEMENTS[i].desc;
-                    if (i === 1) detailText += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans`;
-                    else if (i === 2) detailText += `\nProgress: ${stats.totalHarvested}/100`;
-                    else if (i === 3) detailText += `\nProgress: ${stats.totalHarvested}/1000`;
-                    else if (i === 4) detailText += `\nProgress: ${stats.grownOriginalCount}/42`;
-                    else if (i === 5) detailText += `\nCurrent: $${coins}/1000`;
-                    else if (i === 6) detailText += `\nCurrent: $${coins}/10000`;
-                    else if (i === 7) detailText += `\nProgress: ${stats.waterCount}/100`;
-                    else if (i === 8) detailText += `\nProgress: ${stats.perennialHarvested}/100`;
-                    else if (i === 9) detailText += `\nProgress: ${stats.totalSeeds}/1000`;
-                    else if (i === 11) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
-                    else if (i === 12) detailText += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
-                    else if (i === 13) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
-                    else if (i === 14) detailText += `\nSales: ${stats.blackMarketSales}`;
-                    detailDiv.innerText = detailText;
-
-                    let progressValue = null;
-                    if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
-                    else if (i === 2) progressValue = stats.totalHarvested / 100;
-                    else if (i === 3) progressValue = stats.totalHarvested / 1000;
-                    else if (i === 5) progressValue = coins / 1000;
-                    else if (i === 6) progressValue = coins / 10000;
-                    else if (i === 7) progressValue = stats.waterCount / 100;
-                    else if (i === 8) progressValue = stats.perennialHarvested / 100;
-                    else if (i === 9) progressValue = stats.totalSeeds / 1000;
-                    else if (i === 11) progressValue = stats.exoticObtained.filter(v => v).length / 6;
-                    else if (i === 13) progressValue = stats.exoticObtained.filter(v => v).length / 6;
-                    else if (i === 14) progressValue = stats.blackMarketSales >= 1 ? 1 : 0;
-                    if (progressValue !== null) { let container = document.createElement('div'); container.className = 'progress-container'; let bar = document.createElement('div'); bar.className = 'progress-bar'; bar.style.width = Math.min(progressValue, 1) * 100 + '%'; container.appendChild(bar); detailDiv.appendChild(container); }
-
-                    item.appendChild(mainRow); item.appendChild(detailDiv);
-                    item.addEventListener('click', (e) => { e.stopPropagation(); detailDiv.style.display = detailDiv.style.display === 'none' ? 'block' : 'none'; });
-                    list.appendChild(item);
+                    let card = document.createElement('div');
+                    card.className = `achievement-card ${achievements[i] ? 'unlocked' : ''}`;
+                    card.dataset.index = i;
+                    card.textContent = ACHIEVEMENTS[i].name;
+                    
+                    card.addEventListener('click', () => {
+                        document.getElementById('achievementDetailTitle').textContent = ACHIEVEMENTS[i].name;
+                        let desc = ACHIEVEMENTS[i].desc;
+                        if (i === 1) desc += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans`;
+                        else if (i === 2) desc += `\nProgress: ${stats.totalHarvested}/100`;
+                        else if (i === 3) desc += `\nProgress: ${stats.totalHarvested}/1000`;
+                        else if (i === 4) desc += `\nProgress: ${stats.grownOriginalCount}/42`;
+                        else if (i === 5) desc += `\nCurrent: $${coins}/1000`;
+                        else if (i === 6) desc += `\nCurrent: $${coins}/10000`;
+                        else if (i === 7) desc += `\nProgress: ${stats.waterCount}/100`;
+                        else if (i === 8) desc += `\nProgress: ${stats.perennialHarvested}/100`;
+                        else if (i === 9) desc += `\nProgress: ${stats.totalSeeds}/1000`;
+                        else if (i === 11) { let obtained = stats.exoticObtained.filter(v => v).length; desc += `\nObtained: ${obtained}/6`; }
+                        else if (i === 12) desc += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
+                        else if (i === 13) { let obtained = stats.exoticObtained.filter(v => v).length; desc += `\nObtained: ${obtained}/6`; }
+                        else if (i === 14) desc += `\nSales: ${stats.blackMarketSales}`;
+                        else if (i === 15) desc += `\nProgress: ${stats.totalHarvested}/5000`;
+                        
+                        document.getElementById('achievementDetailDesc').textContent = desc;
+                        
+                        let progressValue = null;
+                        if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
+                        else if (i === 2) progressValue = stats.totalHarvested / 100;
+                        else if (i === 3) progressValue = stats.totalHarvested / 1000;
+                        else if (i === 5) progressValue = coins / 1000;
+                        else if (i === 6) progressValue = coins / 10000;
+                        else if (i === 7) progressValue = stats.waterCount / 100;
+                        else if (i === 8) progressValue = stats.perennialHarvested / 100;
+                        else if (i === 9) progressValue = stats.totalSeeds / 1000;
+                        else if (i === 11) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                        else if (i === 13) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                        else if (i === 14) progressValue = stats.blackMarketSales >= 1 ? 1 : 0;
+                        else if (i === 15) progressValue = stats.totalHarvested / 5000;
+                        
+                        if (progressValue !== null) {
+                            document.getElementById('achievementDetailProgress').style.display = 'block';
+                            document.getElementById('achievementDetailBar').style.width = Math.min(progressValue, 1) * 100 + '%';
+                        } else {
+                            document.getElementById('achievementDetailProgress').style.display = 'none';
+                        }
+                        
+                        if (i === 4 && !achievements[i]) {
+                            let missing = [];
+                            for (let j = 0; j < 42; j++) {
+                                if (!stats.grownPlants.has(j)) {
+                                    missing.push(DATA[j].abbr);
+                                }
+                            }
+                            if (missing.length > 0) {
+                                document.getElementById('achievementMissingCrops').style.display = 'block';
+                                let listDiv = document.getElementById('missingCropsList');
+                                listDiv.innerHTML = '';
+                                missing.forEach(abbr => {
+                                    let tag = document.createElement('span');
+                                    tag.className = 'crop-tag';
+                                    tag.textContent = abbr;
+                                    listDiv.appendChild(tag);
+                                });
+                            } else {
+                                document.getElementById('achievementMissingCrops').style.display = 'none';
+                            }
+                        } else {
+                            document.getElementById('achievementMissingCrops').style.display = 'none';
+                        }
+                    });
+                    
+                    grid.appendChild(card);
                 }
             }
 
@@ -1143,6 +1212,7 @@
                 let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
                 for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr}`, true); updateUI(); closeModal('exoticModal'); }); invDiv.appendChild(badge); } }
             }
+            
             function rollExotic() {
                 if (coins < 200) { showMessage('need 200 coins', true); return; }
                 coins -= 200; let weights = EXOTIC_PRICES.map(p => 1000 / p); let totalWeight = weights.reduce((a, b) => a + b, 0); let r = Math.random() * totalWeight; let cum = 0, chosen = 0;
@@ -1155,29 +1225,30 @@
                 let day = Math.floor(Date.now() / 86400000);
                 return day % 42;
             }
+            
             function updateBlackMarketModal() {
                 let cropId = getDailyCropId();
                 let crop = DATA[cropId];
                 let dealDiv = document.getElementById('marketDeal');
                 if (!dealDiv) return;
                 let normalPrice = crop.sell;
-                let dealPrice = normalPrice * 6;
+                let dealPrice = normalPrice * 10;
                 let owned = crops[cropId] || 0;
                 dealDiv.innerHTML = `
                     <div style="font-size:1.4rem; margin-bottom:8px;">${crop.abbr} - ${crop.name}</div>
                     <div>Normal sell price: $${normalPrice} each</div>
-                    <div class="market-price">TODAY: 3 for $${dealPrice} (6x value)</div>
+                    <div class="market-price">TODAY: 10 for $${dealPrice} (10x value)</div>
                     <div>You own: ${owned} of this crop</div>
-                    <button class="tool-btn" id="sellDailyBtn" style="margin-top:12px;">SELL 3 FOR $${dealPrice}</button>
+                    <button class="tool-btn" id="sellDailyBtn" style="margin-top:12px;">SELL 10 FOR $${dealPrice}</button>
                 `;
                 let btn = document.getElementById('sellDailyBtn');
                 if (btn) {
                     btn.addEventListener('click', () => {
-                        if (crops[cropId] >= 3) {
-                            crops[cropId] -= 3;
+                        if (crops[cropId] >= 10) {
+                            crops[cropId] -= 10;
                             coins += dealPrice;
                             stats.blackMarketSales = (stats.blackMarketSales || 0) + 1;
-                            showMessage(`Sold 3 ${crop.abbr} for $${dealPrice}`, true);
+                            showMessage(`Sold 10 ${crop.abbr} for $${dealPrice}`, true);
                             updateUI();
                             updateBlackMarketModal();
                         } else {
@@ -1187,11 +1258,9 @@
                 }
             }
 
-            // --- PDF & CBZ reader state ---
             let pdfDoc = null, pageNum = 1, pageCount = 0, canvas = document.getElementById('pdfCanvas'), ctx = canvas.getContext('2d');
             let currentPdfFile = null;
-            // CBZ state
-            let cbzImages = []; // array of data URLs
+            let cbzImages = [];
             let cbzCurrentPage = 1;
             let currentCbzFile = null;
 
@@ -1212,22 +1281,20 @@
                     });
                 } else if (cbzImages.length > 0) {
                     let img = new Image();
-                    img.onload = function () {
+                    img.onload = function() {
                         canvas.width = img.width;
                         canvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
                     };
-                    img.src = cbzImages[num - 1];
+                    img.src = cbzImages[num-1];
                     document.getElementById('pdfPageInfo').innerText = num + ' / ' + cbzImages.length;
                     document.getElementById('pdfPageInput').value = num;
                 }
             }
 
-            // PDF file input
             document.getElementById('pdfFileInput').addEventListener('change', function (e) {
                 let file = e.target.files[0];
                 if (!file) return;
-                // reset CBZ state
                 cbzImages = [];
                 currentCbzFile = null;
                 let fileKey = file.name + '_' + file.size;
@@ -1248,11 +1315,9 @@
                 fileReader.readAsArrayBuffer(file);
             });
 
-            // CBZ file input
             document.getElementById('cbzFileInput').addEventListener('change', async function (e) {
                 let file = e.target.files[0];
                 if (!file) return;
-                // reset PDF state
                 pdfDoc = null;
                 currentPdfFile = null;
                 currentCbzFile = file.name;
@@ -1268,7 +1333,7 @@
                         }
                     }
                 });
-                imageFiles.sort(); // natural order by filename
+                imageFiles.sort();
                 cbzImages = [];
                 for (let name of imageFiles) {
                     let blob = await loadedZip.file(name).async('blob');
@@ -1288,6 +1353,7 @@
                     if (cbzCurrentPage > 1) { cbzCurrentPage--; renderPage(cbzCurrentPage); }
                 }
             });
+            
             document.getElementById('pdfNextPage').addEventListener('click', () => {
                 if (pdfDoc) {
                     if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
@@ -1295,6 +1361,7 @@
                     if (cbzCurrentPage < cbzImages.length) { cbzCurrentPage++; renderPage(cbzCurrentPage); }
                 }
             });
+            
             document.getElementById('pdfGoPage').addEventListener('click', () => {
                 let inp = document.getElementById('pdfPageInput');
                 let p = parseInt(inp.value);
@@ -1305,51 +1372,21 @@
                 }
             });
 
-            // Modal functions
             function openModal(modalId) {
                 document.getElementById(modalId).classList.add('active');
                 document.body.classList.add('modal-open');
             }
+            
             function closeModal(modalId) {
                 document.getElementById(modalId).classList.remove('active');
                 document.body.classList.remove('modal-open');
             }
 
-            // Update check function
-            async function checkForUpdates() {
-                try {
-                    let response = await fetch('version.json?t=' + Date.now());
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    let data = await response.json();
-                    if (data.version && data.version !== VERSION) {
-                        if (confirm(`New version ${data.version} available. Update now? Your game will be saved.`)) {
-                            // Save current game (already auto-saved, but ensure)
-                            saveGame();
-                            // Redirect to new URL if provided, else reload with query param?
-                            if (data.url) {
-                                window.location.href = data.url;
-                            } else {
-                                // fallback: reload with version param
-                                window.location.reload(true);
-                            }
-                        }
-                    } else {
-                        showMessage('You have the latest version.', true);
-                    }
-                } catch (e) {
-                    showMessage('Update check failed.', true);
-                    console.error(e);
-                }
-            }
-
-            document.getElementById('updateCheckBtn').addEventListener('click', checkForUpdates);
-
-            // Other modal assignments
             document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
             document.getElementById('closeHelpBtn').addEventListener('click', () => closeModal('helpModal'));
             document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') closeModal('helpModal'); });
 
-            document.getElementById('achievementsBtn').addEventListener('click', () => openAchievementsModal());
+            document.getElementById('achievementsBtn').addEventListener('click', () => { openModal('achievementsModal'); updateAchievementsModal(); });
             document.getElementById('closeAchievementsBtn').addEventListener('click', () => closeModal('achievementsModal'));
             document.getElementById('achievementsModal').addEventListener('click', (e) => { if (e.target.id === 'achievementsModal') closeModal('achievementsModal'); });
 
@@ -1370,6 +1407,25 @@
             document.getElementById('closePdfBtn').addEventListener('click', () => closeModal('pdfReaderModal'));
             document.getElementById('pdfReaderModal').addEventListener('click', (e) => { if (e.target.id === 'pdfReaderModal') closeModal('pdfReaderModal'); });
 
+            let cheatSequence = '';
+            document.addEventListener('keydown', (e) => {
+                cheatSequence += e.key.toLowerCase();
+                if (cheatSequence.includes('aix')) {
+                    if (!cheatActive) {
+                        coins += 20000;
+                        for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
+                            achievements[i] = true;
+                        }
+                        cheatActive = true;
+                        showMessage('CHEAT ACTIVATED: +20000 coins and all achievements!', true);
+                    } else {
+                        showMessage('Cheat already active!', true);
+                    }
+                    cheatSequence = '';
+                }
+                if (cheatSequence.length > 10) cheatSequence = cheatSequence.slice(-10);
+            });
+
             function saveGame() {
                 let save = {
                     coins, seeds, crops, selected, tool, achievements, upgrades,
@@ -1378,6 +1434,7 @@
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
             }
+            
             function loadGame() {
                 let save = localStorage.getItem('crubsSave'); if (!save) return false;
                 try {
@@ -1398,12 +1455,15 @@
                     return true;
                 } catch (e) { return false; }
             }
+            
             function resetGame() {
                 coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4; crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
                 achievements = new Array(ACHIEVEMENT_COUNT).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
                 stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
+                cheatActive = false;
                 initGrid(); updateUI(); renderGrid(); showMessage('fresh start', true); saveGame();
             }
+            
             function startGame(continueGame) {
                 document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'flex';
                 if (continueGame) { if (!loadGame()) resetGame(); } else resetGame();
@@ -1431,6 +1491,15 @@
                 document.getElementById('version').textContent = 'v' + VERSION;
                 let allAchieved = achievements.every(v => v === true);
                 document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
+                
+                fetch('version.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.version && data.version !== VERSION) {
+                            showMessage(`New version ${data.version} available! Refresh to update.`, true);
+                        }
+                    })
+                    .catch(() => {});
             });
 
             let installBtn = document.getElementById('installBtn'); let deferredPrompt;
@@ -1444,5 +1513,4 @@
         })();
     </script>
 </body>
-
 </html>
