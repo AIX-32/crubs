@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>crubs - farming game</title>
-    <meta name="description" content="Small, black and white, text based farming game.">
+    <meta name="description" content="Black & white text farm, now with reader & black market.">
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -30,9 +31,13 @@
             justify-content: center;
             align-items: center;
             padding: 2px;
+            overflow-x: hidden;
         }
 
-        /* version counter shown bottom-left */
+        body.modal-open {
+            overflow: hidden;
+        }
+
         .version {
             position: fixed;
             bottom: 4px;
@@ -41,6 +46,7 @@
             color: #fff;
             pointer-events: none;
             opacity: 0.8;
+            z-index: 10;
         }
 
         .game-wrapper {
@@ -69,8 +75,25 @@
         #startScreen h1 {
             font-size: 4rem;
             letter-spacing: 4px;
-            margin-bottom: 40px;
+            margin-bottom: 10px;
             padding-bottom: 10px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .completion-badge {
+            display: inline-block;
+            border: 2px solid #fff;
+            background: #000;
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            margin-left: 10px;
+            transform: rotate(-5deg) translateY(-5px);
+            vertical-align: middle;
+            border-radius: 0;
+            font-family: inherit;
         }
 
         .start-btn {
@@ -92,6 +115,8 @@
             display: flex;
             align-items: stretch;
             gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         #installBtn {
@@ -121,7 +146,6 @@
             filter: invert(1) brightness(2);
         }
 
-        /* specific styles for install button */
         #installBtn img {
             width: 20px;
             height: 20px;
@@ -144,6 +168,7 @@
             top: 8px;
             left: 8px;
             font-size: 1.2rem;
+            display: none;
         }
 
         #gameScreen {
@@ -331,9 +356,21 @@
         .footer {
             display: flex;
             gap: 4px;
-            justify-content: center;
             margin-top: 6px;
-            flex-wrap: wrap;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .footer-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 60px;
         }
 
         .footer button {
@@ -341,8 +378,8 @@
             color: #fff;
             border: 2px solid #fff;
             font-family: inherit;
-            font-size: 0.8rem;
-            padding: 4px 8px;
+            font-size: 0.7rem;
+            padding: 4px 6px;
             cursor: pointer;
         }
 
@@ -465,6 +502,7 @@
             max-height: 70vh;
             overflow-y: auto;
             box-sizing: border-box;
+            width: 90%;
         }
 
         .modal-content h2 {
@@ -494,40 +532,6 @@
         .modal-content .close-btn:hover {
             background: #fff;
             color: #000;
-        }
-
-        .achievement-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 10px 0;
-        }
-
-        .achievement-item {
-            border: 2px solid #fff;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .achievement-item.unlocked {
-            background: #fff;
-            color: #000;
-        }
-
-        .achievement-item .main-row {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .achievement-detail {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid currentColor;
-            font-size: 0.8rem;
-            whiteth-space: pre-line;
         }
 
         .info-tooltip {
@@ -564,6 +568,54 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+
+        .pdf-toolbar {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 8px 0;
+        }
+
+        .pdf-toolbar input {
+            width: 60px;
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        #pdfCanvas {
+            width: 100%;
+            border: 2px solid #fff;
+            background: #111;
+            margin-top: 8px;
+        }
+
+        .file-input-label {
+            border: 2px solid #fff;
+            padding: 4px 8px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+
+        #pdfFileInput {
+            display: none;
+        }
+
+        .market-deal {
+            border: 2px solid #fff;
+            padding: 12px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .market-price {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
     </style>
 </head>
 
@@ -572,23 +624,27 @@
     <div id="version" class="version"></div>
     <div class="game-wrapper">
         <div id="startScreen" class="screen">
-            <h1>crubs</h1>
+            <h1>crubs
+                <span id="completionBadge" class="completion-badge" style="display: none;">100%</span>
+            </h1>
             <div class="start-controls">
                 <button class="start-btn" id="startBtn">> START</button>
                 <button class="icon-btn" id="discordBtn" title="Discord">
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
                 </button>
                 <button class="icon-btn" id="installBtn" title="Install App">
-                    <img src="logo.png" alt="Logo">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E"
+                        alt="Logo">
                     <span class="install-text">Install</span>
                 </button>
             </div>
             <button style="display: none;" class="icon-btn" id="clearCookiesBtn"
                 title="Clear cookies and reload">CC</button>
             <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
-                Small text based farming game.
+                Small text based farming game + reader.
             </div>
         </div>
+
         <div id="gameScreen">
             <div class="hud">
                 <div class="wallet">$<span id="coinDisplay">40</span></div>
@@ -621,22 +677,27 @@
                     <h3>> SELL CROPS</h3>
                     <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
                     </div>
-                    <div class="footer">
-                        <button id="resetBtn">RESET</button>
-                        <button id="helpBtn">HELP</button>
-                        <button id="achievementsBtn">ACHIEVEMENTS</button>
-                        <button id="exoticBtn">EXOTIC</button>
-                        <button id="toolShopBtn">TOOL SHOP</button>
-                        <button id="menuBtn">MENU</button>
-                    </div>
+<div class="footer">
+    <div class="footer-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <button id="exoticBtn">EXOTIC</button>
+        <button id="toolShopBtn">SHOP</button>
+        <button id="blackMarketBtn">BLACK MKT</button>
+        <button id="pdfReaderBtn">READER</button>
+        <button id="achievementsBtn">ACHIEVE</button>
+    </div>
+    <div class="footer-meta">
+        <button id="menuBtn">MENU</button>
+        <button id="helpBtn">HELP</button>
+        <button id="resetBtn">RESET</button>
+    </div>
+</div>  
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
-                    <div class="achievement-banner" id="achievementBanner">
-                        <span class="achievement-badge" id="achievementCounter">0/15</span>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
@@ -649,12 +710,14 @@
             <p><strong>Water:</strong> Watering crops makes them grow faster, if the water level goes under 4 it will
                 stop growing.</p>
             <p><strong>Crops:</strong> Seeds take time to grow through stages (. + #). Perennials (*P*) produce
-                repeatedly after harvest.</p>
-            <p><strong>Exotic Plants:</strong> Rare plants obtained by rolling in the Exotic modal (200 coins). They
-                grow slowly but need little water.</p>
+                repeatedly after harvest. Exotics (*X*) are rare.</p>
+            <p><strong>Black Market:</strong> Every day a random crop is wanted. Sell 3 of that crop for 6x the normal
+                price. No limit.</p>
+            <p><strong>PDF Reader:</strong> Upload a PDF and read while you wait. Remembers last page.</p>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
+
     <div id="achievementsModal" class="modal">
         <div class="modal-content">
             <h2>> ACHIEVEMENTS</h2>
@@ -662,11 +725,12 @@
             <button class="close-btn" id="closeAchievementsBtn">CLOSE</button>
         </div>
     </div>
+
     <div id="exoticModal" class="modal">
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
             <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer
-                plants have lower chance.</p>
+                plants have lower chance. (Marked with X on farm)</p>
             <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
                 <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:4px;" id="exoticList"></div>
             </div>
@@ -680,24 +744,16 @@
             <button class="close-btn" id="closeExoticBtn">CLOSE</button>
         </div>
     </div>
+
     <div id="toolShopModal" class="modal">
         <div class="modal-content">
             <h2>> TOOL SHOP</h2>
-            <div class="upgrade-row">
-                <span>Bigger Water Bucket (3x3 area)</span>
-                <span>500 coins</span>
-                <button id="buyWaterUpgrade" class="tool-btn">BUY</button>
-            </div>
-            <div class="upgrade-row">
-                <span>Bigger Harvest Tool (3x3 area)</span>
-                <span>800 coins</span>
-                <button id="buyHarvestUpgrade" class="tool-btn">BUY</button>
-            </div>
-            <div class="upgrade-row">
-                <span>Bonemeal Tool (unlock, then 10 coins per use)</span>
-                <span>200 coins</span>
-                <button id="buyBonemealUpgrade" class="tool-btn">BUY</button>
-            </div>
+            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button
+                    id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button
+                    id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200
+                    coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
             <div style="margin-top:16px;">
                 <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins
                     per use).</p>
@@ -705,24 +761,50 @@
             <button class="close-btn" id="closeToolShopBtn">CLOSE</button>
         </div>
     </div>
+
+    <div id="blackMarketModal" class="modal">
+        <div class="modal-content">
+            <h2>> BLACK MARKET</h2>
+            <p>Today's special: sell 3 of the same crop for 6x the normal price</p>
+            <div id="marketDeal" class="market-deal">Loading deal...</div>
+            <button class="close-btn" id="closeBlackMarketBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="pdfReaderModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>> PDF READER</h2>
+            <label for="pdfFileInput" class="file-input-label">Choose PDF</label>
+            <input type="file" id="pdfFileInput" accept=".pdf">
+            <div class="pdf-toolbar">
+                <button class="tool-btn" id="pdfPrevPage">◀</button>
+                <span id="pdfPageInfo">- / -</span>
+                <button class="tool-btn" id="pdfNextPage">▶</button>
+                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn"
+                    id="pdfGoPage">GO</button>
+            </div>
+            <canvas id="pdfCanvas"></canvas>
+            <button class="close-btn" id="closePdfBtn">CLOSE</button>
+        </div>
+    </div>
+
     <script>
         (function () {
-            const VERSION = '0.3';
-            // automatic local storage migration: clear old data once per version bump
+            const VERSION = '0.5';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
-                console.log('version changed from', savedVer, 'to', VERSION, '- resetting storage');
-                // if you have any complex state you can migrate here instead of wiping
                 localStorage.clear();
                 localStorage.setItem('appVersion', VERSION);
             }
+
             let NAMES = ["CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT", "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY", "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB", "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL", "SUNFLOWER", "BLUEBERRY"];
             let COUNT = 42;
             const DATA = [];
             const PERENNIAL_INDICES = [4, 5, 14, 15, 30, 31, 32, 33, 40, 41];
             for (let i = 0; i < COUNT; i++) {
                 let base = 8 + Math.floor(i * 1.2) + (i % 5);
-                DATA.push({ id: i, name: NAMES[i], abbr: NAMES[i].substring(0, 3).toUpperCase(), buy: Math.max(2, Math.floor(base * 0.6)), sell: base, waterUse: 0.3 + (i % 5) * 0.2, growthSpeed: 0.7 + (i % 4) * 0.4, perennial: PERENNIAL_INDICES.includes(i) });
+                let growthSpeed = (i === 0) ? 1.5 : 0.7 + (i % 4) * 0.4;
+                DATA.push({ id: i, name: NAMES[i], abbr: NAMES[i].substring(0, 3).toUpperCase(), buy: Math.max(2, Math.floor(base * 0.6)), sell: base, waterUse: 0.3 + (i % 5) * 0.2, growthSpeed: growthSpeed, perennial: PERENNIAL_INDICES.includes(i) });
             }
             const EXOTIC_NAMES = ["COBO", "SPIRO", "TORIA", "POPZ", "KONK", "UZZY"];
             const EXOTIC_PRICES = [50, 100, 150, 200, 250, 300];
@@ -732,11 +814,6 @@
             }
             COUNT = DATA.length;
 
-            let coins = 40;
-            let seeds = new Array(COUNT).fill(0);
-            seeds[0] = 6; seeds[1] = 4;
-            let crops = new Array(COUNT).fill(0);
-            let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
                 { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[15] >= 1000 },
@@ -749,17 +826,24 @@
                 { id: 8, name: "Perennial Lover", desc: "Harvest 100 perennial crops", check: (s) => s.perennialHarvested >= 100 },
                 { id: 9, name: "Seed Hoarder", desc: "Own 1000 total seeds", check: (s) => s.totalSeeds >= 1000 },
                 { id: 10, name: "Full Farm", desc: "Have all 100 plots planted", check: (s) => s.fullFarm },
-                { id: 11, name: "Speed Runner", desc: "Harvest a crop in under 10 seconds", check: (s) => s.fastHarvest },
-                { id: 12, name: "Exotic Beginner", desc: "Obtain your first exotic seed", check: (s) => s.exoticObtained.some(v => v) },
-                { id: 13, name: "Uzzy Hunter", desc: "Obtain the rare Uzzy seed", check: (s) => s.exoticObtained[5] },
-                { id: 14, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) }
+                { id: 11, name: "Exotic Beginner", desc: "Obtain your first exotic seed", check: (s) => s.exoticObtained.some(v => v) },
+                { id: 12, name: "Uzzy Hunter", desc: "Obtain the rare Uzzy seed", check: (s) => s.exoticObtained[5] },
+                { id: 13, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) },
+                { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 }
             ];
+            const ACHIEVEMENT_COUNT = ACHIEVEMENTS.length;
+
+            let coins = 40;
+            let seeds = new Array(COUNT).fill(0);
+            seeds[0] = 6; seeds[1] = 4;
+            let crops = new Array(COUNT).fill(0);
+            let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
             let stats = {
                 totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), grownOriginalCount: 0,
-                coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false,
-                exoticObtained: new Array(6).fill(false)
+                coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false,
+                exoticObtained: new Array(6).fill(false), blackMarketSales: 0
             };
-            let achievements = new Array(ACHIEVEMENTS.length).fill(false);
+            let achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
             const SIZE = 10;
             let grid = [];
             let tool = 'hand';
@@ -778,7 +862,6 @@
                         this.prog += p.growthSpeed * factor;
                         if (this.prog >= 100) {
                             this.stage++; this.prog = 0;
-                            if (this.stage === 2) { let growTime = Math.floor(Date.now() / 1000) - this.plantTime; if (growTime < 10) stats.fastHarvest = true; }
                         }
                     } else if (p.perennial && this.stage === 2) {
                         this.age++;
@@ -800,41 +883,36 @@
                 }
                 plant(id) { if (this.plantId !== null) return false; this.plantId = id; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = Math.floor(Date.now() / 1000); return true; }
                 delete() { if (this.plantId === null) return false; this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; return true; }
-                getTimeToNextStage() {
-                    if (this.plantId === null || this.stage >= 2) return 0;
-                    let p = DATA[this.plantId]; let remaining = 100 - this.prog; return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
-                }
-                getTimeToHarvest() {
-                    if (this.plantId === null) return 0; if (this.stage >= 2) return 0;
-                    let p = DATA[this.plantId]; let remaining = (2 - this.stage) * 100 - this.prog; return Math.ceil(remaining / (p.growthSpeed * Math.min(1, this.water / 100)));
-                }
+                getTimeToNextStage() { return 0; }
+                getTimeToHarvest() { return 0; }
             }
             function initGrid() { grid = []; for (let r = 0; r < SIZE; r++) { let row = []; for (let c = 0; c < SIZE; c++) row.push(new Plot()); grid.push(row); } }
             initGrid();
 
-            function checkFullFarm() {
-                let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++;
-                stats.fullFarm = planted === 100; return stats.fullFarm;
-            }
+            function checkFullFarm() { let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++; stats.fullFarm = (planted === 100); return stats.fullFarm; }
             function updateExoticObtained() { for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; stats.exoticObtained[i] = (seeds[idx] > 0 || crops[idx] > 0); } }
-            function showMessage(msg, isToast = true) {
-                let bar = document.getElementById('messageDisplay'); bar.innerText = msg;
-                if (messageTimeout) clearTimeout(messageTimeout);
-                if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000);
-            }
+            function showMessage(msg, isToast = true) { let bar = document.getElementById('messageDisplay'); bar.innerText = msg; if (messageTimeout) clearTimeout(messageTimeout); if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000); }
+
             function renderGrid() {
                 let el = document.getElementById('farmGrid'); el.innerHTML = '';
                 for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
                     let plot = grid[r][c]; let tile = document.createElement('div'); tile.className = 'tile'; tile.dataset.row = r; tile.dataset.col = c;
-                    if (plot.plantId !== null) { let p = DATA[plot.plantId]; let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#'); let waterDigit = Math.floor(plot.water / 10); let perennialMark = p.perennial ? 'P' : ''; tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}`; }
-                    else { tile.textContent = '···'; tile.classList.add('empty'); }
+                    if (plot.plantId !== null) {
+                        let p = DATA[plot.plantId];
+                        let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
+                        let waterDigit = Math.floor(plot.water / 10);
+                        let perennialMark = p.perennial ? 'P' : '';
+                        let exoticMark = (plot.plantId >= EXOTIC_START_ID) ? 'X' : '';
+                        tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}${exoticMark}`;
+                    } else { tile.textContent = '···'; tile.classList.add('empty'); }
                     tile.addEventListener('click', (e) => { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); handleTile(row, col); });
-                    tile.addEventListener('mouseenter', (e) => { if (tool === 'info') { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); let plot = grid[row][col]; if (plot.plantId !== null) { let p = DATA[plot.plantId]; if (plot.stage < 2) { let toNext = plot.getTimeToNextStage(); let toHarvest = plot.getTimeToHarvest(); infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>next: ${toNext}s<br>harvest: ${toHarvest}s`; } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>ready to harvest!`; } } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = 'empty plot'; } } });
+                    tile.addEventListener('mouseenter', (e) => { if (tool === 'info') { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); let plot = grid[row][col]; if (plot.plantId !== null) { let p = DATA[plot.plantId]; if (plot.stage < 2) { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>next: ${plot.getTimeToNextStage()}s`; } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>ready!`; } } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = 'empty'; } } });
                     tile.addEventListener('mousemove', (e) => { if (tool === 'info') { infoTooltip.style.left = (e.clientX + 15) + 'px'; infoTooltip.style.top = (e.clientY + 15) + 'px'; } });
                     tile.addEventListener('mouseleave', () => { infoTooltip.style.display = 'none'; });
                     el.appendChild(tile);
                 }
             }
+
             function handleTile(row, col) {
                 let plot = grid[row][col];
                 if (tool === 'hand') {
@@ -842,26 +920,28 @@
                         for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
                             let nr = row + dr, nc = col + dc;
                             if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].harvest();
-                        }
-                        showMessage('area harvested', true);
-                    } else { if (plot.harvest()) showMessage(`harvested ${DATA[plot.plantId].abbr}`, true); else showMessage('not ready to harvest', true); }
+                        } showMessage('area harvested', true);
+                    } else { if (plot.harvest()) showMessage(`harvested ${DATA[plot.plantId].abbr}`, true); else showMessage('not ready', true); }
                 } else if (tool === 'water') {
                     if (upgrades.waterArea) {
                         for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
                             let nr = row + dr, nc = col + dc;
                             if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(20);
                         }
-                    } else { plot.waterPlot(20); }
+                    } else plot.waterPlot(20);
                 } else if (tool === 'hoe') {
-                    if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; } else { if (plot.plantId !== null) showMessage('plot already used', true); else if (seeds[selected] <= 0) showMessage(`no ${DATA[selected].abbr} seeds`, true); }
-                } else if (tool === 'delete') { if (plot.delete()) showMessage('cleared plot', true); else showMessage('nothing to clear', true); }
+                    if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; }
+                    else { if (plot.plantId !== null) showMessage('plot used', true); else if (seeds[selected] <= 0) showMessage(`no ${DATA[selected].abbr} seeds`, true); }
+                } else if (tool === 'delete') { if (plot.delete()) showMessage('cleared', true); else showMessage('nothing', true); }
                 else if (tool === 'bonemeal' && upgrades.bonemealUnlocked) {
-                    if (plot.plantId !== null && coins >= 10) { coins -= 10; plot.prog = Math.min(100, plot.prog + 30); if (plot.prog >= 100 && plot.stage < 2) { plot.stage++; plot.prog = 0; if (plot.stage === 2) { let growTime = Math.floor(Date.now() / 1000) - plot.plantTime; if (growTime < 10) stats.fastHarvest = true; } } showMessage('bonemeal applied', true); }
-                    else if (plot.plantId === null) showMessage('no plant here', true); else showMessage('need 10 coins', true);
+                    if (plot.plantId !== null && coins >= 10) { coins -= 10; plot.prog = Math.min(100, plot.prog + 30); if (plot.prog >= 100 && plot.stage < 2) { plot.stage++; plot.prog = 0; } showMessage('bonemeal applied', true); }
+                    else if (plot.plantId === null) showMessage('no plant', true); else showMessage('need 10 coins', true);
                 }
                 updateUI(); renderGrid();
             }
+
             function tick() { for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) grid[r][c].tick(); renderGrid(); updateUI(); }
+
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
                 document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
@@ -873,49 +953,79 @@
                 let bonemealBtn = document.getElementById('toolBonemeal');
                 if (upgrades.bonemealUnlocked) { bonemealBtn.style.display = 'inline-block'; bonemealBtn.classList.toggle('active', tool === 'bonemeal'); } else bonemealBtn.style.display = 'none';
                 let s = DATA[selected]; document.getElementById('selectedSeedDisplay').innerText = `${s.abbr} (${seeds[selected]})`;
+
                 let seedDiv = document.getElementById('seedInvList'); seedDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) if (seeds[i] > 0) { let b = document.createElement('span'); b.className = `inv-badge ${i === selected ? 'selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i; b.addEventListener('click', (e) => { selected = parseInt(e.target.dataset.id); showMessage(`selected ${DATA[selected].abbr} seeds`, true); updateUI(); }); seedDiv.appendChild(b); }
+                for (let i = 0; i < COUNT; i++) if (seeds[i] > 0) {
+                    let b = document.createElement('span'); b.className = `inv-badge ${i === selected ? 'selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i;
+                    b.addEventListener('click', (e) => { selected = parseInt(e.target.dataset.id); showMessage(`selected ${DATA[selected].abbr}`, true); updateUI(); });
+                    seedDiv.appendChild(b);
+                }
                 let cropDiv = document.getElementById('cropInvList'); cropDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) { let b = document.createElement('span'); b.className = 'inv-badge'; b.textContent = `${DATA[i].abbr} ${crops[i]}`; cropDiv.appendChild(b); }
+                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) {
+                    let b = document.createElement('span'); b.className = 'inv-badge'; b.textContent = `${DATA[i].abbr} ${crops[i]}`; cropDiv.appendChild(b);
+                }
                 let buyDiv = document.getElementById('buyList'); buyDiv.innerHTML = '';
-                DATA.forEach((p, i) => { if (i < 42) { let row = document.createElement('div'); row.className = 'shop-row'; let perennialMark = p.perennial ? ' (P)' : ''; row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`; buyDiv.appendChild(row); } });
-                document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(e.target.dataset.id); let price = DATA[id].buy; if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr} seeds`, true); updateUI(); renderGrid(); checkAchievements(); } else showMessage(`need $${price - coins} more`, true); }));
+                DATA.forEach((p, i) => {
+                    if (i < 42) {
+                        let row = document.createElement('div'); row.className = 'shop-row';
+                        let perennialMark = p.perennial ? ' (P)' : '';
+                        row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`;
+                        buyDiv.appendChild(row);
+                    }
+                });
+                document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); let id = parseInt(e.target.dataset.id); let price = DATA[id].buy;
+                    if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr}`, true); updateUI(); renderGrid(); checkAchievements(); } else showMessage(`need $${price - coins}`, true);
+                }));
                 let sellDiv = document.getElementById('sellList'); sellDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) { let p = DATA[i]; let row = document.createElement('div'); row.className = 'shop-row'; row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span><button class="sell-btn" data-id="${i}">SELL</button>`; sellDiv.appendChild(row); }
-                document.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(e.target.dataset.id); if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} for $${DATA[id].sell}`, true); updateUI(); renderGrid(); checkAchievements(); } }));
-                updateExoticModal(); checkAchievements();
+                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) {
+                    let p = DATA[i]; let row = document.createElement('div'); row.className = 'shop-row';
+                    row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span><button class="sell-btn" data-id="${i}">SELL</button>`;
+                    sellDiv.appendChild(row);
+                }
+                document.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); let id = parseInt(e.target.dataset.id);
+                    if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} for $${DATA[id].sell}`, true); updateUI(); renderGrid(); checkAchievements(); }
+                }));
+                updateExoticModal();
+                checkAchievements();
                 document.getElementById('buyWaterUpgrade').disabled = upgrades.waterArea;
                 document.getElementById('buyHarvestUpgrade').disabled = upgrades.harvestArea;
                 document.getElementById('buyBonemealUpgrade').disabled = upgrades.bonemealUnlocked;
+                if (document.getElementById('blackMarketModal').classList.contains('active')) updateBlackMarketModal();
+                let allAchieved = achievements.every(v => v === true);
+                document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
             }
-            function updateExoticModal() {
-                let exoticListDiv = document.getElementById('exoticList'); if (!exoticListDiv) return; exoticListDiv.innerHTML = '';
-                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; let p = DATA[idx]; let div = document.createElement('div'); div.style.border = '2px solid #fff'; div.style.padding = '4px'; div.style.textAlign = 'center'; div.innerHTML = `<strong>${p.abbr}</strong><br>${p.name}<br>worth $${p.sell}<br>rarity ${EXOTIC_PRICES[i]}`; exoticListDiv.appendChild(div); }
-                let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
-                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr} seeds`, true); updateUI(); closeExoticModal(); }); invDiv.appendChild(badge); } }
-            }
+
             function checkAchievements() {
                 stats.coins = coins; stats.totalSeeds = seeds.reduce((a, b) => a + b, 0); checkFullFarm(); updateExoticObtained();
                 stats.grownOriginalCount = 0; stats.grownPlants.forEach(id => { if (id < 42) stats.grownOriginalCount++; });
                 let newly = [];
-                for (let i = 0; i < ACHIEVEMENTS.length; i++) { if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); } }
-                renderAchievementBanner(); newly.forEach(i => { let badge = document.querySelector(`.achievement-badge[data-index="${i}"]`); if (badge) { badge.classList.add('new'); setTimeout(() => badge.classList.remove('new'), 2000); } });
+                for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
+                    if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); }
+                }
+                renderAchievementBanner();
+                newly.forEach(i => { let badge = document.querySelector(`.achievement-badge[data-index="${i}"]`); if (badge) { badge.classList.add('new'); setTimeout(() => badge.classList.remove('new'), 2000); } });
             }
             function renderAchievementBanner() {
                 let banner = document.getElementById('achievementBanner'); if (!banner) return; banner.innerHTML = '';
-                let counter = document.createElement('span'); counter.className = 'achievement-badge'; counter.id = 'achievementCounter'; let unlocked = achievements.filter(Boolean).length; counter.innerText = `${unlocked}/${ACHIEVEMENTS.length}`; banner.appendChild(counter);
-                ACHIEVEMENTS.forEach((ach, i) => { let badge = document.createElement('span'); badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : ''); badge.dataset.tooltip = ach.name; badge.dataset.index = i; badge.addEventListener('click', (e) => { e.stopPropagation(); openAchievementsModal(i); }); banner.appendChild(badge); });
+                let counter = document.createElement('span'); counter.className = 'achievement-badge'; counter.id = 'achievementCounter';
+                let unlocked = achievements.filter(Boolean).length; counter.innerText = `${unlocked}/${ACHIEVEMENT_COUNT}`; banner.appendChild(counter);
+                ACHIEVEMENTS.forEach((ach, i) => {
+                    let badge = document.createElement('span'); badge.className = 'achievement-badge' + (achievements[i] ? ' unlocked' : ''); badge.dataset.tooltip = ach.name; badge.dataset.index = i;
+                    badge.addEventListener('click', (e) => { e.stopPropagation(); openAchievementsModal(i); });
+                    banner.appendChild(badge);
+                });
             }
-            function openAchievementsModal(focusIndex) { document.getElementById('achievementsModal').classList.add('active'); updateAchievementsModal(); if (focusIndex !== undefined) { let items = document.querySelectorAll('#achievementsList .achievement-item'); if (items[focusIndex]) items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
-            function closeAchievements() { document.getElementById('achievementsModal').classList.remove('active'); }
+            function openAchievementsModal(focusIndex) { openModal('achievementsModal'); updateAchievementsModal(); if (focusIndex !== undefined) { let items = document.querySelectorAll('#achievementsList .achievement-item'); if (items[focusIndex]) items[focusIndex].scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
             function updateAchievementsModal() {
                 let list = document.getElementById('achievementsList'); if (!list) return; list.innerHTML = '';
-                for (let i = 0; i < ACHIEVEMENTS.length; i++) {
+                for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
                     let item = document.createElement('div'); item.className = `achievement-item ${achievements[i] ? 'unlocked' : ''}`;
                     let mainRow = document.createElement('div'); mainRow.className = 'main-row'; mainRow.innerHTML = `<span>${ACHIEVEMENTS[i].name}</span><span>${achievements[i] ? '✓' : '✗'}</span>`;
                     let detailDiv = document.createElement('div'); detailDiv.className = 'achievement-detail'; detailDiv.style.display = 'none';
                     let detailText = ACHIEVEMENTS[i].desc;
-                    if (i === 1) detailText += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans harvested`;
+                    if (i === 1) detailText += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans`;
                     else if (i === 2) detailText += `\nProgress: ${stats.totalHarvested}/100`;
                     else if (i === 3) detailText += `\nProgress: ${stats.totalHarvested}/1000`;
                     else if (i === 4) detailText += `\nProgress: ${stats.grownOriginalCount}/42`;
@@ -924,10 +1034,12 @@
                     else if (i === 7) detailText += `\nProgress: ${stats.waterCount}/100`;
                     else if (i === 8) detailText += `\nProgress: ${stats.perennialHarvested}/100`;
                     else if (i === 9) detailText += `\nProgress: ${stats.totalSeeds}/1000`;
-                    else if (i === 12) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
-                    else if (i === 13) detailText += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
-                    else if (i === 14) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
+                    else if (i === 11) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
+                    else if (i === 12) detailText += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
+                    else if (i === 13) { let obtained = stats.exoticObtained.filter(v => v).length; detailText += `\nObtained: ${obtained}/6`; }
+                    else if (i === 14) detailText += `\nSales: ${stats.blackMarketSales}`;
                     detailDiv.innerText = detailText;
+
                     let progressValue = null;
                     if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
                     else if (i === 2) progressValue = stats.totalHarvested / 100;
@@ -937,29 +1049,158 @@
                     else if (i === 7) progressValue = stats.waterCount / 100;
                     else if (i === 8) progressValue = stats.perennialHarvested / 100;
                     else if (i === 9) progressValue = stats.totalSeeds / 1000;
-                    else if (i === 12) progressValue = stats.exoticObtained.filter(v => v).length / 6;
-                    else if (i === 14) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                    else if (i === 11) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                    else if (i === 13) progressValue = stats.exoticObtained.filter(v => v).length / 6;
+                    else if (i === 14) progressValue = stats.blackMarketSales >= 1 ? 1 : 0;
                     if (progressValue !== null) { let container = document.createElement('div'); container.className = 'progress-container'; let bar = document.createElement('div'); bar.className = 'progress-bar'; bar.style.width = Math.min(progressValue, 1) * 100 + '%'; container.appendChild(bar); detailDiv.appendChild(container); }
+
                     item.appendChild(mainRow); item.appendChild(detailDiv);
                     item.addEventListener('click', (e) => { e.stopPropagation(); detailDiv.style.display = detailDiv.style.display === 'none' ? 'block' : 'none'; });
                     list.appendChild(item);
                 }
             }
-            function openExoticModal() { document.getElementById('exoticModal').classList.add('active'); updateExoticModal(); }
-            function closeExoticModal() { document.getElementById('exoticModal').classList.remove('active'); }
+
+            function updateExoticModal() {
+                let exoticListDiv = document.getElementById('exoticList'); if (!exoticListDiv) return; exoticListDiv.innerHTML = '';
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; let p = DATA[idx]; let div = document.createElement('div'); div.style.border = '2px solid #fff'; div.style.padding = '4px'; div.style.textAlign = 'center'; div.innerHTML = `<strong>${p.abbr}</strong><br>${p.name}<br>worth $${p.sell}<br>rarity ${EXOTIC_PRICES[i]}`; exoticListDiv.appendChild(div); }
+                let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr}`, true); updateUI(); closeModal('exoticModal'); }); invDiv.appendChild(badge); } }
+            }
             function rollExotic() {
-                if (coins < 200) { showMessage('need 200 coins to roll', true); return; }
+                if (coins < 200) { showMessage('need 200 coins', true); return; }
                 coins -= 200; let weights = EXOTIC_PRICES.map(p => 1000 / p); let totalWeight = weights.reduce((a, b) => a + b, 0); let r = Math.random() * totalWeight; let cum = 0, chosen = 0;
                 for (let i = 0; i < weights.length; i++) { cum += weights[i]; if (r < cum) { chosen = i; break; } }
                 let exoticIdx = EXOTIC_START_ID + chosen; seeds[exoticIdx]++; showMessage(`You obtained a rare ${DATA[exoticIdx].name} seed!`, true);
                 updateExoticObtained(); checkAchievements(); updateUI(); updateExoticModal();
             }
-            function openToolShop() { document.getElementById('toolShopModal').classList.add('active'); }
-            function closeToolShop() { document.getElementById('toolShopModal').classList.remove('active'); }
+
+            function getDailyCropId() {
+                let day = Math.floor(Date.now() / 86400000);
+                return day % 42;
+            }
+            function updateBlackMarketModal() {
+                let cropId = getDailyCropId();
+                let crop = DATA[cropId];
+                let dealDiv = document.getElementById('marketDeal');
+                if (!dealDiv) return;
+                let normalPrice = crop.sell;
+                let dealPrice = normalPrice * 6;
+                let owned = crops[cropId] || 0;
+                dealDiv.innerHTML = `
+                    <div style="font-size:1.4rem; margin-bottom:8px;">${crop.abbr} - ${crop.name}</div>
+                    <div>Normal sell price: $${normalPrice} each</div>
+                    <div class="market-price">TODAY: 3 for $${dealPrice} (6x value)</div>
+                    <div>You own: ${owned} of this crop</div>
+                    <button class="tool-btn" id="sellDailyBtn" style="margin-top:12px;">SELL 3 FOR $${dealPrice}</button>
+                `;
+                let btn = document.getElementById('sellDailyBtn');
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        if (crops[cropId] >= 3) {
+                            crops[cropId] -= 3;
+                            coins += dealPrice;
+                            stats.blackMarketSales = (stats.blackMarketSales || 0) + 1;
+                            showMessage(`Sold 3 ${crop.abbr} for $${dealPrice}`, true);
+                            updateUI();
+                            updateBlackMarketModal();
+                        } else {
+                            showMessage(`Not enough ${crop.abbr} crops`, true);
+                        }
+                    });
+                }
+            }
+
+            let pdfDoc = null, pageNum = 1, pageCount = 0, canvas = document.getElementById('pdfCanvas'), ctx = canvas.getContext('2d');
+            let currentPdfFile = null;
+            function renderPage(num) {
+                if (!pdfDoc) return;
+                pdfDoc.getPage(num).then(page => {
+                    let viewport = page.getViewport({ scale: 1.5 });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    let renderContext = { canvasContext: ctx, viewport: viewport };
+                    page.render(renderContext);
+                    document.getElementById('pdfPageInfo').innerText = num + ' / ' + pageCount;
+                    document.getElementById('pdfPageInput').value = num;
+                    if (currentPdfFile) {
+                        let key = 'pdf_' + currentPdfFile;
+                        localStorage.setItem(key, num);
+                    }
+                });
+            }
+            document.getElementById('pdfFileInput').addEventListener('change', function (e) {
+                let file = e.target.files[0];
+                if (!file) return;
+                let fileKey = file.name + '_' + file.size;
+                currentPdfFile = fileKey;
+                let fileReader = new FileReader();
+                fileReader.onload = function () {
+                    let typedarray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+                        pdfDoc = pdf;
+                        pageCount = pdf.numPages;
+                        let savedPage = localStorage.getItem('pdf_' + fileKey);
+                        pageNum = savedPage ? parseInt(savedPage) : 1;
+                        if (pageNum < 1) pageNum = 1;
+                        if (pageNum > pageCount) pageNum = pageCount;
+                        renderPage(pageNum);
+                    });
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+            document.getElementById('pdfPrevPage').addEventListener('click', () => {
+                if (!pdfDoc) return;
+                if (pageNum > 1) { pageNum--; renderPage(pageNum); }
+            });
+            document.getElementById('pdfNextPage').addEventListener('click', () => {
+                if (!pdfDoc) return;
+                if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
+            });
+            document.getElementById('pdfGoPage').addEventListener('click', () => {
+                if (!pdfDoc) return;
+                let inp = document.getElementById('pdfPageInput');
+                let p = parseInt(inp.value);
+                if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(pageNum); }
+            });
+
+            function openModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+                document.body.classList.add('modal-open');
+            }
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
+
+            document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
+            document.getElementById('closeHelpBtn').addEventListener('click', () => closeModal('helpModal'));
+            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') closeModal('helpModal'); });
+
+            document.getElementById('achievementsBtn').addEventListener('click', () => openAchievementsModal());
+            document.getElementById('closeAchievementsBtn').addEventListener('click', () => closeModal('achievementsModal'));
+            document.getElementById('achievementsModal').addEventListener('click', (e) => { if (e.target.id === 'achievementsModal') closeModal('achievementsModal'); });
+
+            document.getElementById('exoticBtn').addEventListener('click', () => openModal('exoticModal'));
+            document.getElementById('closeExoticBtn').addEventListener('click', () => closeModal('exoticModal'));
+            document.getElementById('exoticModal').addEventListener('click', (e) => { if (e.target.id === 'exoticModal') closeModal('exoticModal'); });
+            document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
+
+            document.getElementById('toolShopBtn').addEventListener('click', () => openModal('toolShopModal'));
+            document.getElementById('closeToolShopBtn').addEventListener('click', () => closeModal('toolShopModal'));
+            document.getElementById('toolShopModal').addEventListener('click', (e) => { if (e.target.id === 'toolShopModal') closeModal('toolShopModal'); });
+
+            document.getElementById('blackMarketBtn').addEventListener('click', () => { openModal('blackMarketModal'); updateBlackMarketModal(); });
+            document.getElementById('closeBlackMarketBtn').addEventListener('click', () => closeModal('blackMarketModal'));
+            document.getElementById('blackMarketModal').addEventListener('click', (e) => { if (e.target.id === 'blackMarketModal') closeModal('blackMarketModal'); });
+
+            document.getElementById('pdfReaderBtn').addEventListener('click', () => openModal('pdfReaderModal'));
+            document.getElementById('closePdfBtn').addEventListener('click', () => closeModal('pdfReaderModal'));
+            document.getElementById('pdfReaderModal').addEventListener('click', (e) => { if (e.target.id === 'pdfReaderModal') closeModal('pdfReaderModal'); });
+
             function saveGame() {
                 let save = {
                     coins, seeds, crops, selected, tool, achievements, upgrades,
-                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, fastHarvest: stats.fastHarvest, exoticObtained: stats.exoticObtained },
+                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales },
                     gridData: grid.map(row => row.map(plot => ({ plantId: plot.plantId, water: plot.water, stage: plot.stage, prog: plot.prog, age: plot.age, plantTime: plot.plantTime })))
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
@@ -970,24 +1211,25 @@
                     let data = JSON.parse(save);
                     coins = data.coins; seeds = data.seeds; if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
                     crops = data.crops; if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
-                    selected = data.selected; tool = data.tool; achievements = data.achievements || new Array(ACHIEVEMENTS.length).fill(false);
+                    selected = data.selected; tool = data.tool; achievements = data.achievements || new Array(ACHIEVEMENT_COUNT).fill(false);
                     upgrades = data.upgrades || { waterArea: false, harvestArea: false, bonemealUnlocked: false };
                     stats = data.stats ? {
                         totalHarvested: data.stats.totalHarvested || 0, cropCounts: data.stats.cropCounts || new Array(COUNT).fill(0),
                         grownPlants: new Set(data.stats.grownPlants || []), coins: coins, waterCount: data.stats.waterCount || 0,
                         perennialHarvested: data.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
-                        fullFarm: false, fastHarvest: data.stats.fastHarvest || false, exoticObtained: data.stats.exoticObtained || new Array(6).fill(false), grownOriginalCount: 0
-                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0 };
+                        fullFarm: false, exoticObtained: data.stats.exoticObtained || new Array(6).fill(false), grownOriginalCount: 0,
+                        blackMarketSales: data.stats.blackMarketSales || 0
+                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
                     if (stats.cropCounts.length < COUNT) { let old = stats.cropCounts; stats.cropCounts = old.concat(new Array(COUNT - old.length).fill(0)); }
                     grid = data.gridData.map(row => row.map(plotData => { let plot = new Plot(); plot.plantId = plotData.plantId; plot.water = plotData.water; plot.stage = plotData.stage; plot.prog = plotData.prog; plot.age = plotData.age; plot.plantTime = plotData.plantTime || 0; return plot; }));
-                    showMessage('loaded your farm', true); return true;
+                    return true;
                 } catch (e) { return false; }
             }
             function resetGame() {
                 coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4; crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
-                achievements = new Array(ACHIEVEMENTS.length).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
-                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, fastHarvest: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0 };
-                initGrid(); updateUI(); renderGrid(); updateAchievementsModal(); showMessage('fresh start', true); saveGame();
+                achievements = new Array(ACHIEVEMENT_COUNT).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
+                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
+                initGrid(); updateUI(); renderGrid(); showMessage('fresh start', true); saveGame();
             }
             function startGame(continueGame) {
                 document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'flex';
@@ -996,65 +1238,35 @@
                 if (window._interval) clearInterval(window._interval);
                 window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
             }
+
             document.getElementById('startBtn').addEventListener('click', () => { let hasSave = localStorage.getItem('crubsSave') !== null; startGame(hasSave); });
             document.getElementById('discordBtn').addEventListener('click', () => window.open('https://discord.gg/74c9RBYD4R', '_blank'));
-            document.getElementById('clearCookiesBtn').addEventListener('click', () => { if (confirm('Clear all cookies, local storage and reload?')) { document.cookie.split(';').forEach(c => document.cookie = c.replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/')); localStorage.clear(); location.reload(); } });
             document.getElementById('resetBtn').addEventListener('click', () => { if (confirm('reset farm?')) resetGame(); });
-            document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
-            document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
-            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('active'); });
-            document.getElementById('achievementsBtn').addEventListener('click', () => openAchievementsModal());
-            document.getElementById('achievementBanner').addEventListener('click', () => openAchievementsModal());
-            document.getElementById('closeAchievementsBtn').addEventListener('click', closeAchievements);
-            document.getElementById('achievementsModal').addEventListener('click', (e) => { if (e.target.id === 'achievementsModal') closeAchievements(); });
-            document.getElementById('exoticBtn').addEventListener('click', openExoticModal);
-            document.getElementById('closeExoticBtn').addEventListener('click', closeExoticModal);
-            document.getElementById('exoticModal').addEventListener('click', (e) => { if (e.target.id === 'exoticModal') closeExoticModal(); });
-            document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
-            document.getElementById('toolShopBtn').addEventListener('click', openToolShop);
-            document.getElementById('closeToolShopBtn').addEventListener('click', closeToolShop);
-            document.getElementById('toolShopModal').addEventListener('click', (e) => { if (e.target.id === 'toolShopModal') closeToolShop(); });
-            document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade purchased!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
-            document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade purchased!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
-            document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal tool unlocked!', true); updateUI(); saveGame(); } else showMessage('Not enough coins or already owned', true); });
+            document.getElementById('menuBtn').addEventListener('click', () => { clearInterval(window._interval); document.getElementById('startScreen').style.display = 'flex'; document.getElementById('gameScreen').style.display = 'none'; infoTooltip.style.display = 'none'; document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') !== null ? '> CONTINUE' : '> START'; });
             document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); });
             document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); });
-            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('info tool - hover over plots', true); });
+            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('info tool - hover', true); });
             document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; updateUI(); });
             document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; updateUI(); });
             document.getElementById('toolBonemeal').addEventListener('click', () => { if (upgrades.bonemealUnlocked) { tool = 'bonemeal'; updateUI(); } });
-            document.getElementById('menuBtn').addEventListener('click', () => { clearInterval(window._interval); document.getElementById('startScreen').style.display = 'flex'; document.getElementById('gameScreen').style.display = 'none'; infoTooltip.style.display = 'none'; document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') !== null ? '> CONTINUE' : '> START'; });
+            document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
+            document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
+            document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal unlocked!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
+
             window.addEventListener('DOMContentLoaded', () => {
                 updateUI(); renderGrid();
-                let verEl = document.getElementById('version');
-                if (verEl) verEl.textContent = 'v' + VERSION;
+                document.getElementById('version').textContent = 'v' + VERSION;
+                let allAchieved = achievements.every(v => v === true);
+                document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
             });
+
             let installBtn = document.getElementById('installBtn'); let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.style.display = 'inline-flex';
-            });
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const choice = await deferredPrompt.userChoice;
-                    console.log('install event choice', choice);
-                    deferredPrompt = null;
-                    installBtn.style.display = 'none';
-                }
-            });
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'inline-flex'; });
+            installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const choice = await deferredPrompt.userChoice; console.log(choice); deferredPrompt = null; installBtn.style.display = 'none'; } });
+            window.addEventListener('appinstalled', () => { showMessage('App installed!', true); });
 
-            window.addEventListener('appinstalled', () => {
-                console.log('PWA installed');
-                showMessage('App installed successfully!', true);
-            });
-
-            // register the service worker once and let the browser handle updates
             if ('serviceWorker' in navigator) {
-                // append version query so SW updates only when VERSION changes
-                navigator.serviceWorker.register('sw.js?v=' + VERSION)
-                    .catch(console.error);
+                navigator.serviceWorker.register('sw.js?v=' + VERSION).catch(console.error);
             }
         })();
     </script>
