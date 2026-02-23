@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -353,7 +354,7 @@
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 4px;
             flex: 1;
         }
@@ -424,9 +425,11 @@
             0% {
                 box-shadow: 0 0 0 #fff;
             }
+
             50% {
                 box-shadow: 0 0 5px #fff;
             }
+
             100% {
                 box-shadow: 0 0 0 #fff;
             }
@@ -525,9 +528,11 @@
             font-size: 1rem;
             gap: 10px;
         }
-        .upgrade-row > span {
+
+        .upgrade-row>span {
             width: 100%;
         }
+
         .upgrade-row button {
             background: #000;
             color: #fff;
@@ -537,17 +542,20 @@
             font-size: 1rem;
             align-self: flex-end;
         }
+
         .upgrade-row button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
+
         @media (min-width: 480px) {
             .upgrade-row {
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
             }
-            .upgrade-row > span {
+
+            .upgrade-row>span {
                 width: auto;
             }
         }
@@ -583,6 +591,7 @@
             margin-bottom: 10px;
             justify-content: center;
         }
+
         .file-input-label {
             border: 2px solid #fff;
             padding: 8px 12px;
@@ -592,11 +601,14 @@
             background: #000;
             color: #fff;
         }
+
         .file-input-label:hover {
             background: #fff;
             color: #000;
         }
-        #pdfFileInput, #cbzFileInput {
+
+        #pdfFileInput,
+        #cbzFileInput {
             display: none;
         }
 
@@ -689,6 +701,114 @@
             border: 1px solid #fff;
             padding: 6px;
         }
+
+        body.rainy::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 2px, transparent 2px, transparent 6px);
+            animation: rain 0.2s linear infinite;
+            z-index: 9999;
+        }
+
+        @keyframes rain {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 10px 10px;
+            }
+        }
+
+        body.sunny::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 200, 0.15) 0%, transparent 50%);
+            z-index: 9999;
+        }
+
+        .weather-popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            border: 2px solid #fff;
+            padding: 12px 24px;
+            color: #fff;
+            font-size: 1.2rem;
+            z-index: 10002;
+            animation: fadeOut 5s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .reset-step {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .reset-step button {
+            margin: 0 10px;
+            padding: 8px 16px;
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            cursor: pointer;
+        }
+
+        .reset-step button:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .cheat-weather-menu {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            border: 2px solid #fff;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            z-index: 10003;
+        }
+
+        .cheat-weather-menu button {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .cheat-weather-menu button:hover {
+            background: #fff;
+            color: #000;
+        }
     </style>
 </head>
 
@@ -706,7 +826,7 @@
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
                 </button>
                 <button class="icon-btn" id="installBtn" title="Install App">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E"
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5'/%3E%3C/svg%3E"
                         alt="Logo">
                     <span class="install-text">Install</span>
                 </button>
@@ -725,7 +845,8 @@
                     <button class="tool-btn" id="toolInfo" data-tooltip="Show plot info (I)">I</button>
                     <button class="tool-btn" id="toolHoe" data-tooltip="Plant selected seed (P)">P</button>
                     <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
-                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)" style="display:none;">B</button>
+                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)"
+                        style="display:none;">B</button>
                 </div>
                 <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
             </div>
@@ -741,18 +862,20 @@
                         <div class="inv-items" id="seedInvList"></div>
                     </div>
                     <h3>> BUY SEEDS</h3>
-                    <div id="buyList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
+                    <div id="buyList"
+                        style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
                     </div>
                     <h3>> SELL CROPS</h3>
                     <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
                     </div>
                     <div class="footer">
-                        <div class="footer-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="footer-grid">
                             <button id="exoticBtn">EXOTIC</button>
                             <button id="toolShopBtn">SHOP</button>
                             <button id="blackMarketBtn">BLACK MKT</button>
                             <button id="pdfReaderBtn">READER</button>
                             <button id="achievementsBtn">ACHIEVE</button>
+                            <button id="weatherBtn">WEATHER</button>
                         </div>
                         <div class="footer-meta">
                             <button id="menuBtn">MENU</button>
@@ -769,12 +892,11 @@
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
-            
             <div class="help-section">
                 <h3>Getting Started</h3>
-                <p>Click tiles on your farm to perform actions with the selected tool. Start with carrot seeds and work your way up!</p>
+                <p>Click tiles on your farm to perform actions with the selected tool. Start with carrot seeds and work
+                    your way up!</p>
             </div>
-
             <div class="help-section">
                 <h3>Tools</h3>
                 <div class="help-grid">
@@ -786,32 +908,38 @@
                     <div class="help-item">B - Bonemeal (boost)</div>
                 </div>
             </div>
-
             <div class="help-section">
                 <h3>Upgrades</h3>
                 <p>Tool Shop unlocks area watering, area harvesting, and bonemeal.</p>
             </div>
-
             <div class="help-section">
                 <h3>Water</h3>
                 <p>Water level affects growth speed. Below 4 stops growth.</p>
             </div>
-
             <div class="help-section">
                 <h3>Crops</h3>
                 <p>Stages: . (seed) → + (growing) → # (ready). P = perennial, X = exotic.</p>
             </div>
-
             <div class="help-section">
                 <h3>Black Market</h3>
                 <p>Sell 10 of the daily special crop for 10x normal price.</p>
             </div>
-
             <div class="help-section">
                 <h3>Reader</h3>
                 <p>Upload PDF or CBZ files to read while you wait.</p>
             </div>
-
+            <div class="help-section">
+                <h3>Companion Planting</h3>
+                <p>Some plants grow faster when planted next to each other. Current pairs:</p>
+                <ul style="margin-left:20px;">
+                    <li>Corn (CRN) + Bean (BEN) → 20% faster growth for both</li>
+                </ul>
+                <p>More pairs will be added in future updates</p>
+            </div>
+            <div class="help-section">
+                <h3>Weather Control</h3>
+                <p>You can pay to change the weather: Rainy (100 coins), Sunny (100 coins), or Clear (50 coins).</p>
+            </div>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
@@ -821,7 +949,8 @@
             <h2>> ACHIEVEMENTS</h2>
             <div class="achievement-grid" id="achievementsGrid"></div>
             <div class="achievement-detail-panel" id="achievementDetail">
-                <div id="achievementDetailTitle" style="font-weight: bold; margin-bottom: 4px;">Select an achievement</div>
+                <div id="achievementDetailTitle" style="font-weight: bold; margin-bottom: 4px;">Select an achievement
+                </div>
                 <div id="achievementDetailDesc"></div>
                 <div id="achievementDetailProgress" class="progress-container" style="margin-top: 8px; display: none;">
                     <div id="achievementDetailBar" class="progress-bar" style="width: 0%;"></div>
@@ -838,7 +967,8 @@
     <div id="exoticModal" class="modal">
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
-            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer plants have lower chance.</p>
+            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer
+                plants have lower chance.</p>
             <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
                 <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:4px;" id="exoticList"></div>
             </div>
@@ -856,11 +986,15 @@
     <div id="toolShopModal" class="modal">
         <div class="modal-content">
             <h2>> TOOL SHOP</h2>
-            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200 coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button
+                    id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button
+                    id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
+            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200
+                    coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
             <div style="margin-top:16px;">
-                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins per use).</p>
+                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins
+                    per use).</p>
             </div>
             <button class="close-btn" id="closeToolShopBtn">CLOSE</button>
         </div>
@@ -888,16 +1022,53 @@
                 <button class="tool-btn" id="pdfPrevPage">◀</button>
                 <span id="pdfPageInfo">- / -</span>
                 <button class="tool-btn" id="pdfNextPage">▶</button>
-                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn" id="pdfGoPage">GO</button>
+                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn"
+                    id="pdfGoPage">GO</button>
             </div>
             <canvas id="pdfCanvas"></canvas>
             <button class="close-btn" id="closePdfBtn">CLOSE</button>
         </div>
     </div>
 
+    <div id="resetConfirmModal" class="modal">
+        <div class="modal-content" id="resetModalContent">
+            <h2>> CONFIRM RESET</h2>
+            <div id="resetStep1" class="reset-step">
+                <p>Are you sure you want to reset your farm? All progress will be lost.</p>
+                <button id="resetYes1">YES</button>
+                <button id="resetNo1">NO</button>
+            </div>
+            <div id="resetStep2" class="reset-step" style="display:none;">
+                <p>This is your final warning! Are you absolutely sure?</p>
+                <button id="resetYes2">YES, RESET</button>
+                <button id="resetNo2">NO, GO BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="weatherModal" class="modal">
+        <div class="modal-content">
+            <h2>> WEATHER CONTROL</h2>
+            <p>Change the weather for a fee:</p>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+                <button class="tool-btn" id="weatherRainyBtn" style="font-size: 1rem;">🌧 RAINY (100 coins)</button>
+                <button class="tool-btn" id="weatherSunnyBtn" style="font-size: 1rem;">☀ SUNNY (100 coins)</button>
+                <button class="tool-btn" id="weatherClearBtn" style="font-size: 1rem;">☁ CLEAR (50 coins)</button>
+            </div>
+            <button class="close-btn" id="closeWeatherBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="cheatWeatherMenu" class="cheat-weather-menu" style="display: none;">
+        <button id="cheatRainy">🌧</button>
+        <button id="cheatSunny">☀</button>
+        <button id="cheatClear">☁</button>
+        <button id="cheatClose">✖</button>
+    </div>
+
     <script>
         (function () {
-            const VERSION = '0.8';
+            const VERSION = '0.9';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -920,6 +1091,12 @@
                 DATA.push({ id: EXOTIC_START_ID + i, name: EXOTIC_NAMES[i], abbr: EXOTIC_NAMES[i].substring(0, 3).toUpperCase(), buy: 9999, sell: EXOTIC_PRICES[i] * 2, waterUse: 0.1, growthSpeed: 0.25, perennial: false });
             }
             COUNT = DATA.length;
+
+            const COMPANIONS = {
+                6: [15],
+                15: [6]
+            };
+            const COMPANION_BOOST = 1.2;
 
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
@@ -960,28 +1137,158 @@
             let messageTimeout = null;
             let cheatActive = false;
 
+            let lastRainAppliedTime = 0;
+            let currentWeatherType = null;
+            let manualWeatherActive = false;
+            let manualWeatherType = null;
+
+            function cyrb53(str, seed = 0) {
+                let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+                for (let i = 0, ch; i < str.length; i++) {
+                    ch = str.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ ch, 2654435761);
+                    h2 = Math.imul(h2 ^ ch, 1597334677);
+                }
+                h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+                h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+                return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+            }
+
+            function getWeatherEventAt(timestamp) {
+                let date = new Date(timestamp);
+                date.setSeconds(0, 0);
+                let minuteStr = date.toISOString().slice(0, 16);
+                let hash = cyrb53(minuteStr);
+                if ((hash % 100) < 15) {
+                    let type = (hash % 2 === 0) ? 'rainy' : 'sunny';
+                    let duration = 1 + (hash % 7);
+                    return { type, duration, startTime: date.getTime() };
+                }
+                return null;
+            }
+
+            function getCurrentWeather(now) {
+                for (let i = 0; i <= 7; i++) {
+                    let checkTime = now - i * 60000;
+                    let event = getWeatherEventAt(checkTime);
+                    if (event && i < event.duration) {
+                        return event;
+                    }
+                }
+                return null;
+            }
+
+            function applyRainEffect() {
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        let plot = grid[r][c];
+                        if (plot.plantId !== null) {
+                            plot.water = Math.max(plot.water, 8);
+                        }
+                    }
+                }
+                showWeatherPopup("🌧 It's raining! All plots watered to at least 8.");
+            }
+
+            function showWeatherPopup(msg) {
+                let popup = document.createElement('div');
+                popup.className = 'weather-popup';
+                popup.textContent = msg;
+                document.body.appendChild(popup);
+                setTimeout(() => {
+                    if (popup.parentNode) popup.remove();
+                }, 5000);
+            }
+
+            function updateWeather() {
+                if (manualWeatherActive) {
+                    let body = document.body;
+                    if (manualWeatherType === 'rainy') {
+                        body.classList.add('rainy');
+                        body.classList.remove('sunny');
+                    } else if (manualWeatherType === 'sunny') {
+                        body.classList.add('sunny');
+                        body.classList.remove('rainy');
+                    } else {
+                        body.classList.remove('rainy', 'sunny');
+                    }
+                    currentWeatherType = manualWeatherType;
+                    return;
+                }
+
+                let now = Date.now();
+                let weather = getCurrentWeather(now);
+                let body = document.body;
+                if (weather) {
+                    if (weather.type === 'rainy') {
+                        body.classList.add('rainy');
+                        body.classList.remove('sunny');
+                        if (lastRainAppliedTime !== weather.startTime) {
+                            applyRainEffect();
+                            lastRainAppliedTime = weather.startTime;
+                        }
+                    } else if (weather.type === 'sunny') {
+                        body.classList.add('sunny');
+                        body.classList.remove('rainy');
+                        if (currentWeatherType !== 'sunny') {
+                            showWeatherPopup("☀ It's sunny! 20% growth boost.");
+                        }
+                    }
+                    currentWeatherType = weather.type;
+                } else {
+                    body.classList.remove('rainy', 'sunny');
+                    if (currentWeatherType !== null) {
+                        showWeatherPopup("Weather returned to normal.");
+                        currentWeatherType = null;
+                    }
+                }
+            }
+
             class Plot {
                 constructor() { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = 0; }
-                tick() {
+
+                hasCompanion(row, col) {
+                    if (this.plantId === null) return false;
+                    let companions = COMPANIONS[this.plantId];
+                    if (!companions) return false;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (dr === 0 && dc === 0) continue;
+                            let nr = row + dr, nc = col + dc;
+                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) {
+                                let neighbor = grid[nr][nc];
+                                if (neighbor.plantId !== null && companions.includes(neighbor.plantId)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+
+                tick(row, col) {
                     if (this.plantId === null) return;
                     let p = DATA[this.plantId];
                     this.water = Math.max(0, this.water - p.waterUse);
                     if (this.water > 0 && this.stage < 2) {
                         let factor = Math.min(1, this.water / 100);
-                        this.prog += p.growthSpeed * factor;
+                        let speed = p.growthSpeed;
+                        if (currentWeatherType === 'sunny') {
+                            speed *= 1.2;
+                        }
+                        if (this.hasCompanion(row, col)) {
+                            speed *= COMPANION_BOOST;
+                        }
+                        this.prog += speed * factor;
                         if (this.prog >= 100) {
                             this.stage++; this.prog = 0;
-                        }
-                    } else if (p.perennial && this.stage === 2) {
-                        this.age++;
-                        if (this.age > 20) {
-                            crops[this.plantId]++; stats.totalHarvested++; stats.cropCounts[this.plantId]++; stats.perennialHarvested++; stats.grownPlants.add(this.plantId); this.age = 0;
-                            updateExoticObtained(); checkAchievements();
                         }
                     }
                     if (this.water > 100) this.water = 100;
                 }
+
                 waterPlot(amt = 20) { if (this.plantId !== null) { this.water = Math.min(100, this.water + amt); stats.waterCount++; } }
+
                 harvest() {
                     if (this.plantId === null || this.stage < 2) return false;
                     let id = this.plantId;
@@ -990,19 +1297,22 @@
                     else { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; }
                     updateExoticObtained(); checkAchievements(); return true;
                 }
+
                 plant(id) { if (this.plantId !== null) return false; this.plantId = id; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = Math.floor(Date.now() / 1000); return true; }
+
                 delete() { if (this.plantId === null) return false; this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; return true; }
+
                 getTimeToNextStage() { return 0; }
                 getTimeToHarvest() { return 0; }
             }
-            
+
             function initGrid() { grid = []; for (let r = 0; r < SIZE; r++) { let row = []; for (let c = 0; c < SIZE; c++) row.push(new Plot()); grid.push(row); } }
             initGrid();
 
             function checkFullFarm() { let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++; stats.fullFarm = (planted === 100); return stats.fullFarm; }
-            
+
             function updateExoticObtained() { for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; stats.exoticObtained[i] = (seeds[idx] > 0 || crops[idx] > 0); } }
-            
+
             function showMessage(msg, isToast = true) { let bar = document.getElementById('messageDisplay'); bar.innerText = msg; if (messageTimeout) clearTimeout(messageTimeout); if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000); }
 
             function renderGrid() {
@@ -1052,7 +1362,11 @@
                 updateUI(); renderGrid();
             }
 
-            function tick() { for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) grid[r][c].tick(); renderGrid(); updateUI(); }
+            function tick() {
+                updateWeather();
+                for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) grid[r][c].tick(r, c);
+                renderGrid(); updateUI();
+            }
 
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
@@ -1116,12 +1430,12 @@
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
                     if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); }
                 }
-                newly.forEach(i => { 
-                    let card = document.querySelector(`.achievement-card[data-index="${i}"]`); 
-                    if (card) { 
-                        card.classList.add('new'); 
-                        setTimeout(() => card.classList.remove('new'), 2000); 
-                    } 
+                newly.forEach(i => {
+                    let card = document.querySelector(`.achievement-card[data-index="${i}"]`);
+                    if (card) {
+                        card.classList.add('new');
+                        setTimeout(() => card.classList.remove('new'), 2000);
+                    }
                 });
             }
 
@@ -1129,13 +1443,13 @@
                 let grid = document.getElementById('achievementsGrid');
                 if (!grid) return;
                 grid.innerHTML = '';
-                
+
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
                     let card = document.createElement('div');
                     card.className = `achievement-card ${achievements[i] ? 'unlocked' : ''}`;
                     card.dataset.index = i;
                     card.textContent = ACHIEVEMENTS[i].name;
-                    
+
                     card.addEventListener('click', () => {
                         document.getElementById('achievementDetailTitle').textContent = ACHIEVEMENTS[i].name;
                         let desc = ACHIEVEMENTS[i].desc;
@@ -1153,9 +1467,9 @@
                         else if (i === 13) { let obtained = stats.exoticObtained.filter(v => v).length; desc += `\nObtained: ${obtained}/6`; }
                         else if (i === 14) desc += `\nSales: ${stats.blackMarketSales}`;
                         else if (i === 15) desc += `\nProgress: ${stats.totalHarvested}/5000`;
-                        
+
                         document.getElementById('achievementDetailDesc').textContent = desc;
-                        
+
                         let progressValue = null;
                         if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
                         else if (i === 2) progressValue = stats.totalHarvested / 100;
@@ -1169,14 +1483,14 @@
                         else if (i === 13) progressValue = stats.exoticObtained.filter(v => v).length / 6;
                         else if (i === 14) progressValue = stats.blackMarketSales >= 1 ? 1 : 0;
                         else if (i === 15) progressValue = stats.totalHarvested / 5000;
-                        
+
                         if (progressValue !== null) {
                             document.getElementById('achievementDetailProgress').style.display = 'block';
                             document.getElementById('achievementDetailBar').style.width = Math.min(progressValue, 1) * 100 + '%';
                         } else {
                             document.getElementById('achievementDetailProgress').style.display = 'none';
                         }
-                        
+
                         if (i === 4 && !achievements[i]) {
                             let missing = [];
                             for (let j = 0; j < 42; j++) {
@@ -1201,7 +1515,7 @@
                             document.getElementById('achievementMissingCrops').style.display = 'none';
                         }
                     });
-                    
+
                     grid.appendChild(card);
                 }
             }
@@ -1212,7 +1526,7 @@
                 let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
                 for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr}`, true); updateUI(); closeModal('exoticModal'); }); invDiv.appendChild(badge); } }
             }
-            
+
             function rollExotic() {
                 if (coins < 200) { showMessage('need 200 coins', true); return; }
                 coins -= 200; let weights = EXOTIC_PRICES.map(p => 1000 / p); let totalWeight = weights.reduce((a, b) => a + b, 0); let r = Math.random() * totalWeight; let cum = 0, chosen = 0;
@@ -1225,7 +1539,7 @@
                 let day = Math.floor(Date.now() / 86400000);
                 return day % 42;
             }
-            
+
             function updateBlackMarketModal() {
                 let cropId = getDailyCropId();
                 let crop = DATA[cropId];
@@ -1281,12 +1595,12 @@
                     });
                 } else if (cbzImages.length > 0) {
                     let img = new Image();
-                    img.onload = function() {
+                    img.onload = function () {
                         canvas.width = img.width;
                         canvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
                     };
-                    img.src = cbzImages[num-1];
+                    img.src = cbzImages[num - 1];
                     document.getElementById('pdfPageInfo').innerText = num + ' / ' + cbzImages.length;
                     document.getElementById('pdfPageInput').value = num;
                 }
@@ -1353,7 +1667,7 @@
                     if (cbzCurrentPage > 1) { cbzCurrentPage--; renderPage(cbzCurrentPage); }
                 }
             });
-            
+
             document.getElementById('pdfNextPage').addEventListener('click', () => {
                 if (pdfDoc) {
                     if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
@@ -1361,7 +1675,7 @@
                     if (cbzCurrentPage < cbzImages.length) { cbzCurrentPage++; renderPage(cbzCurrentPage); }
                 }
             });
-            
+
             document.getElementById('pdfGoPage').addEventListener('click', () => {
                 let inp = document.getElementById('pdfPageInput');
                 let p = parseInt(inp.value);
@@ -1376,11 +1690,46 @@
                 document.getElementById(modalId).classList.add('active');
                 document.body.classList.add('modal-open');
             }
-            
+
             function closeModal(modalId) {
                 document.getElementById(modalId).classList.remove('active');
                 document.body.classList.remove('modal-open');
             }
+
+            function setWeather(type, cost = 0) {
+                if (cost > 0) {
+                    if (coins < cost) {
+                        showMessage(`Not enough coins! Need ${cost}`, true);
+                        return;
+                    }
+                    coins -= cost;
+                }
+                if (type === 'clear') {
+                    manualWeatherActive = false;
+                    manualWeatherType = null;
+                    showWeatherPopup("Weather returned to normal.");
+                } else {
+                    manualWeatherActive = true;
+                    manualWeatherType = type;
+                    if (type === 'rainy') {
+                        applyRainEffect();
+                    } else if (type === 'sunny') {
+                        showWeatherPopup("☀ You summoned sunny weather! 20% growth boost.");
+                    }
+                }
+                updateWeather();
+                updateUI();
+                saveGame();
+                closeModal('weatherModal');
+            }
+
+            document.getElementById('weatherBtn').addEventListener('click', () => openModal('weatherModal'));
+            document.getElementById('closeWeatherBtn').addEventListener('click', () => closeModal('weatherModal'));
+            document.getElementById('weatherModal').addEventListener('click', (e) => { if (e.target.id === 'weatherModal') closeModal('weatherModal'); });
+
+            document.getElementById('weatherRainyBtn').addEventListener('click', () => setWeather('rainy', 100));
+            document.getElementById('weatherSunnyBtn').addEventListener('click', () => setWeather('sunny', 100));
+            document.getElementById('weatherClearBtn').addEventListener('click', () => setWeather('clear', 50));
 
             document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
             document.getElementById('closeHelpBtn').addEventListener('click', () => closeModal('helpModal'));
@@ -1407,6 +1756,37 @@
             document.getElementById('closePdfBtn').addEventListener('click', () => closeModal('pdfReaderModal'));
             document.getElementById('pdfReaderModal').addEventListener('click', (e) => { if (e.target.id === 'pdfReaderModal') closeModal('pdfReaderModal'); });
 
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                document.getElementById('resetStep1').style.display = 'block';
+                document.getElementById('resetStep2').style.display = 'none';
+                openModal('resetConfirmModal');
+            });
+
+            document.getElementById('resetYes1').addEventListener('click', () => {
+                document.getElementById('resetStep1').style.display = 'none';
+                document.getElementById('resetStep2').style.display = 'block';
+            });
+
+            document.getElementById('resetNo1').addEventListener('click', () => {
+                closeModal('resetConfirmModal');
+            });
+
+            document.getElementById('resetYes2').addEventListener('click', () => {
+                resetGame();
+                closeModal('resetConfirmModal');
+            });
+
+            document.getElementById('resetNo2').addEventListener('click', () => {
+                document.getElementById('resetStep1').style.display = 'block';
+                document.getElementById('resetStep2').style.display = 'none';
+            });
+
+            document.getElementById('resetConfirmModal').addEventListener('click', (e) => {
+                if (e.target.id === 'resetConfirmModal') {
+                    closeModal('resetConfirmModal');
+                }
+            });
+
             let cheatSequence = '';
             document.addEventListener('keydown', (e) => {
                 cheatSequence += e.key.toLowerCase();
@@ -1418,12 +1798,29 @@
                         }
                         cheatActive = true;
                         showMessage('CHEAT ACTIVATED: +20000 coins and all achievements!', true);
+                        document.getElementById('cheatWeatherMenu').style.display = 'flex';
+                        setTimeout(() => {
+                            document.getElementById('cheatWeatherMenu').style.display = 'none';
+                        }, 10000);
                     } else {
                         showMessage('Cheat already active!', true);
                     }
                     cheatSequence = '';
                 }
                 if (cheatSequence.length > 10) cheatSequence = cheatSequence.slice(-10);
+            });
+
+            document.getElementById('cheatRainy').addEventListener('click', () => {
+                if (cheatActive) setWeather('rainy', 0);
+            });
+            document.getElementById('cheatSunny').addEventListener('click', () => {
+                if (cheatActive) setWeather('sunny', 0);
+            });
+            document.getElementById('cheatClear').addEventListener('click', () => {
+                if (cheatActive) setWeather('clear', 0);
+            });
+            document.getElementById('cheatClose').addEventListener('click', () => {
+                document.getElementById('cheatWeatherMenu').style.display = 'none';
             });
 
             function saveGame() {
@@ -1434,7 +1831,7 @@
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
             }
-            
+
             function loadGame() {
                 let save = localStorage.getItem('crubsSave'); if (!save) return false;
                 try {
@@ -1455,15 +1852,17 @@
                     return true;
                 } catch (e) { return false; }
             }
-            
+
             function resetGame() {
                 coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4; crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
                 achievements = new Array(ACHIEVEMENT_COUNT).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
                 stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
                 cheatActive = false;
+                manualWeatherActive = false;
+                manualWeatherType = null;
                 initGrid(); updateUI(); renderGrid(); showMessage('fresh start', true); saveGame();
             }
-            
+
             function startGame(continueGame) {
                 document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'flex';
                 if (continueGame) { if (!loadGame()) resetGame(); } else resetGame();
@@ -1474,7 +1873,6 @@
 
             document.getElementById('startBtn').addEventListener('click', () => { let hasSave = localStorage.getItem('crubsSave') !== null; startGame(hasSave); });
             document.getElementById('discordBtn').addEventListener('click', () => window.open('https://discord.gg/74c9RBYD4R', '_blank'));
-            document.getElementById('resetBtn').addEventListener('click', () => { if (confirm('reset farm?')) resetGame(); });
             document.getElementById('menuBtn').addEventListener('click', () => { clearInterval(window._interval); document.getElementById('startScreen').style.display = 'flex'; document.getElementById('gameScreen').style.display = 'none'; infoTooltip.style.display = 'none'; document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') !== null ? '> CONTINUE' : '> START'; });
             document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); });
             document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); });
@@ -1491,7 +1889,7 @@
                 document.getElementById('version').textContent = 'v' + VERSION;
                 let allAchieved = achievements.every(v => v === true);
                 document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
-                
+
                 fetch('version.json')
                     .then(response => response.json())
                     .then(data => {
@@ -1499,7 +1897,7 @@
                             showMessage(`New version ${data.version} available! Refresh to update.`, true);
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             });
 
             let installBtn = document.getElementById('installBtn'); let deferredPrompt;
@@ -1513,4 +1911,5 @@
         })();
     </script>
 </body>
+
 </html>
