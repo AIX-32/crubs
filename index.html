@@ -17,22 +17,32 @@
             margin: 0;
             padding: 0;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
         }
 
+        :root {
+            --c-bg: #000000;
+            --c-fg: #fff;
+            --c-dim: #ffffff;
+            --c-mid: #222;
+            --c-hover: #111;
+            --border: 2px solid #fff;
+            --border-dim: 1px solid #444;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
         body {
-            background: #000;
-            color: #ffffff;
+            background: var(--c-bg);
+            color: var(--c-fg);
             font-family: 'Courier New', Courier, monospace;
             font-size: 16px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2px;
-            overflow-x: hidden;
+            padding: 4px;
         }
 
         body.modal-open {
@@ -42,25 +52,26 @@
         .version {
             position: fixed;
             bottom: 4px;
-            left: 4px;
-            font-size: 0.7rem;
-            color: #fff;
+            left: 6px;
+            font-size: 0.65rem;
+            color: var(--c-dim);
             pointer-events: none;
-            opacity: 0.8;
             z-index: 10;
+            letter-spacing: 1px;
         }
 
         .game-wrapper {
             width: 100%;
-            max-width: 1000px;
-            border: 2px solid #fff;
-            background: #000;
+            max-width: 1020px;
+            border: var(--border);
+            background: var(--c-bg);
             padding: 4px;
+            margin: 0 auto;
         }
 
         .screen {
-            border: 2px solid #fff;
-            background: #000;
+            border: var(--border);
+            background: var(--c-bg);
             padding: 16px;
         }
 
@@ -70,46 +81,55 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
+            min-height: 320px;
+            gap: 14px;
+        }
+
+        .start-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         #startScreen h1 {
-            font-size: 4rem;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            display: inline-block;
-            position: relative;
+            font-size: 5rem;
+            letter-spacing: 6px;
+            line-height: 1;
         }
 
         .completion-badge {
             display: inline-block;
-            border: 2px solid #fff;
-            background: #000;
-            color: #fff;
-            font-size: 1.8rem;
+            border: var(--border);
+            background: var(--c-bg);
+            color: var(--c-fg);
+            font-size: 1.4rem;
             font-weight: bold;
-            padding: 4px 12px;
-            margin-left: 10px;
-            transform: rotate(-5deg) translateY(-5px);
-            vertical-align: middle;
-            border-radius: 0;
+            padding: 4px 10px;
+            transform: rotate(-6deg);
             font-family: inherit;
+        }
+
+        .start-tagline {
+            font-size: 0.75rem;
+            color: var(--c-dim);
+            letter-spacing: 2px;
         }
 
         .start-btn {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
-            font-size: 2rem;
-            padding: 12px 30px;
+            font-size: 1.8rem;
+            padding: 10px 28px;
             cursor: pointer;
+            letter-spacing: 2px;
+            transition: background 0.1s, color 0.1s;
         }
 
         .start-btn:hover {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .start-controls {
@@ -121,24 +141,22 @@
         }
 
         #installBtn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
             display: none;
         }
 
         .icon-btn {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
-            font-size: 1.2rem;
-            padding: 12px 10px;
+            font-size: 1rem;
+            padding: 10px 12px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-sizing: border-box;
+            gap: 6px;
+            transition: background 0.1s, color 0.1s;
         }
 
         .icon-btn img {
@@ -147,42 +165,60 @@
             filter: invert(1) brightness(2);
         }
 
+        .icon-btn:hover {
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        .icon-btn:hover img {
+            filter: invert(0);
+        }
+
         #installBtn img {
-            width: 20px;
-            height: 20px;
-            margin-right: 6px;
+            width: 18px;
+            height: 18px;
         }
 
         #installBtn .install-text {
-            display: inline-block;
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        .icon-btn:hover {
-            background: #fff;
-            color: #000;
+            font-size: 1rem;
         }
 
         #gameScreen {
             display: none;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .hud {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            border: 2px solid #fff;
-            padding: 4px 6px;
-            font-size: 0.9rem;
+            align-items: center;
+            border: var(--border);
+            padding: 4px 8px;
+            font-size: 0.85rem;
             gap: 4px;
         }
 
         .wallet {
-            border: 2px solid #fff;
+            border: var(--border);
+            padding: 2px 8px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            min-width: 80px;
+        }
+
+        .weather-hud {
+            font-size: 0.75rem;
+            color: var(--c-dim);
+            letter-spacing: 1px;
             padding: 2px 6px;
+            border: 1px solid var(--c-dim);
+        }
+
+        .weather-hud.active {
+            color: var(--c-fg);
+            border-color: var(--c-fg);
         }
 
         .toolbar {
@@ -192,20 +228,26 @@
         }
 
         .tool-btn {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
-            font-size: 0.9rem;
-            padding: 2px 8px;
+            font-size: 0.85rem;
+            padding: 3px 9px;
             cursor: pointer;
             min-width: 32px;
             position: relative;
+            letter-spacing: 1px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .tool-btn:hover {
+            background: var(--c-hover);
         }
 
         .tool-btn.active {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .tool-btn[data-tooltip]::after {
@@ -214,15 +256,15 @@
             bottom: 110%;
             left: 50%;
             transform: translateX(-50%);
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
             padding: 2px 6px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             white-space: nowrap;
-            border: 1px solid #fff;
+            border: 1px solid var(--c-fg);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s;
+            transition: opacity 0.15s;
             z-index: 1000;
         }
 
@@ -231,8 +273,10 @@
         }
 
         .selected-seed {
-            border: 2px solid #fff;
-            padding: 2px 6px;
+            border: var(--border);
+            padding: 2px 8px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
         }
 
         .main-area {
@@ -245,207 +289,210 @@
             display: grid;
             grid-template-columns: repeat(10, minmax(0, 1fr));
             gap: 1px;
-            border: 2px solid #fff;
+            border: var(--border);
             padding: 2px;
-            background: #000;
-            flex: 2 1 260px;
+            background: var(--c-mid);
+            flex: 2 1 280px;
             width: 100%;
         }
 
         .tile {
             aspect-ratio: 1 / 1;
-            border: 2px solid #fff;
+            border: 1px solid #333;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(8px, 2.5vw, 11px);
-            background: #000;
-            color: #fff;
+            font-size: clamp(7px, 2.2vw, 10px);
+            background: var(--c-bg);
+            color: var(--c-fg);
             cursor: pointer;
             text-align: center;
-            transition: 0.1s;
             word-break: break-all;
-            padding: 2px;
+            padding: 1px;
+            transition: background 0.05s;
+        }
+
+        .tile:hover {
+            background: #111;
+            border-color: #666;
         }
 
         .tile.empty {
-            color: #666;
+            color: #2a2a2a;
         }
 
-        .tile.info-hover {
-            background: #333;
-            border-color: #fff;
+        .tile.empty:hover {
+            color: #444;
+        }
+
+        .tile.ready {
+            color: #fff;
+            border-color: #555;
+        }
+
+        .tile.low-water {
+            color: #777;
         }
 
         .panel {
-            border: 2px solid #fff;
+            border: var(--border);
             padding: 6px;
-            background: #000;
+            background: var(--c-bg);
             flex: 1 1 220px;
-            min-width: 180px;
+            min-width: 190px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .panel h3 {
-            border-bottom: 2px solid #fff;
-            margin: 0 0 4px;
-            padding-bottom: 2px;
-            font-size: 0.9rem;
+            border-bottom: var(--border);
+            margin-bottom: 2px;
+            padding-bottom: 3px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--c-dim);
         }
 
         .inv-section {
-            border: 2px solid #fff;
-            padding: 2px;
-            margin-bottom: 6px;
+            border: var(--border);
+            padding: 3px;
         }
 
         .inv-title {
             font-weight: bold;
             margin-bottom: 2px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--c-dim);
         }
 
         .inv-items {
             display: flex;
             flex-wrap: wrap;
             gap: 2px;
-            max-height: 70px;
+            max-height: 64px;
             overflow-y: auto;
-            border: 1px solid #fff;
             padding: 2px;
         }
 
         .inv-badge {
-            border: 2px solid #fff;
-            padding: 2px 4px;
-            font-size: 10px;
+            border: var(--border);
+            padding: 2px 5px;
+            font-size: 9px;
             cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .inv-badge:hover {
+            background: var(--c-hover);
         }
 
         .inv-badge.selected {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        .shop-list {
+            max-height: 100px;
+            overflow-y: auto;
+            border: var(--border);
+            padding: 3px;
+            margin-bottom: 4px;
         }
 
         .shop-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 2px solid #fff;
-            padding: 2px 4px;
-            margin: 4px 0;
-            font-size: 10px;
+            border-bottom: var(--border-dim);
+            padding: 2px 3px;
+            font-size: 9px;
+            gap: 4px;
+        }
+
+        .shop-row:last-child {
+            border-bottom: none;
         }
 
         .shop-row button {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
             font-size: 9px;
-            padding: 2px 5px;
+            padding: 1px 5px;
             cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .shop-row button:hover {
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .footer {
             display: flex;
             gap: 4px;
-            margin-top: 6px;
+            margin-top: auto;
+            padding-top: 4px;
         }
 
         .footer-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 4px;
+            gap: 3px;
             flex: 1;
         }
 
         .footer-meta {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            min-width: 60px;
+            gap: 3px;
+            min-width: 58px;
         }
 
         .footer button {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
-            font-size: 0.7rem;
-            padding: 4px 6px;
+            font-size: 0.65rem;
+            padding: 4px 4px;
             cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .footer button:hover {
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .message-bar {
-            border: 2px solid #fff;
-            padding: 4px 6px;
-            font-size: 0.8rem;
-            color: #fff;
-            margin-top: 4px;
-            min-height: 28px;
-            transition: opacity 0.3s;
-        }
-
-        .achievement-banner {
-            border: 2px solid #fff;
-            padding: 4px;
-            margin-top: 6px;
-            font-size: 0.7rem;
-            max-height: 80px;
-            overflow-y: auto;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .achievement-badge {
-            display: inline-block;
-            border: 2px solid #fff;
-            padding: 2px 4px;
-            margin: 2px;
-            font-size: 9px;
-            background: #000;
-            color: #fff;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .achievement-badge.unlocked {
-            background: #fff;
-            color: #000;
-        }
-
-        .achievement-badge.new {
-            animation: glow 1s ease-in-out;
-        }
-
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 0 #fff;
-            }
-
-            50% {
-                box-shadow: 0 0 5px #fff;
-            }
-
-            100% {
-                box-shadow: 0 0 0 #fff;
-            }
+            border: var(--border);
+            padding: 3px 6px;
+            font-size: 0.75rem;
+            color: var(--c-fg);
+            min-height: 26px;
+            letter-spacing: 1px;
+            background: var(--c-mid);
         }
 
         .progress-container {
-            background: #222;
-            border: 1px solid #fff;
-            height: 8px;
+            background: #111;
+            border: 1px solid #444;
+            height: 6px;
             margin-top: 4px;
         }
 
         .progress-bar {
-            background: #fff;
+            background: var(--c-fg);
             height: 100%;
             width: 0;
+            transition: width 0.3s;
         }
 
         .modal {
@@ -455,10 +502,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.85);
             z-index: 10000;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .modal.active {
@@ -466,81 +517,107 @@
         }
 
         .modal-content {
-            background: #000;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            border: var(--border);
             padding: 16px;
-            max-width: 500px;
-            max-height: 70vh;
+            max-width: min(100%, 500px);
+            max-height: 80vh;
             overflow-y: auto;
+            overflow-x: hidden;
             box-sizing: border-box;
-            width: 90%;
+            width: min(100%, 500px);
         }
 
         .modal-content h2 {
-            border-bottom: 2px solid #fff;
+            border-bottom: var(--border);
             margin: 0 0 12px;
             padding-bottom: 8px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
         }
 
         .modal-content p {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin: 8px 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 6px 0;
+            color: #ccc;
         }
 
         .modal-content .close-btn {
-            margin-top: 12px;
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            margin-top: 14px;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
-            font-size: 0.9rem;
-            padding: 6px 12px;
+            font-size: 0.85rem;
+            padding: 6px 14px;
             cursor: pointer;
+            letter-spacing: 2px;
+            transition: background 0.1s, color 0.1s;
         }
 
         .modal-content .close-btn:hover {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: calc(100vw - 24px);
+                max-width: calc(100vw - 24px);
+                padding: 12px;
+            }
         }
 
         .info-tooltip {
             position: fixed;
-            background: #fff;
-            color: #000;
-            border: 2px solid #000;
-            padding: 6px;
+            background: var(--c-fg);
+            color: var(--c-bg);
+            border: 2px solid var(--c-bg);
+            padding: 6px 8px;
             font-size: 0.7rem;
             pointer-events: none;
             z-index: 10001;
             display: none;
             white-space: nowrap;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
         }
 
         .upgrade-row {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            border: 2px solid #fff;
-            padding: 16px;
-            margin: 12px 0;
-            font-size: 1rem;
-            gap: 10px;
+            border: var(--border);
+            padding: 12px;
+            margin: 8px 0;
+            gap: 8px;
         }
 
-        .upgrade-row>span {
-            width: 100%;
+        .upgrade-row .upg-name {
+            font-size: 0.9rem;
+        }
+
+        .upgrade-row .upg-cost {
+            font-size: 0.75rem;
+            color: var(--c-dim);
         }
 
         .upgrade-row button {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
-            padding: 8px 16px;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
+            padding: 6px 14px;
             cursor: pointer;
-            font-size: 1rem;
+            font-family: inherit;
+            font-size: 0.85rem;
             align-self: flex-end;
+            letter-spacing: 1px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .upgrade-row button:hover:not(:disabled) {
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .upgrade-row button:disabled {
@@ -555,8 +632,8 @@
                 justify-content: space-between;
             }
 
-            .upgrade-row>span {
-                width: auto;
+            .upgrade-row .upg-info {
+                flex: 1;
             }
         }
 
@@ -566,22 +643,25 @@
             flex-wrap: wrap;
             justify-content: center;
             margin: 8px 0;
+            align-items: center;
         }
 
         .pdf-toolbar input {
-            width: 60px;
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            width: 52px;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             font-family: inherit;
             text-align: center;
+            padding: 2px;
         }
 
         #pdfCanvas {
             width: 100%;
-            border: 2px solid #fff;
-            background: #111;
+            border: var(--border);
+            background: #0a0a0a;
             margin-top: 8px;
+            display: block;
         }
 
         .file-input-group {
@@ -593,18 +673,17 @@
         }
 
         .file-input-label {
-            border: 2px solid #fff;
-            padding: 8px 12px;
+            border: var(--border);
+            padding: 7px 12px;
             cursor: pointer;
             display: inline-block;
-            font-size: 0.9rem;
-            background: #000;
-            color: #fff;
+            font-size: 0.85rem;
+            transition: background 0.1s, color 0.1s;
         }
 
         .file-input-label:hover {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         #pdfFileInput,
@@ -613,93 +692,147 @@
         }
 
         .market-deal {
-            border: 2px solid #fff;
-            padding: 12px;
+            border: var(--border);
+            padding: 14px;
             text-align: center;
             margin: 10px 0;
         }
 
         .market-price {
-            font-size: 1.2rem;
-            margin: 10px 0;
+            font-size: 1.1rem;
+            margin: 8px 0;
+            letter-spacing: 1px;
         }
 
         .achievement-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .achievement-card {
-            border: 2px solid #fff;
-            padding: 8px;
+            border: var(--border);
+            padding: 8px 6px;
             text-align: center;
             cursor: pointer;
-            background: #000;
-            color: #fff;
-            font-size: 0.8rem;
-            min-height: 60px;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            font-size: 0.75rem;
+            min-height: 55px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: background 0.1s, color 0.1s;
+            letter-spacing: 0.5px;
+        }
+
+        .achievement-card:hover {
+            background: var(--c-hover);
         }
 
         .achievement-card.unlocked {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
-        .achievement-card.missing {
-            border-color: #666;
-            opacity: 0.7;
+        .achievement-card.unlocked:hover {
+            background: #ddd;
+        }
+
+        @keyframes achUnlock {
+            0% {
+                box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+            }
+
+            30% {
+                box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .achievement-card.new {
+            animation: achUnlock 1.2s ease-out;
         }
 
         .achievement-detail-panel {
-            border: 2px solid #fff;
+            border: var(--border);
             padding: 12px;
-            margin-top: 12px;
-            background: #111;
+            margin-top: 10px;
+            background: #0a0a0a;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            width: 100%;
+            overflow-x: hidden;
+            word-break: break-word;
         }
 
         .missing-crops-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 8px;
-            max-height: 100px;
+            gap: 3px;
+            margin-top: 6px;
+            max-height: 90px;
             overflow-y: auto;
-            border: 1px solid #fff;
+            border: 1px solid #333;
             padding: 4px;
         }
 
         .crop-tag {
-            border: 1px solid #fff;
-            padding: 2px 4px;
+            border: 1px solid #444;
+            padding: 1px 4px;
             font-size: 0.7rem;
+            color: var(--c-dim);
+        }
+
+        .exotic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .exotic-card {
+            border: var(--border);
+            padding: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .exotic-card strong {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .help-section {
-            border: 2px solid #fff;
-            padding: 12px;
-            margin: 8px 0;
+            border: var(--border);
+            padding: 10px;
+            margin: 6px 0;
         }
 
         .help-section h3 {
-            border-bottom: 1px solid #fff;
+            border-bottom: 1px solid #333;
             margin-bottom: 8px;
             padding-bottom: 4px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
         }
 
         .help-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 6px;
         }
 
         .help-item {
-            border: 1px solid #fff;
-            padding: 6px;
+            border: 1px solid #333;
+            padding: 5px 7px;
+            font-size: 0.8rem;
+            color: #bbb;
         }
 
         body.rainy::before {
@@ -710,18 +843,18 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 2px, transparent 2px, transparent 6px);
-            animation: rain 0.2s linear infinite;
+            background: repeating-linear-gradient(105deg, rgba(150, 200, 255, 0.06) 0px, rgba(150, 200, 255, 0.06) 1px, transparent 1px, transparent 8px);
+            animation: rainAnim 0.3s linear infinite;
             z-index: 9999;
         }
 
-        @keyframes rain {
+        @keyframes rainAnim {
             0% {
                 background-position: 0 0;
             }
 
             100% {
-                background-position: 10px 10px;
+                background-position: -15px 15px;
             }
         }
 
@@ -733,81 +866,121 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 200, 0.15) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 25% 15%, rgba(255, 240, 150, 0.08) 0%, transparent 55%);
             z-index: 9999;
         }
 
         .weather-popup {
             position: fixed;
-            top: 20px;
+            top: 16px;
             left: 50%;
             transform: translateX(-50%);
-            background: #000;
-            border: 2px solid #fff;
-            padding: 12px 24px;
-            color: #fff;
-            font-size: 1.2rem;
+            background: var(--c-bg);
+            border: var(--border);
+            padding: 10px 20px;
+            color: var(--c-fg);
+            font-size: 0.9rem;
             z-index: 10002;
-            animation: fadeOut 5s forwards;
+            letter-spacing: 1px;
+            animation: popupAnim 4.5s forwards;
+            white-space: normal;
+            word-break: break-word;
+            max-width: min(90vw, 320px);
+            text-align: center;
         }
 
-        @keyframes fadeOut {
+        @keyframes popupAnim {
             0% {
-                opacity: 1;
+                opacity: 0;
+                transform: translateX(-50%) translateY(-6px);
             }
 
-            70% {
+            10% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            75% {
                 opacity: 1;
             }
 
             100% {
                 opacity: 0;
-                display: none;
             }
         }
 
         .reset-step {
             text-align: center;
-            margin: 20px 0;
+            margin: 18px 0;
+        }
+
+        .reset-step p {
+            color: #ccc;
+            margin-bottom: 14px;
         }
 
         .reset-step button {
-            margin: 0 10px;
-            padding: 8px 16px;
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            margin: 0 8px;
+            padding: 7px 16px;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 1px;
         }
 
         .reset-step button:hover {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
         }
 
         .cheat-weather-menu {
             position: fixed;
             top: 10px;
             right: 10px;
-            background: #000;
-            border: 2px solid #fff;
-            padding: 8px;
+            background: var(--c-bg);
+            border: var(--border);
+            padding: 6px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             z-index: 10003;
         }
 
         .cheat-weather-menu button {
-            background: #000;
-            color: #fff;
-            border: 2px solid #fff;
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
             padding: 4px 8px;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .cheat-weather-menu button:hover {
-            background: #fff;
-            color: #000;
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        .divider {
+            border-bottom: 1px solid #222;
+            margin: 2px 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--c-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #666;
         }
     </style>
 </head>
@@ -815,11 +988,14 @@
 <body>
     <div id="infoTooltip" class="info-tooltip"></div>
     <div id="version" class="version"></div>
+
     <div class="game-wrapper">
         <div id="startScreen" class="screen">
-            <h1>crubs
-                <span id="completionBadge" class="completion-badge" style="display: none;">100%</span>
-            </h1>
+            <div class="start-title-row">
+                <h1>crubs</h1>
+                <span id="completionBadge" class="completion-badge" style="display:none;">100%</span>
+            </div>
+            <div class="start-tagline">Small text based farming game.</div>
             <div class="start-controls">
                 <button class="start-btn" id="startBtn">> START</button>
                 <button class="icon-btn" id="discordBtn" title="Discord">
@@ -827,12 +1003,9 @@
                 </button>
                 <button class="icon-btn" id="installBtn" title="Install App">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5'/%3E%3C/svg%3E"
-                        alt="Logo">
-                    <span class="install-text">Install</span>
+                        alt="">
+                    <span class="install-text">INSTALL</span>
                 </button>
-            </div>
-            <div style="margin-top: 16px; border: 2px solid #fff; padding: 4px; font-size: 0.7rem;">
-                Small text based farming game.
             </div>
         </div>
 
@@ -840,39 +1013,41 @@
             <div class="hud">
                 <div class="wallet">$<span id="coinDisplay">40</span></div>
                 <div class="toolbar">
-                    <button class="tool-btn" id="toolHand" data-tooltip="Harvest crops (H)">H</button>
-                    <button class="tool-btn" id="toolWater" data-tooltip="Water a plot (W)">W</button>
-                    <button class="tool-btn" id="toolInfo" data-tooltip="Show plot info (I)">I</button>
-                    <button class="tool-btn" id="toolHoe" data-tooltip="Plant selected seed (P)">P</button>
+                    <button class="tool-btn" id="toolHand" data-tooltip="Harvest (H)">H</button>
+                    <button class="tool-btn" id="toolWater" data-tooltip="Water (W)">W</button>
+                    <button class="tool-btn" id="toolInfo" data-tooltip="Info hover (I)">I</button>
+                    <button class="tool-btn" id="toolHoe" data-tooltip="Plant seed (P)">P</button>
                     <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
-                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal (costs 10 coins)"
+                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal — 10 coins"
                         style="display:none;">B</button>
                 </div>
                 <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
+                <div class="weather-hud" id="weatherHud">NO WEATHER</div>
             </div>
+
             <div class="main-area">
                 <div class="farm-grid" id="farmGrid"></div>
                 <div class="panel">
                     <div class="inv-section">
-                        <div class="inv-title">> CROPS (SELL)</div>
+                        <div class="inv-title">> CROPS</div>
                         <div class="inv-items" id="cropInvList"></div>
                     </div>
                     <div class="inv-section">
                         <div class="inv-title">> SEEDS</div>
                         <div class="inv-items" id="seedInvList"></div>
                     </div>
+
                     <h3>> BUY SEEDS</h3>
-                    <div id="buyList"
-                        style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px; margin-bottom:6px;">
-                    </div>
+                    <div class="shop-list" id="buyList"></div>
+
                     <h3>> SELL CROPS</h3>
-                    <div id="sellList" style="max-height:110px; overflow-y:auto; border:2px solid #fff; padding:4px;">
-                    </div>
+                    <div class="shop-list" id="sellList"></div>
+
                     <div class="footer">
                         <div class="footer-grid">
                             <button id="exoticBtn">EXOTIC</button>
                             <button id="toolShopBtn">SHOP</button>
-                            <button id="blackMarketBtn">BLACK MKT</button>
+                            <button id="blackMarketBtn">MARKET</button>
                             <button id="pdfReaderBtn">READER</button>
                             <button id="achievementsBtn">ACHIEVE</button>
                             <button id="weatherBtn">WEATHER</button>
@@ -883,62 +1058,60 @@
                             <button id="resetBtn">RESET</button>
                         </div>
                     </div>
+
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MODALS -->
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>> HELP</h2>
             <div class="help-section">
-                <h3>Getting Started</h3>
-                <p>Click tiles on your farm to perform actions with the selected tool. Start with carrot seeds and work
-                    your way up!</p>
+                <h3>GETTING STARTED</h3>
+                <p>Select a tool, then click tiles on your farm. Start with carrot seeds — buy more from the seed shop.
+                </p>
             </div>
             <div class="help-section">
-                <h3>Tools</h3>
+                <h3>TOOLS</h3>
                 <div class="help-grid">
-                    <div class="help-item">H - Harvest crops</div>
-                    <div class="help-item">W - Water plots</div>
-                    <div class="help-item">I - Info on hover</div>
-                    <div class="help-item">P - Plant seeds</div>
-                    <div class="help-item">D - Delete crop</div>
-                    <div class="help-item">B - Bonemeal (boost)</div>
+                    <div class="help-item">H — Harvest ready crops</div>
+                    <div class="help-item">W — Water a plot</div>
+                    <div class="help-item">I — Hover for info</div>
+                    <div class="help-item">P — Plant selected seed</div>
+                    <div class="help-item">D — Remove a crop</div>
+                    <div class="help-item">B — Bonemeal (10¢)</div>
                 </div>
             </div>
             <div class="help-section">
-                <h3>Upgrades</h3>
-                <p>Tool Shop unlocks area watering, area harvesting, and bonemeal.</p>
+                <h3>CROP DISPLAY</h3>
+                <p>Each tile shows: NAME + STAGE + WATER<br>
+                    Stages: <strong>.</strong> sprouting → <strong>+</strong> growing → <strong>#</strong> ready<br>
+                    Water shown as 0–9 (9 = full). P = perennial. X = exotic.</p>
             </div>
             <div class="help-section">
-                <h3>Water</h3>
-                <p>Water level affects growth speed. Below 4 stops growth.</p>
+                <h3>WATER</h3>
+                <p>Crops below 4 water stop growing. Rain auto-waters all plots to at least 7. Sunny weather gives a 20%
+                    growth boost.</p>
             </div>
             <div class="help-section">
-                <h3>Crops</h3>
-                <p>Stages: . (seed) → + (growing) → # (ready). P = perennial, X = exotic.</p>
+                <h3>UPGRADES (SHOP)</h3>
+                <p>Water bucket upgrade: waters a 3×3 area. Harvest upgrade: harvests 3×3. Bonemeal: +30% instant
+                    progress per use.</p>
             </div>
             <div class="help-section">
-                <h3>Black Market</h3>
-                <p>Sell 10 of the daily special crop for 10x normal price.</p>
+                <h3>BLACK MARKET</h3>
+                <p>A new crop is chosen each day. Sell 10 of it for 10× the normal price.</p>
             </div>
             <div class="help-section">
-                <h3>Reader</h3>
-                <p>Upload PDF or CBZ files to read while you wait.</p>
+                <h3>COMPANION PLANTING</h3>
+                <p>Corn (CRN) + Bean (BEN) planted adjacent grow 20% faster.</p>
             </div>
             <div class="help-section">
-                <h3>Companion Planting</h3>
-                <p>Some plants grow faster when planted next to each other. Current pairs:</p>
-                <ul style="margin-left:20px;">
-                    <li>Corn (CRN) + Bean (BEN) → 20% faster growth for both</li>
-                </ul>
-                <p>More pairs will be added in future updates</p>
-            </div>
-            <div class="help-section">
-                <h3>Weather Control</h3>
-                <p>You can pay to change the weather: Rainy (100 coins), Sunny (100 coins), or Clear (50 coins).</p>
+                <h3>EXOTIC PLANTS</h3>
+                <p>Roll for 200 coins. Slow growing but high value. Rarer = lower chance.</p>
             </div>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
@@ -949,14 +1122,14 @@
             <h2>> ACHIEVEMENTS</h2>
             <div class="achievement-grid" id="achievementsGrid"></div>
             <div class="achievement-detail-panel" id="achievementDetail">
-                <div id="achievementDetailTitle" style="font-weight: bold; margin-bottom: 4px;">Select an achievement
+                <div id="achievementDetailTitle" style="font-weight:bold; margin-bottom:4px; letter-spacing:1px;">Select
+                    an achievement</div>
+                <div id="achievementDetailDesc" style="color:#aaa;"></div>
+                <div id="achievementDetailProgress" class="progress-container" style="display:none;">
+                    <div id="achievementDetailBar" class="progress-bar"></div>
                 </div>
-                <div id="achievementDetailDesc"></div>
-                <div id="achievementDetailProgress" class="progress-container" style="margin-top: 8px; display: none;">
-                    <div id="achievementDetailBar" class="progress-bar" style="width: 0%;"></div>
-                </div>
-                <div id="achievementMissingCrops" style="margin-top: 8px; display: none;">
-                    <div style="margin-bottom: 4px;">Missing crops:</div>
+                <div id="achievementMissingCrops" style="margin-top:8px; display:none;">
+                    <div style="margin-bottom:4px; color:#888; font-size:0.75rem;">MISSING:</div>
                     <div id="missingCropsList" class="missing-crops-list"></div>
                 </div>
             </div>
@@ -967,16 +1140,17 @@
     <div id="exoticModal" class="modal">
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
-            <p>Exotic plants are rare and take a long time to grow, but require little water. Roll for 200 coins. Rarer
-                plants have lower chance.</p>
-            <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
-                <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:4px;" id="exoticList"></div>
+            <p>Rare plants with slow growth and low water needs. Roll for 200 coins.</p>
+            <div style="margin:10px 0;">
+                <div class="exotic-grid" id="exoticList"></div>
             </div>
-            <div style="text-align:center; margin:10px 0;">
-                <button class="tool-btn" id="rollExoticBtn" style="font-size:1.2rem;">ROLL (200)</button>
+            <div style="text-align:center; margin:12px 0;">
+                <button class="tool-btn" id="rollExoticBtn"
+                    style="font-size:1rem; padding:8px 20px; letter-spacing:2px;">ROLL (200)</button>
             </div>
-            <div style="border:2px solid #fff; padding:8px; margin:10px 0;">
-                <h3>Your Exotic Seeds:</h3>
+            <div style="border:var(--border); padding:8px; margin:10px 0;">
+                <div style="font-size:0.75rem; color:var(--c-dim); margin-bottom:6px; letter-spacing:1px;">YOUR EXOTIC
+                    SEEDS</div>
                 <div id="exoticInventory" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
             </div>
             <button class="close-btn" id="closeExoticBtn">CLOSE</button>
@@ -986,15 +1160,26 @@
     <div id="toolShopModal" class="modal">
         <div class="modal-content">
             <h2>> TOOL SHOP</h2>
-            <div class="upgrade-row"><span>Bigger Water Bucket (3x3 area)</span><span>500 coins</span><button
-                    id="buyWaterUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bigger Harvest Tool (3x3 area)</span><span>800 coins</span><button
-                    id="buyHarvestUpgrade" class="tool-btn">BUY</button></div>
-            <div class="upgrade-row"><span>Bonemeal Tool (unlock, then 10 coins per use)</span><span>200
-                    coins</span><button id="buyBonemealUpgrade" class="tool-btn">BUY</button></div>
-            <div style="margin-top:16px;">
-                <p><strong>Bonemeal:</strong> Instantly boosts a plant's growth progress by 30 points (costs 10 coins
-                    per use).</p>
+            <div class="upgrade-row">
+                <div class="upg-info">
+                    <div class="upg-name">Water Bucket — 3×3 area</div>
+                    <div class="upg-cost">500 coins</div>
+                </div>
+                <button id="buyWaterUpgrade">BUY</button>
+            </div>
+            <div class="upgrade-row">
+                <div class="upg-info">
+                    <div class="upg-name">Harvest Tool — 3×3 area</div>
+                    <div class="upg-cost">800 coins</div>
+                </div>
+                <button id="buyHarvestUpgrade">BUY</button>
+            </div>
+            <div class="upgrade-row">
+                <div class="upg-info">
+                    <div class="upg-name">Bonemeal — unlock tool</div>
+                    <div class="upg-cost">200 coins (10 coins per use)</div>
+                </div>
+                <button id="buyBonemealUpgrade">BUY</button>
             </div>
             <button class="close-btn" id="closeToolShopBtn">CLOSE</button>
         </div>
@@ -1003,27 +1188,27 @@
     <div id="blackMarketModal" class="modal">
         <div class="modal-content">
             <h2>> BLACK MARKET</h2>
-            <p>Today's special: sell 10 of the same crop for 10x the normal price</p>
-            <div id="marketDeal" class="market-deal">Loading deal...</div>
+            <p>Sell 10 of today's special crop for 10× the going rate.</p>
+            <div id="marketDeal" class="market-deal">Loading...</div>
             <button class="close-btn" id="closeBlackMarketBtn">CLOSE</button>
         </div>
     </div>
 
     <div id="pdfReaderModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width:620px;">
             <h2>> READER</h2>
             <div class="file-input-group">
-                <label for="pdfFileInput" class="file-input-label">Choose PDF</label>
+                <label for="pdfFileInput" class="file-input-label">CHOOSE PDF</label>
                 <input type="file" id="pdfFileInput" accept=".pdf">
-                <label for="cbzFileInput" class="file-input-label">Choose CBZ</label>
+                <label for="cbzFileInput" class="file-input-label">CHOOSE CBZ</label>
                 <input type="file" id="cbzFileInput" accept=".cbz,.zip">
             </div>
             <div class="pdf-toolbar">
                 <button class="tool-btn" id="pdfPrevPage">◀</button>
-                <span id="pdfPageInfo">- / -</span>
+                <span id="pdfPageInfo" style="font-size:0.8rem;">— / —</span>
                 <button class="tool-btn" id="pdfNextPage">▶</button>
-                <input type="number" id="pdfPageInput" min="1" value="1" style="width:50px;"> <button class="tool-btn"
-                    id="pdfGoPage">GO</button>
+                <input type="number" id="pdfPageInput" min="1" value="1">
+                <button class="tool-btn" id="pdfGoPage">GO</button>
             </div>
             <canvas id="pdfCanvas"></canvas>
             <button class="close-btn" id="closePdfBtn">CLOSE</button>
@@ -1031,15 +1216,15 @@
     </div>
 
     <div id="resetConfirmModal" class="modal">
-        <div class="modal-content" id="resetModalContent">
+        <div class="modal-content">
             <h2>> CONFIRM RESET</h2>
             <div id="resetStep1" class="reset-step">
-                <p>Are you sure you want to reset your farm? All progress will be lost.</p>
+                <p>This will wipe all progress and start fresh.</p>
                 <button id="resetYes1">YES</button>
                 <button id="resetNo1">NO</button>
             </div>
             <div id="resetStep2" class="reset-step" style="display:none;">
-                <p>This is your final warning! Are you absolutely sure?</p>
+                <p>Final warning — are you absolutely sure?</p>
                 <button id="resetYes2">YES, RESET</button>
                 <button id="resetNo2">NO, GO BACK</button>
             </div>
@@ -1049,17 +1234,41 @@
     <div id="weatherModal" class="modal">
         <div class="modal-content">
             <h2>> WEATHER CONTROL</h2>
-            <p>Change the weather for a fee:</p>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
-                <button class="tool-btn" id="weatherRainyBtn" style="font-size: 1rem;">🌧 RAINY (100 coins)</button>
-                <button class="tool-btn" id="weatherSunnyBtn" style="font-size: 1rem;">☀ SUNNY (100 coins)</button>
-                <button class="tool-btn" id="weatherClearBtn" style="font-size: 1rem;">☁ CLEAR (50 coins)</button>
+            <p>Spend coins to change the weather. Rain auto-waters all plots to 7. Sun gives +20% growth speed.</p>
+            <div style="display:flex; flex-direction:column; gap:8px; margin:16px 0;">
+                <button class="tool-btn" id="weatherRainyBtn" style="font-size:0.95rem; padding:8px;">🌧 RAINY — 100
+                    coins</button>
+                <button class="tool-btn" id="weatherSunnyBtn" style="font-size:0.95rem; padding:8px;">☀ SUNNY — 100
+                    coins</button>
+                <button class="tool-btn" id="weatherClearBtn" style="font-size:0.95rem; padding:8px;">☁ CLEAR — 50
+                    coins</button>
             </div>
             <button class="close-btn" id="closeWeatherBtn">CLOSE</button>
         </div>
     </div>
 
-    <div id="cheatWeatherMenu" class="cheat-weather-menu" style="display: none;">
+    <!-- NEW: JOURNAL MODAL -->
+    <div id="journalModal" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <h2>> FARM JOURNAL</h2>
+            <div id="journalStats" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px;">
+            </div>
+            <div style="border:var(--border); padding:8px; margin-bottom:10px;">
+                <div style="font-size:0.75rem; color:var(--c-dim); letter-spacing:1px; margin-bottom:6px;">SESSION LOG
+                </div>
+                <div id="journalLog"
+                    style="max-height:200px; overflow-y:auto; font-size:0.75rem; line-height:1.8; color:#bbb;"></div>
+            </div>
+            <div style="border:var(--border); padding:8px;">
+                <div style="font-size:0.75rem; color:var(--c-dim); letter-spacing:1px; margin-bottom:6px;">TOP CROPS
+                    GROWN</div>
+                <div id="journalTopCrops" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+            </div>
+            <button class="close-btn" id="closeJournalBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="cheatWeatherMenu" class="cheat-weather-menu" style="display:none;">
         <button id="cheatRainy">🌧</button>
         <button id="cheatSunny">☀</button>
         <button id="cheatClear">☁</button>
@@ -1068,21 +1277,23 @@
 
     <script>
         (function () {
-            const VERSION = '0.9';
+            const VERSION = '1.0';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
                 localStorage.setItem('appVersion', VERSION);
             }
 
-            let NAMES = ["CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT", "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY", "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB", "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL", "SUNFLOWER", "BLUEBERRY"];
+            let pwaInstallAvailable = false;
+
+            const NAMES = ["CARROT", "TOMATO", "POTATO", "LETTUCE", "STRAWBERRY", "PUMPKIN", "CORN", "PEPPER", "CUCUMBER", "EGGPLANT", "RADISH", "CABBAGE", "ONION", "GARLIC", "PEA", "BEAN", "SPINACH", "BROCCOLI", "CAULI", "CELERY", "LEEK", "BEET", "TURNIP", "PARSNIP", "KALE", "CHARD", "OKRA", "ARTICHOKE", "ASPARAGUS", "RHUBARB", "MELON", "CANTALOUPE", "ZUCCHINI", "SQUASH", "SWEETPOT", "YAM", "GINGER", "TURMERIC", "SOY", "LENTIL", "SUNFLOWER", "BLUEBERRY"];
             let COUNT = 42;
             const DATA = [];
             const PERENNIAL_INDICES = [4, 5, 14, 15, 30, 31, 32, 33, 40, 41];
             for (let i = 0; i < COUNT; i++) {
                 let base = 8 + Math.floor(i * 1.2) + (i % 5);
                 let growthSpeed = (i === 0) ? 1.5 : 0.7 + (i % 4) * 0.4;
-                DATA.push({ id: i, name: NAMES[i], abbr: NAMES[i].substring(0, 3).toUpperCase(), buy: Math.max(2, Math.floor(base * 0.6)), sell: base, waterUse: 0.3 + (i % 5) * 0.2, growthSpeed: growthSpeed, perennial: PERENNIAL_INDICES.includes(i) });
+                DATA.push({ id: i, name: NAMES[i], abbr: NAMES[i].substring(0, 3).toUpperCase(), buy: Math.max(2, Math.floor(base * 0.6)), sell: base, waterUse: 0.3 + (i % 5) * 0.2, growthSpeed, perennial: PERENNIAL_INDICES.includes(i) });
             }
             const EXOTIC_NAMES = ["COBO", "SPIRO", "TORIA", "POPZ", "KONK", "UZZY"];
             const EXOTIC_PRICES = [50, 100, 150, 200, 250, 300];
@@ -1092,11 +1303,9 @@
             }
             COUNT = DATA.length;
 
-            const COMPANIONS = {
-                6: [15],
-                15: [6]
-            };
+            const COMPANIONS = { 6: [15], 15: [6] };
             const COMPANION_BOOST = 1.2;
+            const RAIN_WATER_LEVEL = 70;
 
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
@@ -1114,51 +1323,59 @@
                 { id: 12, name: "Uzzy Hunter", desc: "Obtain the rare Uzzy seed", check: (s) => s.exoticObtained[5] },
                 { id: 13, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) },
                 { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 },
-                { id: 15, name: "Ultimate Farmer", desc: "Reach 5000 total harvests", check: (s) => s.totalHarvested >= 5000 }
+                { id: 15, name: "Ultimate Farmer", desc: "Reach 5000 total harvests", check: (s) => s.totalHarvested >= 5000 },
+                { id: 16, name: "Journaler", desc: "Log 10 journal entries", check: (s) => s.journalEntries >= 10 }
             ];
             const ACHIEVEMENT_COUNT = ACHIEVEMENTS.length;
 
             let coins = 40;
-            let seeds = new Array(COUNT).fill(0);
-            seeds[0] = 6; seeds[1] = 4;
+            let seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4;
             let crops = new Array(COUNT).fill(0);
             let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
             let stats = {
-                totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), grownOriginalCount: 0,
-                coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false,
-                exoticObtained: new Array(6).fill(false), blackMarketSales: 0
+                totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(),
+                grownOriginalCount: 0, coins: 40, waterCount: 0, perennialHarvested: 0,
+                totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false),
+                blackMarketSales: 0, journalEntries: 0
             };
             let achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
+
             const SIZE = 10;
             let grid = [];
             let tool = 'hand';
             let selected = 0;
-            let infoTooltip = document.getElementById('infoTooltip');
+            const infoTooltip = document.getElementById('infoTooltip');
             let messageTimeout = null;
             let cheatActive = false;
 
-            let lastRainAppliedTime = 0;
+            let rainAnnouncementSignature = null;
+            let manualRainSignature = null;
             let currentWeatherType = null;
             let manualWeatherActive = false;
             let manualWeatherType = null;
 
+            let journalLog = [];
+            let sessionStart = Date.now();
+
+            function addJournalEntry(text) {
+                let now = new Date();
+                let hm = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                journalLog.unshift('[' + hm + '] ' + text);
+                if (journalLog.length > 50) journalLog.pop();
+                stats.journalEntries = (stats.journalEntries || 0) + 1;
+            }
+
             function cyrb53(str, seed = 0) {
                 let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-                for (let i = 0, ch; i < str.length; i++) {
-                    ch = str.charCodeAt(i);
-                    h1 = Math.imul(h1 ^ ch, 2654435761);
-                    h2 = Math.imul(h2 ^ ch, 1597334677);
-                }
+                for (let i = 0, ch; i < str.length; i++) { ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
                 h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
                 h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
                 return 4294967296 * (2097151 & h2) + (h1 >>> 0);
             }
 
             function getWeatherEventAt(timestamp) {
-                let date = new Date(timestamp);
-                date.setSeconds(0, 0);
-                let minuteStr = date.toISOString().slice(0, 16);
-                let hash = cyrb53(minuteStr);
+                let date = new Date(timestamp); date.setSeconds(0, 0);
+                let hash = cyrb53(date.toISOString().slice(0, 16));
                 if ((hash % 100) < 15) {
                     let type = (hash % 2 === 0) ? 'rainy' : 'sunny';
                     let duration = 1 + (hash % 7);
@@ -1169,79 +1386,83 @@
 
             function getCurrentWeather(now) {
                 for (let i = 0; i <= 7; i++) {
-                    let checkTime = now - i * 60000;
-                    let event = getWeatherEventAt(checkTime);
-                    if (event && i < event.duration) {
-                        return event;
-                    }
+                    let event = getWeatherEventAt(now - i * 60000);
+                    if (event && i < event.duration) return event;
                 }
                 return null;
             }
 
-            function applyRainEffect() {
+            function applyRainEffect({ announce = false } = {}) {
                 for (let r = 0; r < SIZE; r++) {
                     for (let c = 0; c < SIZE; c++) {
                         let plot = grid[r][c];
-                        if (plot.plantId !== null) {
-                            plot.water = Math.max(plot.water, 8);
-                        }
+                        if (plot.water < RAIN_WATER_LEVEL) plot.water = RAIN_WATER_LEVEL;
                     }
                 }
-                showWeatherPopup("🌧 It's raining! All plots watered to at least 8.");
+                if (announce) {
+                    showWeatherPopup("🌧 Rain! All plots watered to 7.");
+                    addJournalEntry("Rain shower — all plots watered to 7.");
+                }
             }
 
             function showWeatherPopup(msg) {
+                document.querySelectorAll('.weather-popup').forEach(el => el.remove());
                 let popup = document.createElement('div');
                 popup.className = 'weather-popup';
                 popup.textContent = msg;
                 document.body.appendChild(popup);
-                setTimeout(() => {
-                    if (popup.parentNode) popup.remove();
-                }, 5000);
+                setTimeout(() => { if (popup.parentNode) popup.remove(); }, 4500);
+            }
+
+            function updateWeatherHud() {
+                let el = document.getElementById('weatherHud');
+                if (!el) return;
+                if (currentWeatherType === 'rainy') { el.textContent = '🌧 RAIN'; el.classList.add('active'); }
+                else if (currentWeatherType === 'sunny') { el.textContent = '☀ SUNNY'; el.classList.add('active'); }
+                else { el.textContent = '— CLEAR'; el.classList.remove('active'); }
             }
 
             function updateWeather() {
+                let body = document.body;
                 if (manualWeatherActive) {
-                    let body = document.body;
                     if (manualWeatherType === 'rainy') {
-                        body.classList.add('rainy');
-                        body.classList.remove('sunny');
+                        body.classList.add('rainy'); body.classList.remove('sunny');
+                        const rainSignature = manualRainSignature || 'manual-rain';
+                        const announceRain = rainAnnouncementSignature !== rainSignature;
+                        applyRainEffect({ announce: announceRain });
+                        if (announceRain) rainAnnouncementSignature = rainSignature;
                     } else if (manualWeatherType === 'sunny') {
-                        body.classList.add('sunny');
-                        body.classList.remove('rainy');
+                        body.classList.add('sunny'); body.classList.remove('rainy');
+                        rainAnnouncementSignature = null;
                     } else {
                         body.classList.remove('rainy', 'sunny');
+                        rainAnnouncementSignature = null;
                     }
                     currentWeatherType = manualWeatherType;
+                    updateWeatherHud();
                     return;
                 }
-
                 let now = Date.now();
                 let weather = getCurrentWeather(now);
-                let body = document.body;
                 if (weather) {
                     if (weather.type === 'rainy') {
-                        body.classList.add('rainy');
-                        body.classList.remove('sunny');
-                        if (lastRainAppliedTime !== weather.startTime) {
-                            applyRainEffect();
-                            lastRainAppliedTime = weather.startTime;
-                        }
+                        body.classList.add('rainy'); body.classList.remove('sunny');
+                        const rainSignature = `auto-${weather.startTime}`;
+                        const announceRain = rainAnnouncementSignature !== rainSignature;
+                        applyRainEffect({ announce: announceRain });
+                        if (announceRain) rainAnnouncementSignature = rainSignature;
                     } else if (weather.type === 'sunny') {
-                        body.classList.add('sunny');
-                        body.classList.remove('rainy');
-                        if (currentWeatherType !== 'sunny') {
-                            showWeatherPopup("☀ It's sunny! 20% growth boost.");
-                        }
+                        body.classList.add('sunny'); body.classList.remove('rainy');
+                        rainAnnouncementSignature = null;
+                        if (currentWeatherType !== 'sunny') showWeatherPopup("☀ Sunny! +20% growth speed.");
                     }
                     currentWeatherType = weather.type;
                 } else {
                     body.classList.remove('rainy', 'sunny');
-                    if (currentWeatherType !== null) {
-                        showWeatherPopup("Weather returned to normal.");
-                        currentWeatherType = null;
-                    }
+                    rainAnnouncementSignature = null;
+                    if (currentWeatherType !== null) { showWeatherPopup("Weather cleared."); currentWeatherType = null; }
                 }
+                updateWeatherHud();
             }
 
             class Plot {
@@ -1249,19 +1470,11 @@
 
                 hasCompanion(row, col) {
                     if (this.plantId === null) return false;
-                    let companions = COMPANIONS[this.plantId];
-                    if (!companions) return false;
-                    for (let dr = -1; dr <= 1; dr++) {
-                        for (let dc = -1; dc <= 1; dc++) {
-                            if (dr === 0 && dc === 0) continue;
-                            let nr = row + dr, nc = col + dc;
-                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) {
-                                let neighbor = grid[nr][nc];
-                                if (neighbor.plantId !== null && companions.includes(neighbor.plantId)) {
-                                    return true;
-                                }
-                            }
-                        }
+                    let companions = COMPANIONS[this.plantId]; if (!companions) return false;
+                    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        let nr = row + dr, nc = col + dc;
+                        if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && grid[nr][nc].plantId !== null && companions.includes(grid[nr][nc].plantId)) return true;
                     }
                     return false;
                 }
@@ -1270,67 +1483,88 @@
                     if (this.plantId === null) return;
                     let p = DATA[this.plantId];
                     this.water = Math.max(0, this.water - p.waterUse);
-                    if (this.water > 0 && this.stage < 2) {
+                    if (this.water >= 4 && this.stage < 2) {
                         let factor = Math.min(1, this.water / 100);
                         let speed = p.growthSpeed;
-                        if (currentWeatherType === 'sunny') {
-                            speed *= 1.2;
-                        }
-                        if (this.hasCompanion(row, col)) {
-                            speed *= COMPANION_BOOST;
-                        }
+                        if (currentWeatherType === 'sunny') speed *= 1.2;
+                        if (this.hasCompanion(row, col)) speed *= COMPANION_BOOST;
                         this.prog += speed * factor;
-                        if (this.prog >= 100) {
-                            this.stage++; this.prog = 0;
-                        }
+                        if (this.prog >= 100) { this.stage++; this.prog = 0; }
                     }
                     if (this.water > 100) this.water = 100;
                 }
 
-                waterPlot(amt = 20) { if (this.plantId !== null) { this.water = Math.min(100, this.water + amt); stats.waterCount++; } }
+                waterPlot(amt = 20) {
+                    this.water = Math.min(100, this.water + amt);
+                    if (this.plantId !== null) stats.waterCount++;
+                }
 
                 harvest() {
                     if (this.plantId === null || this.stage < 2) return false;
                     let id = this.plantId;
+                    let name = DATA[id].abbr;
                     crops[id]++; stats.totalHarvested++; stats.cropCounts[id]++; stats.grownPlants.add(id);
-                    if (DATA[id].perennial) { this.stage = 1; this.prog = 0; this.age = 0; }
+                    if (DATA[id].perennial) { stats.perennialHarvested++; this.stage = 1; this.prog = 0; this.age = 0; }
                     else { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; }
-                    updateExoticObtained(); checkAchievements(); return true;
+                    updateExoticObtained(); checkAchievements(); return name;
                 }
 
-                plant(id) { if (this.plantId !== null) return false; this.plantId = id; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = Math.floor(Date.now() / 1000); return true; }
+                plant(id) {
+                    if (this.plantId !== null) return false;
+                    this.plantId = id; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = Math.floor(Date.now() / 1000); return true;
+                }
 
-                delete() { if (this.plantId === null) return false; this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; return true; }
-
-                getTimeToNextStage() { return 0; }
-                getTimeToHarvest() { return 0; }
+                delete() {
+                    if (this.plantId === null) return false;
+                    this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; return true;
+                }
             }
 
             function initGrid() { grid = []; for (let r = 0; r < SIZE; r++) { let row = []; for (let c = 0; c < SIZE; c++) row.push(new Plot()); grid.push(row); } }
             initGrid();
 
             function checkFullFarm() { let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++; stats.fullFarm = (planted === 100); return stats.fullFarm; }
-
             function updateExoticObtained() { for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; stats.exoticObtained[i] = (seeds[idx] > 0 || crops[idx] > 0); } }
 
-            function showMessage(msg, isToast = true) { let bar = document.getElementById('messageDisplay'); bar.innerText = msg; if (messageTimeout) clearTimeout(messageTimeout); if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2000); }
+            function showMessage(msg, isToast = true) {
+                let bar = document.getElementById('messageDisplay');
+                bar.innerText = msg;
+                if (messageTimeout) clearTimeout(messageTimeout);
+                if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2200);
+            }
 
             function renderGrid() {
                 let el = document.getElementById('farmGrid'); el.innerHTML = '';
                 for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
-                    let plot = grid[r][c]; let tile = document.createElement('div'); tile.className = 'tile'; tile.dataset.row = r; tile.dataset.col = c;
+                    let plot = grid[r][c]; let tile = document.createElement('div'); tile.className = 'tile';
+                    tile.dataset.row = r; tile.dataset.col = c;
                     if (plot.plantId !== null) {
                         let p = DATA[plot.plantId];
                         let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
                         let waterDigit = Math.floor(plot.water / 10);
-                        let perennialMark = p.perennial ? 'P' : '';
-                        let exoticMark = (plot.plantId >= EXOTIC_START_ID) ? 'X' : '';
-                        tile.textContent = `${p.abbr}${stageChar}${waterDigit}${perennialMark}${exoticMark}`;
+                        let marks = (p.perennial ? 'P' : '') + (plot.plantId >= EXOTIC_START_ID ? 'X' : '');
+                        tile.textContent = `${p.abbr}${stageChar}${waterDigit}${marks}`;
+                        if (plot.stage === 2) tile.classList.add('ready');
+                        else if (plot.water < 4) tile.classList.add('low-water');
                     } else { tile.textContent = '···'; tile.classList.add('empty'); }
-                    tile.addEventListener('click', (e) => { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); handleTile(row, col); });
-                    tile.addEventListener('mouseenter', (e) => { if (tool === 'info') { let row = parseInt(e.currentTarget.dataset.row); let col = parseInt(e.currentTarget.dataset.col); let plot = grid[row][col]; if (plot.plantId !== null) { let p = DATA[plot.plantId]; if (plot.stage < 2) { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>next: ${plot.getTimeToNextStage()}s`; } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = `${p.abbr}<br>ready!`; } } else { infoTooltip.style.display = 'block'; infoTooltip.innerHTML = 'empty'; } } });
-                    tile.addEventListener('mousemove', (e) => { if (tool === 'info') { infoTooltip.style.left = (e.clientX + 15) + 'px'; infoTooltip.style.top = (e.clientY + 15) + 'px'; } });
-                    tile.addEventListener('mouseleave', () => { infoTooltip.style.display = 'none'; });
+                    tile.addEventListener('click', (e) => handleTile(+e.currentTarget.dataset.row, +e.currentTarget.dataset.col));
+                    tile.addEventListener('mouseenter', (e) => {
+                        if (tool !== 'info') return;
+                        let row = +e.currentTarget.dataset.row, col = +e.currentTarget.dataset.col;
+                        let p = grid[row][col];
+                        if (p.plantId !== null) {
+                            let pd = DATA[p.plantId];
+                            let stageLabel = p.stage === 0 ? 'sprouting' : (p.stage === 1 ? 'growing' : 'READY');
+                            let hasComp = p.hasCompanion(row, col);
+                            infoTooltip.innerHTML = `${pd.name}<br>stage: ${stageLabel}<br>water: ${Math.floor(p.water)}%<br>prog: ${Math.floor(p.prog)}%${hasComp ? '<br>companion ✓' : ''}`;
+                        } else { infoTooltip.innerHTML = 'empty'; }
+                        infoTooltip.style.display = 'block';
+                    });
+                    tile.addEventListener('mousemove', (e) => {
+                        if (tool !== 'info') return;
+                        infoTooltip.style.left = (e.clientX + 14) + 'px'; infoTooltip.style.top = (e.clientY + 14) + 'px';
+                    });
+                    tile.addEventListener('mouseleave', () => infoTooltip.style.display = 'none');
                     el.appendChild(tile);
                 }
             }
@@ -1339,25 +1573,34 @@
                 let plot = grid[row][col];
                 if (tool === 'hand') {
                     if (upgrades.harvestArea) {
+                        let count = 0;
                         for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
                             let nr = row + dr, nc = col + dc;
-                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].harvest();
-                        } showMessage('area harvested', true);
-                    } else { if (plot.harvest()) showMessage(`harvested ${DATA[plot.plantId].abbr}`, true); else showMessage('not ready', true); }
+                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) { let r = grid[nr][nc].harvest(); if (r) count++; }
+                        }
+                        if (count > 0) { showMessage(`harvested ${count} crops`); addJournalEntry(`Area harvest: ${count} crops collected.`); }
+                        else showMessage('nothing ready');
+                    } else {
+                        let result = plot.harvest();
+                        if (result) { showMessage(`harvested ${result}`); addJournalEntry(`Harvested ${result}.`); }
+                        else showMessage('not ready');
+                    }
                 } else if (tool === 'water') {
                     if (upgrades.waterArea) {
-                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
-                            let nr = row + dr, nc = col + dc;
-                            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(20);
-                        }
-                    } else plot.waterPlot(20);
+                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { let nr = row + dr, nc = col + dc; if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(20); }
+                        showMessage('area watered');
+                    } else { plot.waterPlot(20); showMessage('watered'); }
                 } else if (tool === 'hoe') {
-                    if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; }
-                    else { if (plot.plantId !== null) showMessage('plot used', true); else if (seeds[selected] <= 0) showMessage(`no ${DATA[selected].abbr} seeds`, true); }
-                } else if (tool === 'delete') { if (plot.delete()) showMessage('cleared', true); else showMessage('nothing', true); }
-                else if (tool === 'bonemeal' && upgrades.bonemealUnlocked) {
-                    if (plot.plantId !== null && coins >= 10) { coins -= 10; plot.prog = Math.min(100, plot.prog + 30); if (plot.prog >= 100 && plot.stage < 2) { plot.stage++; plot.prog = 0; } showMessage('bonemeal applied', true); }
-                    else if (plot.plantId === null) showMessage('no plant', true); else showMessage('need 10 coins', true);
+                    if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; showMessage(`planted ${DATA[selected].abbr}`); addJournalEntry(`Planted ${DATA[selected].name}.`); }
+                    else if (plot.plantId !== null) showMessage('plot occupied');
+                    else showMessage(`no ${DATA[selected].abbr} seeds`);
+                } else if (tool === 'delete') {
+                    if (plot.delete()) showMessage('removed');
+                    else showMessage('nothing here');
+                } else if (tool === 'bonemeal' && upgrades.bonemealUnlocked) {
+                    if (plot.plantId !== null && coins >= 10) { coins -= 10; plot.prog = Math.min(100, plot.prog + 30); if (plot.prog >= 100 && plot.stage < 2) { plot.stage++; plot.prog = 0; } showMessage('bonemeal applied'); }
+                    else if (plot.plantId === null) showMessage('no plant here');
+                    else showMessage('need 10 coins');
                 }
                 updateUI(); renderGrid();
             }
@@ -1370,464 +1613,292 @@
 
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('toolHand').classList.toggle('active', tool === 'hand');
-                document.getElementById('toolWater').classList.toggle('active', tool === 'water');
-                document.getElementById('toolInfo').classList.toggle('active', tool === 'info');
-                document.getElementById('toolHoe').classList.toggle('active', tool === 'hoe');
-                document.getElementById('toolDelete').classList.toggle('active', tool === 'delete');
+                ['toolHand', 'toolWater', 'toolInfo', 'toolHoe', 'toolDelete'].forEach(id => document.getElementById(id).classList.remove('active'));
+                const toolMap = { hand: 'toolHand', water: 'toolWater', info: 'toolInfo', hoe: 'toolHoe', delete: 'toolDelete', bonemeal: 'toolBonemeal' };
+                if (toolMap[tool]) document.getElementById(toolMap[tool]).classList.add('active');
                 let bonemealBtn = document.getElementById('toolBonemeal');
-                if (upgrades.bonemealUnlocked) { bonemealBtn.style.display = 'inline-block'; bonemealBtn.classList.toggle('active', tool === 'bonemeal'); } else bonemealBtn.style.display = 'none';
-                let s = DATA[selected]; document.getElementById('selectedSeedDisplay').innerText = `${s.abbr} (${seeds[selected]})`;
+                if (upgrades.bonemealUnlocked) { bonemealBtn.style.display = 'inline-block'; }
+                else { bonemealBtn.style.display = 'none'; if (tool === 'bonemeal') tool = 'hand'; }
+
+                document.getElementById('selectedSeedDisplay').innerText = `${DATA[selected].abbr} (${seeds[selected]})`;
 
                 let seedDiv = document.getElementById('seedInvList'); seedDiv.innerHTML = '';
                 for (let i = 0; i < COUNT; i++) if (seeds[i] > 0) {
-                    let b = document.createElement('span'); b.className = `inv-badge ${i === selected ? 'selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i;
-                    b.addEventListener('click', (e) => { selected = parseInt(e.target.dataset.id); showMessage(`selected ${DATA[selected].abbr}`, true); updateUI(); });
+                    let b = document.createElement('span'); b.className = `inv-badge${i === selected ? ' selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i;
+                    b.addEventListener('click', (e) => { selected = +e.target.dataset.id; showMessage(`selected ${DATA[selected].abbr}`); updateUI(); });
                     seedDiv.appendChild(b);
                 }
+
                 let cropDiv = document.getElementById('cropInvList'); cropDiv.innerHTML = '';
                 for (let i = 0; i < COUNT; i++) if (crops[i] > 0) {
                     let b = document.createElement('span'); b.className = 'inv-badge'; b.textContent = `${DATA[i].abbr} ${crops[i]}`; cropDiv.appendChild(b);
                 }
+
                 let buyDiv = document.getElementById('buyList'); buyDiv.innerHTML = '';
                 DATA.forEach((p, i) => {
                     if (i < 42) {
                         let row = document.createElement('div'); row.className = 'shop-row';
-                        let perennialMark = p.perennial ? ' (P)' : '';
-                        row.innerHTML = `<span>${p.abbr} ${p.name}${perennialMark}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`;
+                        row.innerHTML = `<span>${p.abbr} ${p.name}${p.perennial ? ' (P)' : ''}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`;
                         buyDiv.appendChild(row);
                     }
                 });
-                document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); let id = parseInt(e.target.dataset.id); let price = DATA[id].buy;
-                    if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr}`, true); updateUI(); renderGrid(); checkAchievements(); } else showMessage(`need $${price - coins}`, true);
+                buyDiv.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); let id = +e.target.dataset.id, price = DATA[id].buy;
+                    if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr}`); addJournalEntry(`Bought ${DATA[id].name} seed for $${price}.`); updateUI(); renderGrid(); checkAchievements(); }
+                    else showMessage(`need $${price - coins} more`);
                 }));
+
                 let sellDiv = document.getElementById('sellList'); sellDiv.innerHTML = '';
                 for (let i = 0; i < COUNT; i++) if (crops[i] > 0) {
                     let p = DATA[i]; let row = document.createElement('div'); row.className = 'shop-row';
                     row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span><button class="sell-btn" data-id="${i}">SELL</button>`;
                     sellDiv.appendChild(row);
                 }
-                document.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); let id = parseInt(e.target.dataset.id);
-                    if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} for $${DATA[id].sell}`, true); updateUI(); renderGrid(); checkAchievements(); }
+                sellDiv.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); let id = +e.target.dataset.id;
+                    if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} +$${DATA[id].sell}`); addJournalEntry(`Sold ${DATA[id].name} for $${DATA[id].sell}.`); updateUI(); renderGrid(); checkAchievements(); }
                 }));
-                updateExoticModal();
-                checkAchievements();
+
+                updateExoticModal(); checkAchievements();
                 document.getElementById('buyWaterUpgrade').disabled = upgrades.waterArea;
                 document.getElementById('buyHarvestUpgrade').disabled = upgrades.harvestArea;
                 document.getElementById('buyBonemealUpgrade').disabled = upgrades.bonemealUnlocked;
+                document.getElementById('buyWaterUpgrade').textContent = upgrades.waterArea ? 'OWNED' : 'BUY';
+                document.getElementById('buyHarvestUpgrade').textContent = upgrades.harvestArea ? 'OWNED' : 'BUY';
+                document.getElementById('buyBonemealUpgrade').textContent = upgrades.bonemealUnlocked ? 'OWNED' : 'BUY';
                 if (document.getElementById('blackMarketModal').classList.contains('active')) updateBlackMarketModal();
-                let allAchieved = achievements.every(v => v === true);
-                document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
+                document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
             }
 
             function checkAchievements() {
                 stats.coins = coins; stats.totalSeeds = seeds.reduce((a, b) => a + b, 0); checkFullFarm(); updateExoticObtained();
                 stats.grownOriginalCount = 0; stats.grownPlants.forEach(id => { if (id < 42) stats.grownOriginalCount++; });
-                let newly = [];
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
-                    if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) { achievements[i] = true; newly.push(i); showMessage(`ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`, true); }
-                }
-                newly.forEach(i => {
-                    let card = document.querySelector(`.achievement-card[data-index="${i}"]`);
-                    if (card) {
-                        card.classList.add('new');
-                        setTimeout(() => card.classList.remove('new'), 2000);
+                    if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) {
+                        achievements[i] = true; showMessage(`★ ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`);
+                        addJournalEntry(`Achievement unlocked: ${ACHIEVEMENTS[i].name}`);
+                        let card = document.querySelector(`.achievement-card[data-index="${i}"]`);
+                        if (card) { card.classList.add('new'); setTimeout(() => card.classList.remove('new'), 1500); }
                     }
-                });
+                }
             }
 
             function updateAchievementsModal() {
-                let grid = document.getElementById('achievementsGrid');
-                if (!grid) return;
-                grid.innerHTML = '';
-
+                let gridEl = document.getElementById('achievementsGrid'); if (!gridEl) return; gridEl.innerHTML = '';
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
-                    let card = document.createElement('div');
-                    card.className = `achievement-card ${achievements[i] ? 'unlocked' : ''}`;
-                    card.dataset.index = i;
-                    card.textContent = ACHIEVEMENTS[i].name;
-
+                    let card = document.createElement('div'); card.className = `achievement-card${achievements[i] ? ' unlocked' : ''}`; card.dataset.index = i; card.textContent = ACHIEVEMENTS[i].name;
                     card.addEventListener('click', () => {
                         document.getElementById('achievementDetailTitle').textContent = ACHIEVEMENTS[i].name;
                         let desc = ACHIEVEMENTS[i].desc;
-                        if (i === 1) desc += `\nCurrent: ${stats.cropCounts[15] || 0}/1000 beans`;
-                        else if (i === 2) desc += `\nProgress: ${stats.totalHarvested}/100`;
-                        else if (i === 3) desc += `\nProgress: ${stats.totalHarvested}/1000`;
-                        else if (i === 4) desc += `\nProgress: ${stats.grownOriginalCount}/42`;
-                        else if (i === 5) desc += `\nCurrent: $${coins}/1000`;
-                        else if (i === 6) desc += `\nCurrent: $${coins}/10000`;
-                        else if (i === 7) desc += `\nProgress: ${stats.waterCount}/100`;
-                        else if (i === 8) desc += `\nProgress: ${stats.perennialHarvested}/100`;
-                        else if (i === 9) desc += `\nProgress: ${stats.totalSeeds}/1000`;
-                        else if (i === 11) { let obtained = stats.exoticObtained.filter(v => v).length; desc += `\nObtained: ${obtained}/6`; }
-                        else if (i === 12) desc += `\nUzzy obtained: ${stats.exoticObtained[5] ? 'Yes' : 'No'}`;
-                        else if (i === 13) { let obtained = stats.exoticObtained.filter(v => v).length; desc += `\nObtained: ${obtained}/6`; }
+                        if (i === 1) desc += `\n${stats.cropCounts[15] || 0}/1000`;
+                        else if (i === 2) desc += `\n${stats.totalHarvested}/100`;
+                        else if (i === 3) desc += `\n${stats.totalHarvested}/1000`;
+                        else if (i === 4) desc += `\n${stats.grownOriginalCount}/42`;
+                        else if (i === 5) desc += `\n$${coins}/$1000`;
+                        else if (i === 6) desc += `\n$${coins}/$10000`;
+                        else if (i === 7) desc += `\n${stats.waterCount}/100`;
+                        else if (i === 8) desc += `\n${stats.perennialHarvested}/100`;
+                        else if (i === 9) desc += `\n${stats.totalSeeds}/1000`;
                         else if (i === 14) desc += `\nSales: ${stats.blackMarketSales}`;
-                        else if (i === 15) desc += `\nProgress: ${stats.totalHarvested}/5000`;
-
+                        else if (i === 15) desc += `\n${stats.totalHarvested}/5000`;
+                        else if (i === 16) desc += `\n${stats.journalEntries || 0}/10`;
                         document.getElementById('achievementDetailDesc').textContent = desc;
-
-                        let progressValue = null;
-                        if (i === 1) progressValue = (stats.cropCounts[15] || 0) / 1000;
-                        else if (i === 2) progressValue = stats.totalHarvested / 100;
-                        else if (i === 3) progressValue = stats.totalHarvested / 1000;
-                        else if (i === 5) progressValue = coins / 1000;
-                        else if (i === 6) progressValue = coins / 10000;
-                        else if (i === 7) progressValue = stats.waterCount / 100;
-                        else if (i === 8) progressValue = stats.perennialHarvested / 100;
-                        else if (i === 9) progressValue = stats.totalSeeds / 1000;
-                        else if (i === 11) progressValue = stats.exoticObtained.filter(v => v).length / 6;
-                        else if (i === 13) progressValue = stats.exoticObtained.filter(v => v).length / 6;
-                        else if (i === 14) progressValue = stats.blackMarketSales >= 1 ? 1 : 0;
-                        else if (i === 15) progressValue = stats.totalHarvested / 5000;
-
-                        if (progressValue !== null) {
-                            document.getElementById('achievementDetailProgress').style.display = 'block';
-                            document.getElementById('achievementDetailBar').style.width = Math.min(progressValue, 1) * 100 + '%';
-                        } else {
-                            document.getElementById('achievementDetailProgress').style.display = 'none';
-                        }
-
-                        if (i === 4 && !achievements[i]) {
-                            let missing = [];
-                            for (let j = 0; j < 42; j++) {
-                                if (!stats.grownPlants.has(j)) {
-                                    missing.push(DATA[j].abbr);
-                                }
-                            }
-                            if (missing.length > 0) {
-                                document.getElementById('achievementMissingCrops').style.display = 'block';
-                                let listDiv = document.getElementById('missingCropsList');
-                                listDiv.innerHTML = '';
-                                missing.forEach(abbr => {
-                                    let tag = document.createElement('span');
-                                    tag.className = 'crop-tag';
-                                    tag.textContent = abbr;
-                                    listDiv.appendChild(tag);
-                                });
-                            } else {
-                                document.getElementById('achievementMissingCrops').style.display = 'none';
-                            }
-                        } else {
-                            document.getElementById('achievementMissingCrops').style.display = 'none';
-                        }
+                        let pv = null;
+                        if (i === 1) pv = (stats.cropCounts[15] || 0) / 1000;
+                        else if (i === 2) pv = stats.totalHarvested / 100;
+                        else if (i === 3) pv = stats.totalHarvested / 1000;
+                        else if (i === 5) pv = coins / 1000; else if (i === 6) pv = coins / 10000;
+                        else if (i === 7) pv = stats.waterCount / 100; else if (i === 8) pv = stats.perennialHarvested / 100;
+                        else if (i === 9) pv = stats.totalSeeds / 1000;
+                        else if (i === 15) pv = stats.totalHarvested / 5000;
+                        else if (i === 16) pv = (stats.journalEntries || 0) / 10;
+                        let prog = document.getElementById('achievementDetailProgress');
+                        if (pv !== null) { prog.style.display = 'block'; document.getElementById('achievementDetailBar').style.width = Math.min(pv, 1) * 100 + '%'; }
+                        else prog.style.display = 'none';
+                        let missingEl = document.getElementById('achievementMissingCrops');
+                        if (i === 4 && !achievements[i]) { let missing = []; for (let j = 0; j < 42; j++) if (!stats.grownPlants.has(j)) missing.push(DATA[j].abbr); if (missing.length) { missingEl.style.display = 'block'; let lEl = document.getElementById('missingCropsList'); lEl.innerHTML = ''; missing.forEach(a => { let t = document.createElement('span'); t.className = 'crop-tag'; t.textContent = a; lEl.appendChild(t); }); } else missingEl.style.display = 'none'; }
+                        else missingEl.style.display = 'none';
                     });
-
-                    grid.appendChild(card);
+                    gridEl.appendChild(card);
                 }
             }
 
             function updateExoticModal() {
-                let exoticListDiv = document.getElementById('exoticList'); if (!exoticListDiv) return; exoticListDiv.innerHTML = '';
-                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; let p = DATA[idx]; let div = document.createElement('div'); div.style.border = '2px solid #fff'; div.style.padding = '4px'; div.style.textAlign = 'center'; div.innerHTML = `<strong>${p.abbr}</strong><br>${p.name}<br>worth $${p.sell}<br>rarity ${EXOTIC_PRICES[i]}`; exoticListDiv.appendChild(div); }
+                let el = document.getElementById('exoticList'); if (!el) return; el.innerHTML = '';
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; let p = DATA[idx]; let div = document.createElement('div'); div.className = 'exotic-card'; div.innerHTML = `<strong>${p.abbr}</strong>${p.name}<br><span style="color:var(--c-dim)">sells $${p.sell} · rarity ${EXOTIC_PRICES[i]}</span>`; el.appendChild(div); }
                 let invDiv = document.getElementById('exoticInventory'); invDiv.innerHTML = '';
-                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let badge = document.createElement('span'); badge.className = 'inv-badge'; badge.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; badge.dataset.id = idx; badge.addEventListener('click', () => { selected = idx; showMessage(`selected exotic ${DATA[idx].abbr}`, true); updateUI(); closeModal('exoticModal'); }); invDiv.appendChild(badge); } }
+                for (let i = 0; i < 6; i++) { let idx = EXOTIC_START_ID + i; if (seeds[idx] > 0) { let b = document.createElement('span'); b.className = 'inv-badge'; b.textContent = `${DATA[idx].abbr} ${seeds[idx]}`; b.dataset.id = idx; b.addEventListener('click', () => { selected = idx; showMessage(`selected ${DATA[idx].abbr}`); updateUI(); closeModal('exoticModal'); }); invDiv.appendChild(b); } }
             }
 
             function rollExotic() {
-                if (coins < 200) { showMessage('need 200 coins', true); return; }
-                coins -= 200; let weights = EXOTIC_PRICES.map(p => 1000 / p); let totalWeight = weights.reduce((a, b) => a + b, 0); let r = Math.random() * totalWeight; let cum = 0, chosen = 0;
+                if (coins < 200) { showMessage('need 200 coins'); return; }
+                coins -= 200;
+                let weights = EXOTIC_PRICES.map(p => 1000 / p), total = weights.reduce((a, b) => a + b, 0), r = Math.random() * total, cum = 0, chosen = 0;
                 for (let i = 0; i < weights.length; i++) { cum += weights[i]; if (r < cum) { chosen = i; break; } }
-                let exoticIdx = EXOTIC_START_ID + chosen; seeds[exoticIdx]++; showMessage(`You obtained a rare ${DATA[exoticIdx].name} seed!`, true);
+                let idx = EXOTIC_START_ID + chosen; seeds[idx]++;
+                showMessage(`Rare ${DATA[idx].name} seed obtained!`);
+                addJournalEntry(`Exotic roll — obtained ${DATA[idx].name} seed.`);
                 updateExoticObtained(); checkAchievements(); updateUI(); updateExoticModal();
             }
 
-            function getDailyCropId() {
-                let day = Math.floor(Date.now() / 86400000);
-                return day % 42;
-            }
+            function getDailyCropId() { return Math.floor(Date.now() / 86400000) % 42; }
 
             function updateBlackMarketModal() {
-                let cropId = getDailyCropId();
-                let crop = DATA[cropId];
-                let dealDiv = document.getElementById('marketDeal');
-                if (!dealDiv) return;
-                let normalPrice = crop.sell;
-                let dealPrice = normalPrice * 10;
-                let owned = crops[cropId] || 0;
-                dealDiv.innerHTML = `
-                    <div style="font-size:1.4rem; margin-bottom:8px;">${crop.abbr} - ${crop.name}</div>
-                    <div>Normal sell price: $${normalPrice} each</div>
-                    <div class="market-price">TODAY: 10 for $${dealPrice} (10x value)</div>
-                    <div>You own: ${owned} of this crop</div>
-                    <button class="tool-btn" id="sellDailyBtn" style="margin-top:12px;">SELL 10 FOR $${dealPrice}</button>
-                `;
+                let cropId = getDailyCropId(), crop = DATA[cropId];
+                let dealDiv = document.getElementById('marketDeal'); if (!dealDiv) return;
+                let dealPrice = crop.sell * 10, owned = crops[cropId] || 0;
+                dealDiv.innerHTML = `<div style="font-size:1.2rem; margin-bottom:8px; letter-spacing:2px;">${crop.abbr} — ${crop.name}</div><div style="color:#aaa; font-size:0.8rem;">Normal: $${crop.sell} each</div><div class="market-price">10 for $${dealPrice} <span style="color:var(--c-dim); font-size:0.8rem;">(10× value)</span></div><div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">You own: ${owned}</div><button class="tool-btn" id="sellDailyBtn" style="padding:6px 14px;">SELL 10 FOR $${dealPrice}</button>`;
                 let btn = document.getElementById('sellDailyBtn');
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        if (crops[cropId] >= 10) {
-                            crops[cropId] -= 10;
-                            coins += dealPrice;
-                            stats.blackMarketSales = (stats.blackMarketSales || 0) + 1;
-                            showMessage(`Sold 10 ${crop.abbr} for $${dealPrice}`, true);
-                            updateUI();
-                            updateBlackMarketModal();
-                        } else {
-                            showMessage(`Not enough ${crop.abbr} crops`, true);
-                        }
-                    });
-                }
+                if (btn) btn.addEventListener('click', () => {
+                    if (crops[cropId] >= 10) { crops[cropId] -= 10; coins += dealPrice; stats.blackMarketSales = (stats.blackMarketSales || 0) + 1; showMessage(`Sold 10 ${crop.abbr} +$${dealPrice}`); addJournalEntry(`Black market: sold 10 ${crop.name} for $${dealPrice}.`); updateUI(); updateBlackMarketModal(); }
+                    else showMessage(`need ${10 - owned} more ${crop.abbr}`);
+                });
             }
 
-            let pdfDoc = null, pageNum = 1, pageCount = 0, canvas = document.getElementById('pdfCanvas'), ctx = canvas.getContext('2d');
-            let currentPdfFile = null;
-            let cbzImages = [];
-            let cbzCurrentPage = 1;
-            let currentCbzFile = null;
+            function updateJournalModal() {
+                let elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+                let mins = Math.floor(elapsed / 60), secs = elapsed % 60;
+                let totalCrops = crops.reduce((a, b) => a + b, 0);
+                let totalSeedsCount = seeds.reduce((a, b) => a + b, 0);
+                let planted = 0; for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c].plantId !== null) planted++;
+                let statsEl = document.getElementById('journalStats');
+                const stat = (label, val) => `<div style="border:var(--border); padding:6px 8px;"><div style="font-size:0.65rem; color:var(--c-dim); letter-spacing:1px;">${label}</div><div style="font-size:1rem; margin-top:2px;">${val}</div></div>`;
+                statsEl.innerHTML =
+                    stat('COINS', '$' + coins) +
+                    stat('SESSION TIME', mins + 'm ' + secs + 's') +
+                    stat('TOTAL HARVESTS', stats.totalHarvested) +
+                    stat('PLOTS PLANTED', planted + '/100') +
+                    stat('CROPS IN HAND', totalCrops) +
+                    stat('SEEDS IN HAND', totalSeedsCount) +
+                    stat('ACHIEVEMENTS', achievements.filter(v => v).length + '/' + ACHIEVEMENT_COUNT) +
+                    stat('WATER EVENTS', stats.waterCount);
+                let logEl = document.getElementById('journalLog');
+                if (journalLog.length === 0) logEl.innerHTML = '<span style="color:var(--c-dim);">no entries yet</span>';
+                else logEl.innerHTML = journalLog.map(e => `<div>${e}</div>`).join('');
+                let topCropsEl = document.getElementById('journalTopCrops');
+                let cropArr = stats.cropCounts.map((v, i) => ({ v, i })).filter(x => x.v > 0).sort((a, b) => b.v - a.v).slice(0, 8);
+                topCropsEl.innerHTML = cropArr.length ? cropArr.map(x => `<span class="inv-badge">${DATA[x.i].abbr} ×${x.v}</span>`).join('') : '<span style="color:var(--c-dim); font-size:0.75rem;">nothing grown yet</span>';
+            }
+
+            let pdfDoc = null, pageNum = 1, pageCount = 0;
+            let canvas = document.getElementById('pdfCanvas'), ctx = canvas.getContext('2d');
+            let currentPdfFile = null, cbzImages = [], cbzCurrentPage = 1;
 
             function renderPage(num) {
                 if (pdfDoc) {
                     pdfDoc.getPage(num).then(page => {
-                        let viewport = page.getViewport({ scale: 1.5 });
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        let renderContext = { canvasContext: ctx, viewport: viewport };
-                        page.render(renderContext);
+                        let vp = page.getViewport({ scale: 1.5 }); canvas.height = vp.height; canvas.width = vp.width;
+                        page.render({ canvasContext: ctx, viewport: vp });
                         document.getElementById('pdfPageInfo').innerText = num + ' / ' + pageCount;
                         document.getElementById('pdfPageInput').value = num;
-                        if (currentPdfFile) {
-                            let key = 'pdf_' + currentPdfFile;
-                            localStorage.setItem(key, num);
-                        }
+                        if (currentPdfFile) localStorage.setItem('pdf_' + currentPdfFile, num);
                     });
                 } else if (cbzImages.length > 0) {
-                    let img = new Image();
-                    img.onload = function () {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(img, 0, 0);
-                    };
-                    img.src = cbzImages[num - 1];
+                    let img = new Image(); img.onload = function () { canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0); }; img.src = cbzImages[num - 1];
                     document.getElementById('pdfPageInfo').innerText = num + ' / ' + cbzImages.length;
                     document.getElementById('pdfPageInput').value = num;
                 }
             }
 
             document.getElementById('pdfFileInput').addEventListener('change', function (e) {
-                let file = e.target.files[0];
-                if (!file) return;
-                cbzImages = [];
-                currentCbzFile = null;
-                let fileKey = file.name + '_' + file.size;
-                currentPdfFile = fileKey;
-                let fileReader = new FileReader();
-                fileReader.onload = function () {
-                    let typedarray = new Uint8Array(this.result);
-                    pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
-                        pdfDoc = pdf;
-                        pageCount = pdf.numPages;
-                        let savedPage = localStorage.getItem('pdf_' + fileKey);
-                        pageNum = savedPage ? parseInt(savedPage) : 1;
-                        if (pageNum < 1) pageNum = 1;
-                        if (pageNum > pageCount) pageNum = pageCount;
-                        renderPage(pageNum);
-                    });
-                };
-                fileReader.readAsArrayBuffer(file);
+                let file = e.target.files[0]; if (!file) return; cbzImages = []; currentPdfFile = null;
+                let fileKey = file.name + '_' + file.size; currentPdfFile = fileKey;
+                let fr = new FileReader(); fr.onload = function () { let ta = new Uint8Array(this.result); pdfjsLib.getDocument(ta).promise.then(pdf => { pdfDoc = pdf; pageCount = pdf.numPages; let sp = localStorage.getItem('pdf_' + fileKey); pageNum = sp ? Math.min(Math.max(1, +sp), pageCount) : 1; renderPage(pageNum); }); }; fr.readAsArrayBuffer(file);
             });
 
             document.getElementById('cbzFileInput').addEventListener('change', async function (e) {
-                let file = e.target.files[0];
-                if (!file) return;
-                pdfDoc = null;
-                currentPdfFile = null;
-                currentCbzFile = file.name;
-
-                let zip = new JSZip();
-                let loadedZip = await zip.loadAsync(file);
-                let imageFiles = [];
-                loadedZip.forEach((relativePath, zipEntry) => {
-                    if (!zipEntry.dir) {
-                        let ext = relativePath.split('.').pop().toLowerCase();
-                        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
-                            imageFiles.push(zipEntry.name);
-                        }
-                    }
-                });
-                imageFiles.sort();
-                cbzImages = [];
-                for (let name of imageFiles) {
-                    let blob = await loadedZip.file(name).async('blob');
-                    let url = URL.createObjectURL(blob);
-                    cbzImages.push(url);
-                }
-                cbzCurrentPage = 1;
-                pageCount = cbzImages.length;
-                if (pageCount > 0) renderPage(1);
-                else showMessage('No images found in CBZ', true);
+                let file = e.target.files[0]; if (!file) return; pdfDoc = null; currentPdfFile = null;
+                let zip = new JSZip(), lz = await zip.loadAsync(file), imageFiles = [];
+                lz.forEach((p, entry) => { if (!entry.dir) { let ext = p.split('.').pop().toLowerCase(); if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) imageFiles.push(entry.name); } });
+                imageFiles.sort(); cbzImages = [];
+                for (let n of imageFiles) { let blob = await lz.file(n).async('blob'); cbzImages.push(URL.createObjectURL(blob)); }
+                cbzCurrentPage = 1; pageCount = cbzImages.length; if (pageCount > 0) renderPage(1); else showMessage('no images in CBZ');
             });
 
-            document.getElementById('pdfPrevPage').addEventListener('click', () => {
-                if (pdfDoc) {
-                    if (pageNum > 1) { pageNum--; renderPage(pageNum); }
-                } else if (cbzImages.length > 0) {
-                    if (cbzCurrentPage > 1) { cbzCurrentPage--; renderPage(cbzCurrentPage); }
-                }
-            });
+            document.getElementById('pdfPrevPage').addEventListener('click', () => { if (pdfDoc) { if (pageNum > 1) { pageNum--; renderPage(pageNum); } } else if (cbzImages.length > 0) { if (cbzCurrentPage > 1) { cbzCurrentPage--; renderPage(cbzCurrentPage); } } });
+            document.getElementById('pdfNextPage').addEventListener('click', () => { if (pdfDoc) { if (pageNum < pageCount) { pageNum++; renderPage(pageNum); } } else if (cbzImages.length > 0) { if (cbzCurrentPage < cbzImages.length) { cbzCurrentPage++; renderPage(cbzCurrentPage); } } });
+            document.getElementById('pdfGoPage').addEventListener('click', () => { let p = +document.getElementById('pdfPageInput').value; if (pdfDoc) { if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(p); } } else if (cbzImages.length > 0) { if (p >= 1 && p <= cbzImages.length) { cbzCurrentPage = p; renderPage(p); } } });
 
-            document.getElementById('pdfNextPage').addEventListener('click', () => {
-                if (pdfDoc) {
-                    if (pageNum < pageCount) { pageNum++; renderPage(pageNum); }
-                } else if (cbzImages.length > 0) {
-                    if (cbzCurrentPage < cbzImages.length) { cbzCurrentPage++; renderPage(cbzCurrentPage); }
-                }
-            });
-
-            document.getElementById('pdfGoPage').addEventListener('click', () => {
-                let inp = document.getElementById('pdfPageInput');
-                let p = parseInt(inp.value);
-                if (pdfDoc) {
-                    if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(pageNum); }
-                } else if (cbzImages.length > 0) {
-                    if (p >= 1 && p <= cbzImages.length) { cbzCurrentPage = p; renderPage(p); }
-                }
-            });
-
-            function openModal(modalId) {
-                document.getElementById(modalId).classList.add('active');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-                document.body.classList.remove('modal-open');
-            }
+            function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
+            function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
 
             function setWeather(type, cost = 0) {
-                if (cost > 0) {
-                    if (coins < cost) {
-                        showMessage(`Not enough coins! Need ${cost}`, true);
-                        return;
-                    }
-                    coins -= cost;
-                }
+                if (cost > 0 && coins < cost) { showMessage(`need ${cost} coins`); return; }
+                if (cost > 0) coins -= cost;
                 if (type === 'clear') {
                     manualWeatherActive = false;
                     manualWeatherType = null;
-                    showWeatherPopup("Weather returned to normal.");
+                    manualRainSignature = null;
+                    showWeatherPopup("Weather cleared.");
+                    addJournalEntry("Weather manually cleared.");
                 } else {
                     manualWeatherActive = true;
                     manualWeatherType = type;
                     if (type === 'rainy') {
-                        applyRainEffect();
-                    } else if (type === 'sunny') {
-                        showWeatherPopup("☀ You summoned sunny weather! 20% growth boost.");
+                        manualRainSignature = `manual-${Date.now()}`;
+                    } else {
+                        manualRainSignature = null;
+                        showWeatherPopup("☀ Sunny weather summoned! +20% growth.");
+                        addJournalEntry(`Weather set to ${type}.`);
                     }
                 }
-                updateWeather();
-                updateUI();
-                saveGame();
-                closeModal('weatherModal');
+                updateWeather(); updateUI(); saveGame(); closeModal('weatherModal');
             }
 
-            document.getElementById('weatherBtn').addEventListener('click', () => openModal('weatherModal'));
-            document.getElementById('closeWeatherBtn').addEventListener('click', () => closeModal('weatherModal'));
-            document.getElementById('weatherModal').addEventListener('click', (e) => { if (e.target.id === 'weatherModal') closeModal('weatherModal'); });
+            const bindModal = (openId, modalId, closeId) => {
+                document.getElementById(openId).addEventListener('click', () => { openModal(modalId); if (modalId === 'achievementsModal') updateAchievementsModal(); if (modalId === 'blackMarketModal') updateBlackMarketModal(); if (modalId === 'journalModal') updateJournalModal(); });
+                document.getElementById(closeId).addEventListener('click', () => closeModal(modalId));
+                document.getElementById(modalId).addEventListener('click', (e) => { if (e.target.id === modalId) closeModal(modalId); });
+            };
+            bindModal('helpBtn', 'helpModal', 'closeHelpBtn');
+            bindModal('achievementsBtn', 'achievementsModal', 'closeAchievementsBtn');
+            bindModal('exoticBtn', 'exoticModal', 'closeExoticBtn');
+            bindModal('toolShopBtn', 'toolShopModal', 'closeToolShopBtn');
+            bindModal('blackMarketBtn', 'blackMarketModal', 'closeBlackMarketBtn');
+            bindModal('pdfReaderBtn', 'pdfReaderModal', 'closePdfBtn');
+            bindModal('weatherBtn', 'weatherModal', 'closeWeatherBtn');
+            document.getElementById('closeJournalBtn').addEventListener('click', () => closeModal('journalModal'));
+            document.getElementById('journalModal').addEventListener('click', (e) => { if (e.target.id === 'journalModal') closeModal('journalModal'); });
 
+            document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
             document.getElementById('weatherRainyBtn').addEventListener('click', () => setWeather('rainy', 100));
             document.getElementById('weatherSunnyBtn').addEventListener('click', () => setWeather('sunny', 100));
             document.getElementById('weatherClearBtn').addEventListener('click', () => setWeather('clear', 50));
 
-            document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
-            document.getElementById('closeHelpBtn').addEventListener('click', () => closeModal('helpModal'));
-            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') closeModal('helpModal'); });
+            document.getElementById('resetBtn').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'block'; document.getElementById('resetStep2').style.display = 'none'; openModal('resetConfirmModal'); });
+            document.getElementById('resetYes1').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'none'; document.getElementById('resetStep2').style.display = 'block'; });
+            document.getElementById('resetNo1').addEventListener('click', () => closeModal('resetConfirmModal'));
+            document.getElementById('resetYes2').addEventListener('click', () => { resetGame(); closeModal('resetConfirmModal'); });
+            document.getElementById('resetNo2').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'block'; document.getElementById('resetStep2').style.display = 'none'; });
+            document.getElementById('resetConfirmModal').addEventListener('click', (e) => { if (e.target.id === 'resetConfirmModal') closeModal('resetConfirmModal'); });
 
-            document.getElementById('achievementsBtn').addEventListener('click', () => { openModal('achievementsModal'); updateAchievementsModal(); });
-            document.getElementById('closeAchievementsBtn').addEventListener('click', () => closeModal('achievementsModal'));
-            document.getElementById('achievementsModal').addEventListener('click', (e) => { if (e.target.id === 'achievementsModal') closeModal('achievementsModal'); });
+            document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade unlocked!'); addJournalEntry('Bought bigger water bucket upgrade.'); updateUI(); saveGame(); } else if (!upgrades.waterArea) showMessage('need 500 coins'); });
+            document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade unlocked!'); addJournalEntry('Bought bigger harvest tool upgrade.'); updateUI(); saveGame(); } else if (!upgrades.harvestArea) showMessage('need 800 coins'); });
+            document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal unlocked!'); addJournalEntry('Bought bonemeal tool upgrade.'); updateUI(); saveGame(); } else if (!upgrades.bonemealUnlocked) showMessage('need 200 coins'); });
 
-            document.getElementById('exoticBtn').addEventListener('click', () => openModal('exoticModal'));
-            document.getElementById('closeExoticBtn').addEventListener('click', () => closeModal('exoticModal'));
-            document.getElementById('exoticModal').addEventListener('click', (e) => { if (e.target.id === 'exoticModal') closeModal('exoticModal'); });
-            document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
+            document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; infoTooltip.style.display = 'none'; updateUI(); });
+            document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; infoTooltip.style.display = 'none'; updateUI(); });
+            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('hover tiles for info'); });
+            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; infoTooltip.style.display = 'none'; updateUI(); });
+            document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; infoTooltip.style.display = 'none'; updateUI(); });
+            document.getElementById('toolBonemeal').addEventListener('click', () => { if (upgrades.bonemealUnlocked) { tool = 'bonemeal'; infoTooltip.style.display = 'none'; updateUI(); } });
 
-            document.getElementById('toolShopBtn').addEventListener('click', () => openModal('toolShopModal'));
-            document.getElementById('closeToolShopBtn').addEventListener('click', () => closeModal('toolShopModal'));
-            document.getElementById('toolShopModal').addEventListener('click', (e) => { if (e.target.id === 'toolShopModal') closeModal('toolShopModal'); });
-
-            document.getElementById('blackMarketBtn').addEventListener('click', () => { openModal('blackMarketModal'); updateBlackMarketModal(); });
-            document.getElementById('closeBlackMarketBtn').addEventListener('click', () => closeModal('blackMarketModal'));
-            document.getElementById('blackMarketModal').addEventListener('click', (e) => { if (e.target.id === 'blackMarketModal') closeModal('blackMarketModal'); });
-
-            document.getElementById('pdfReaderBtn').addEventListener('click', () => openModal('pdfReaderModal'));
-            document.getElementById('closePdfBtn').addEventListener('click', () => closeModal('pdfReaderModal'));
-            document.getElementById('pdfReaderModal').addEventListener('click', (e) => { if (e.target.id === 'pdfReaderModal') closeModal('pdfReaderModal'); });
-
-            document.getElementById('resetBtn').addEventListener('click', () => {
-                document.getElementById('resetStep1').style.display = 'block';
-                document.getElementById('resetStep2').style.display = 'none';
-                openModal('resetConfirmModal');
-            });
-
-            document.getElementById('resetYes1').addEventListener('click', () => {
-                document.getElementById('resetStep1').style.display = 'none';
-                document.getElementById('resetStep2').style.display = 'block';
-            });
-
-            document.getElementById('resetNo1').addEventListener('click', () => {
-                closeModal('resetConfirmModal');
-            });
-
-            document.getElementById('resetYes2').addEventListener('click', () => {
-                resetGame();
-                closeModal('resetConfirmModal');
-            });
-
-            document.getElementById('resetNo2').addEventListener('click', () => {
-                document.getElementById('resetStep1').style.display = 'block';
-                document.getElementById('resetStep2').style.display = 'none';
-            });
-
-            document.getElementById('resetConfirmModal').addEventListener('click', (e) => {
-                if (e.target.id === 'resetConfirmModal') {
-                    closeModal('resetConfirmModal');
-                }
-            });
-
-            let cheatSequence = '';
+            let cheatSeq = '';
             document.addEventListener('keydown', (e) => {
-                cheatSequence += e.key.toLowerCase();
-                if (cheatSequence.includes('aix')) {
-                    if (!cheatActive) {
-                        coins += 20000;
-                        for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
-                            achievements[i] = true;
-                        }
-                        cheatActive = true;
-                        showMessage('CHEAT ACTIVATED: +20000 coins and all achievements!', true);
-                        document.getElementById('cheatWeatherMenu').style.display = 'flex';
-                        setTimeout(() => {
-                            document.getElementById('cheatWeatherMenu').style.display = 'none';
-                        }, 10000);
-                    } else {
-                        showMessage('Cheat already active!', true);
-                    }
-                    cheatSequence = '';
-                }
-                if (cheatSequence.length > 10) cheatSequence = cheatSequence.slice(-10);
+                cheatSeq += e.key.toLowerCase();
+                if (cheatSeq.includes('aix')) { if (!cheatActive) { coins += 20000; for (let i = 0; i < ACHIEVEMENT_COUNT; i++) achievements[i] = true; cheatActive = true; showMessage('cheat activated: +20000 coins'); addJournalEntry('Cheat activated.'); document.getElementById('cheatWeatherMenu').style.display = 'flex'; setTimeout(() => document.getElementById('cheatWeatherMenu').style.display = 'none', 10000); } cheatSeq = ''; }
+                if (cheatSeq.length > 10) cheatSeq = cheatSeq.slice(-10);
             });
-
-            document.getElementById('cheatRainy').addEventListener('click', () => {
-                if (cheatActive) setWeather('rainy', 0);
-            });
-            document.getElementById('cheatSunny').addEventListener('click', () => {
-                if (cheatActive) setWeather('sunny', 0);
-            });
-            document.getElementById('cheatClear').addEventListener('click', () => {
-                if (cheatActive) setWeather('clear', 0);
-            });
-            document.getElementById('cheatClose').addEventListener('click', () => {
-                document.getElementById('cheatWeatherMenu').style.display = 'none';
-            });
+            document.getElementById('cheatRainy').addEventListener('click', () => { if (cheatActive) setWeather('rainy', 0); });
+            document.getElementById('cheatSunny').addEventListener('click', () => { if (cheatActive) setWeather('sunny', 0); });
+            document.getElementById('cheatClear').addEventListener('click', () => { if (cheatActive) setWeather('clear', 0); });
+            document.getElementById('cheatClose').addEventListener('click', () => document.getElementById('cheatWeatherMenu').style.display = 'none');
 
             function saveGame() {
                 let save = {
-                    coins, seeds, crops, selected, tool, achievements, upgrades,
-                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales },
-                    gridData: grid.map(row => row.map(plot => ({ plantId: plot.plantId, water: plot.water, stage: plot.stage, prog: plot.prog, age: plot.age, plantTime: plot.plantTime })))
+                    coins, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
+                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0 },
+                    gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime })))
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
             }
@@ -1835,79 +1906,75 @@
             function loadGame() {
                 let save = localStorage.getItem('crubsSave'); if (!save) return false;
                 try {
-                    let data = JSON.parse(save);
-                    coins = data.coins; seeds = data.seeds; if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
-                    crops = data.crops; if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
-                    selected = data.selected; tool = data.tool; achievements = data.achievements || new Array(ACHIEVEMENT_COUNT).fill(false);
-                    upgrades = data.upgrades || { waterArea: false, harvestArea: false, bonemealUnlocked: false };
-                    stats = data.stats ? {
-                        totalHarvested: data.stats.totalHarvested || 0, cropCounts: data.stats.cropCounts || new Array(COUNT).fill(0),
-                        grownPlants: new Set(data.stats.grownPlants || []), coins: coins, waterCount: data.stats.waterCount || 0,
-                        perennialHarvested: data.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
-                        fullFarm: false, exoticObtained: data.stats.exoticObtained || new Array(6).fill(false), grownOriginalCount: 0,
-                        blackMarketSales: data.stats.blackMarketSales || 0
-                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
-                    if (stats.cropCounts.length < COUNT) { let old = stats.cropCounts; stats.cropCounts = old.concat(new Array(COUNT - old.length).fill(0)); }
-                    grid = data.gridData.map(row => row.map(plotData => { let plot = new Plot(); plot.plantId = plotData.plantId; plot.water = plotData.water; plot.stage = plotData.stage; plot.prog = plotData.prog; plot.age = plotData.age; plot.plantTime = plotData.plantTime || 0; return plot; }));
+                    let d = JSON.parse(save);
+                    coins = d.coins; seeds = d.seeds; if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
+                    crops = d.crops; if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
+                    selected = d.selected; tool = d.tool; achievements = d.achievements || new Array(ACHIEVEMENT_COUNT).fill(false);
+                    if (achievements.length < ACHIEVEMENT_COUNT) achievements = achievements.concat(new Array(ACHIEVEMENT_COUNT - achievements.length).fill(false));
+                    upgrades = d.upgrades || { waterArea: false, harvestArea: false, bonemealUnlocked: false };
+                    manualWeatherActive = d.manualWeatherActive || false; manualWeatherType = d.manualWeatherType || null;
+                    journalLog = d.journalLog || [];
+                    stats = d.stats ? {
+                        totalHarvested: d.stats.totalHarvested || 0, cropCounts: d.stats.cropCounts || new Array(COUNT).fill(0),
+                        grownPlants: new Set(d.stats.grownPlants || []), coins: coins, waterCount: d.stats.waterCount || 0,
+                        perennialHarvested: d.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
+                        fullFarm: false, exoticObtained: d.stats.exoticObtained || new Array(6).fill(false),
+                        grownOriginalCount: 0, blackMarketSales: d.stats.blackMarketSales || 0, journalEntries: d.stats.journalEntries || 0
+                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0 };
+                    if (stats.cropCounts.length < COUNT) stats.cropCounts = stats.cropCounts.concat(new Array(COUNT - stats.cropCounts.length).fill(0));
+                    grid = d.gridData.map(row => row.map(pd => { let p = new Plot(); p.plantId = pd.plantId; p.water = pd.water; p.stage = pd.stage; p.prog = pd.prog; p.age = pd.age; p.plantTime = pd.plantTime || 0; return p; }));
                     return true;
                 } catch (e) { return false; }
             }
 
             function resetGame() {
-                coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4; crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
-                achievements = new Array(ACHIEVEMENT_COUNT).fill(false); upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
-                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0 };
-                cheatActive = false;
-                manualWeatherActive = false;
-                manualWeatherType = null;
-                initGrid(); updateUI(); renderGrid(); showMessage('fresh start', true); saveGame();
+                coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4;
+                crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
+                achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
+                upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
+                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0 };
+                cheatActive = false; manualWeatherActive = false; manualWeatherType = null; journalLog = [];
+                sessionStart = Date.now(); initGrid(); updateUI(); renderGrid(); showMessage('fresh start'); saveGame();
             }
 
             function startGame(continueGame) {
-                document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'flex';
-                if (continueGame) { if (!loadGame()) resetGame(); } else resetGame();
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'flex';
+                if (continueGame) { if (!loadGame()) resetGame(); }
+                else resetGame();
+                sessionStart = Date.now();
                 updateUI(); renderGrid(); updateAchievementsModal();
                 if (window._interval) clearInterval(window._interval);
                 window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
             }
 
-            document.getElementById('startBtn').addEventListener('click', () => { let hasSave = localStorage.getItem('crubsSave') !== null; startGame(hasSave); });
+            document.getElementById('startBtn').addEventListener('click', () => startGame(!!localStorage.getItem('crubsSave')));
             document.getElementById('discordBtn').addEventListener('click', () => window.open('https://discord.gg/74c9RBYD4R', '_blank'));
-            document.getElementById('menuBtn').addEventListener('click', () => { clearInterval(window._interval); document.getElementById('startScreen').style.display = 'flex'; document.getElementById('gameScreen').style.display = 'none'; infoTooltip.style.display = 'none'; document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') !== null ? '> CONTINUE' : '> START'; });
-            document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; updateUI(); });
-            document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; updateUI(); });
-            document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('info tool - hover', true); });
-            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; updateUI(); });
-            document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; updateUI(); });
-            document.getElementById('toolBonemeal').addEventListener('click', () => { if (upgrades.bonemealUnlocked) { tool = 'bonemeal'; updateUI(); } });
-            document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
-            document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
-            document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal unlocked!', true); updateUI(); saveGame(); } else showMessage('Not enough coins', true); });
-
-            window.addEventListener('DOMContentLoaded', () => {
-                updateUI(); renderGrid();
-                document.getElementById('version').textContent = 'v' + VERSION;
-                let allAchieved = achievements.every(v => v === true);
-                document.getElementById('completionBadge').style.display = allAchieved ? 'inline-block' : 'none';
-
-                fetch('version.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.version && data.version !== VERSION) {
-                            showMessage(`New version ${data.version} available! Refresh to update.`, true);
-                        }
-                    })
-                    .catch(() => { });
+            document.getElementById('menuBtn').addEventListener('click', () => {
+                clearInterval(window._interval); infoTooltip.style.display = 'none';
+                document.getElementById('startScreen').style.display = 'flex';
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') ? '> CONTINUE' : '> START';
             });
 
-            let installBtn = document.getElementById('installBtn'); let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'inline-flex'; });
-            installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const choice = await deferredPrompt.userChoice; console.log(choice); deferredPrompt = null; installBtn.style.display = 'none'; } });
-            window.addEventListener('appinstalled', () => { showMessage('App installed!', true); });
+            let installBtn = document.getElementById('installBtn'), deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault(); deferredPrompt = e; pwaInstallAvailable = true; installBtn.style.display = 'inline-flex';
+                if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js?v=' + VERSION).catch(console.error);
+            });
+            installBtn.addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const c = await deferredPrompt.userChoice; deferredPrompt = null; installBtn.style.display = 'none'; } });
+            window.addEventListener('appinstalled', () => showMessage('app installed!'));
 
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js?v=' + VERSION).catch(console.error);
-            }
+            window.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('version').textContent = 'v' + VERSION;
+                updateUI(); renderGrid();
+                document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
+
+                let journalFooterBtn = document.createElement('button');
+                journalFooterBtn.id = 'journalBtn'; journalFooterBtn.textContent = 'JOURNAL';
+                journalFooterBtn.addEventListener('click', () => { openModal('journalModal'); updateJournalModal(); });
+                document.querySelector('.footer-grid').appendChild(journalFooterBtn);
+            });
         })();
     </script>
 </body>
