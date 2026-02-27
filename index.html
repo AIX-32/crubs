@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>crubs</title>
-    <meta name="description" content="Small text based farming game.">
+    <meta name="description" content="&quot;Small&quot; text based farming game.">
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
@@ -30,9 +30,11 @@
             --border-dim: 1px solid #444;
         }
 
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
         }
+
         body {
             background: var(--c-bg);
             color: var(--c-fg);
@@ -195,25 +197,58 @@
             justify-content: space-between;
             align-items: center;
             border: var(--border);
-            padding: 4px 8px;
+            padding: 6px 10px;
             font-size: 0.85rem;
-            gap: 4px;
+            gap: 8px;
+            row-gap: 10px;
+        }
+
+        .hud-left,
+        .hud-right,
+        .hud-center {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-left {
+            flex: 0 1 auto;
+        }
+
+        .hud-center {
+            flex: 1 1 240px;
+            justify-content: center;
+        }
+
+        .hud-right {
+            flex: 0 1 auto;
         }
 
         .wallet {
             border: var(--border);
-            padding: 2px 8px;
+            padding: 4px 10px;
             font-size: 1rem;
             letter-spacing: 1px;
-            min-width: 80px;
+            min-width: 90px;
+        }
+
+        .status-chip {
+            border: var(--border);
+            padding: 3px 10px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selected-seed {
+            white-space: nowrap;
         }
 
         .weather-hud {
-            font-size: 0.75rem;
             color: var(--c-dim);
-            letter-spacing: 1px;
-            padding: 2px 6px;
-            border: 1px solid var(--c-dim);
+            font-size: 0.85rem;
         }
 
         .weather-hud.active {
@@ -421,37 +456,59 @@
             color: var(--c-fg);
             border: var(--border);
             font-family: inherit;
-            font-size: 9px;
-            padding: 1px 5px;
+            font-size: 0.75rem;
+            padding: 4px 10px;
             cursor: pointer;
             flex-shrink: 0;
             transition: background 0.1s, color 0.1s;
+            letter-spacing: 1px;
         }
 
-        .shop-row button:hover {
+        .shop-row button:hover,
+        .shop-row button.active {
             background: var(--c-fg);
             color: var(--c-bg);
         }
 
+        .shop-row button.active {
+            border-color: var(--c-fg);
+        }
+
         .footer {
             display: flex;
-            gap: 4px;
+            gap: 8px;
             margin-top: auto;
-            padding-top: 4px;
+            padding-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 220px;
+            border: var(--border);
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #070707;
+        }
+
+        .footer-section-title {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--c-dim);
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 3px;
-            flex: 1;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 4px;
         }
 
         .footer-meta {
             display: flex;
-            flex-direction: column;
-            gap: 3px;
-            min-width: 58px;
+            gap: 4px;
+            flex-wrap: wrap;
         }
 
         .footer button {
@@ -459,11 +516,12 @@
             color: var(--c-fg);
             border: var(--border);
             font-family: inherit;
-            font-size: 0.65rem;
-            padding: 4px 4px;
+            font-size: 0.75rem;
+            padding: 5px 10px;
             cursor: pointer;
             letter-spacing: 1px;
             transition: background 0.1s, color 0.1s;
+            width: 100%;
         }
 
         .footer button:hover {
@@ -758,6 +816,117 @@
             animation: achUnlock 1.2s ease-out;
         }
 
+        .boss-layout {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            border: var(--border);
+            padding: 10px;
+            background: #0a0a0a;
+        }
+
+        .boss-art {
+            width: 80px;
+            height: 80px;
+            border: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+        }
+
+        .boss-description {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .boss-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .boss-request,
+        .boss-progress,
+        .boss-queue {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #bbb;
+        }
+
+        .boss-status {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #ddd;
+        }
+
+        .custom-area {
+            position: relative;
+            border: var(--border);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #050505;
+            overflow: hidden;
+        }
+
+        .custom-area .custom-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--c-dim);
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 0 12px;
+        }
+
+        #achievementPopup {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 10005;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        #achievementPopup.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #achievementPopup .popup-content {
+            border: var(--border);
+            background: #090909;
+            padding: 16px 20px;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        #achievementPopup .popup-content h3 {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        #achievementPopup .popup-content p {
+            color: #bbb;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
         .achievement-detail-panel {
             border: var(--border);
             padding: 12px;
@@ -995,7 +1164,7 @@
                 <h1>crubs</h1>
                 <span id="completionBadge" class="completion-badge" style="display:none;">100%</span>
             </div>
-            <div class="start-tagline">Small text based farming game.</div>
+            <div class="start-tagline">"Small" text based farming game.</div>
             <div class="start-controls">
                 <button class="start-btn" id="startBtn">> START</button>
                 <button class="icon-btn" id="discordBtn" title="Discord">
@@ -1011,18 +1180,24 @@
 
         <div id="gameScreen">
             <div class="hud">
-                <div class="wallet">$<span id="coinDisplay">40</span></div>
-                <div class="toolbar">
-                    <button class="tool-btn" id="toolHand" data-tooltip="Harvest (H)">H</button>
-                    <button class="tool-btn" id="toolWater" data-tooltip="Water (W)">W</button>
-                    <button class="tool-btn" id="toolInfo" data-tooltip="Info hover (I)">I</button>
-                    <button class="tool-btn" id="toolHoe" data-tooltip="Plant seed (P)">P</button>
-                    <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
-                    <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal — 10 coins"
-                        style="display:none;">B</button>
+                <div class="hud-left">
+                    <div class="wallet">$<span id="coinDisplay">40</span></div>
                 </div>
-                <div class="selected-seed" id="selectedSeedDisplay">CAR (6)</div>
-                <div class="weather-hud" id="weatherHud">NO WEATHER</div>
+                <div class="hud-center">
+                    <div class="toolbar">
+                        <button class="tool-btn" id="toolHand" data-tooltip="Harvest (H)">H</button>
+                        <button class="tool-btn" id="toolWater" data-tooltip="Water (W)">W</button>
+                        <button class="tool-btn" id="toolInfo" data-tooltip="Info hover (I)">I</button>
+                        <button class="tool-btn" id="toolHoe" data-tooltip="Plant seed (P)">P</button>
+                        <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
+                        <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal — 10 coins"
+                            style="display:none;">B</button>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <div class="selected-seed status-chip" id="selectedSeedDisplay">CAR (6)</div>
+                    <div class="weather-hud status-chip" id="weatherHud">NO WEATHER</div>
+                </div>
             </div>
 
             <div class="main-area">
@@ -1044,18 +1219,28 @@
                     <div class="shop-list" id="sellList"></div>
 
                     <div class="footer">
-                        <div class="footer-grid">
-                            <button id="exoticBtn">EXOTIC</button>
-                            <button id="toolShopBtn">SHOP</button>
-                            <button id="blackMarketBtn">MARKET</button>
-                            <button id="pdfReaderBtn">READER</button>
-                            <button id="achievementsBtn">ACHIEVE</button>
-                            <button id="weatherBtn">WEATHER</button>
+                        <div class="footer-section">
+                            <div class="footer-section-title">NAVIGATION</div>
+                            <div class="footer-grid">
+                                <button id="exoticBtn">EXOTIC</button>
+                                <button id="toolShopBtn">SHOP</button>
+                                <button id="blackMarketBtn">MARKET</button>
+                                <button id="pdfReaderBtn">READER</button>
+                                <button id="achievementsBtn">ACHIEVE</button>
+                                <button id="weatherBtn">WEATHER</button>
+                                <button id="stockBtn">STOCK</button>
+                                <button id="bossBtn">BOSS</button>
+                                <button id="calculatorBtn">CALC</button>
+                            </div>
                         </div>
-                        <div class="footer-meta">
-                            <button id="menuBtn">MENU</button>
-                            <button id="helpBtn">HELP</button>
-                            <button id="resetBtn">RESET</button>
+                        <div class="footer-section">
+                            <div class="footer-section-title">UTILITY</div>
+                            <div class="footer-meta">
+                                <button id="menuBtn">MENU</button>
+                                <button id="helpBtn">HELP</button>
+                                <button id="journalBtn">JOURNAL</button>
+                                <button id="noteBtn" style="display:none;">NOTE</button>
+                            </div>
                         </div>
                     </div>
 
@@ -1073,6 +1258,10 @@
                 <h3>GETTING STARTED</h3>
                 <p>Select a tool, then click tiles on your farm. Start with carrot seeds — buy more from the seed shop.
                 </p>
+            </div>
+            <div class="help-section" data-no-filter>
+                <input id="helpSearch" type="text" placeholder="search help..."
+                    style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 10px; letter-spacing:1px;">
             </div>
             <div class="help-section">
                 <h3>TOOLS</h3>
@@ -1113,6 +1302,21 @@
                 <h3>EXOTIC PLANTS</h3>
                 <p>Roll for 200 coins. Slow growing but high value. Rarer = lower chance.</p>
             </div>
+            <div class="help-section">
+                <h3>STOCK MARKET</h3>
+                <p>Pick a crop and watch the simulated price chart. Hit BUY/SELL to trade at the shown integer price —
+                    holding the buttons speeds the trade.</p>
+            </div>
+            <div class="help-section">
+                <h3>BEETROOT BOSS</h3>
+                <p>The beetroot boss cycles through 20 random requests before demanding 10 UZZY seeds. Feeding it
+                    consumes crops but unlocks an achievement.</p>
+            </div>
+            <div class="help-section">
+                <h3>FARM CALCULATOR</h3>
+                <p>Compare crop sell value vs growth speed, plug in custom crops, and use the speed/cost calculator to
+                    see how long until a purchase pays back.</p>
+            </div>
             <button class="close-btn" id="closeHelpBtn">CLOSE</button>
         </div>
     </div>
@@ -1134,6 +1338,16 @@
                 </div>
             </div>
             <button class="close-btn" id="closeAchievementsBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <h2>> NOTE FROM DEV</h2>
+            <p style="font-size:0.9rem; line-height:1.6;">Thank you for playing da game, i dont think that many people
+                have won tbh, also if you type "a i x" on your keyboard a cheat menu pops up!</p>
+            <p style="font-size:0.8rem; color:#bbb;">- AIX</p>
+            <button class="close-btn" id="closeNoteBtn">CLOSE</button>
         </div>
     </div>
 
@@ -1247,6 +1461,112 @@
         </div>
     </div>
 
+    <div id="stockModal" class="modal">
+        <div class="modal-content">
+            <h2>> STOCK MARKET</h2>
+            <p>Pick a crop, watch the volatile chart, and time your buys/sells. The market swings randomly — profits are
+                not guaranteed.</p>
+            <div style="display:flex; flex-direction:column; gap:8px; margin:12px 0;">
+                <label style="font-size:0.7rem; letter-spacing:1px;">SELECT CROP</label>
+                <select id="stockCropSelect"
+                    style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
+                <span>CURRENT PRICE</span>
+                <strong id="stockCurrentPrice">$0.00</strong>
+            </div>
+            <canvas id="stockChart" height="160"
+                style="width:100%; border:var(--border); margin-top:8px; background:#010101;"></canvas>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+                <button class="buy-btn tool-btn" id="stockBuyBtn" style="flex:1;">BUY</button>
+                <button class="sell-btn tool-btn" id="stockSellBtn" style="flex:1;">SELL</button>
+            </div>
+            <div style="margin-top:12px; font-size:0.75rem; color:var(--c-dim);">
+                Holdings:
+            </div>
+            <div id="stockHoldingsList" style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;"></div>
+            <div style="margin-top:10px; font-size:0.7rem; color:#aaa;" id="stockHint">Average cost and unrealized gain
+                update as the price moves.</div>
+            <button class="close-btn" id="closeStockBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="bossModal" class="modal">
+        <div class="modal-content">
+            <h2>> BEETROOT BOSS</h2>
+            <div class="boss-layout">
+                <div class="boss-art">
+                    <pre>(b)</pre>
+                </div>
+                <div class="boss-description">
+                    <p>The beetroot monster demands tribute. Feed it 30 of a random crop 20 times, then finish it with
+                        10 UZZY seeds. Each tribute drains crops but keeps the challenge alive.</p>
+                    <div class="boss-stats">
+                        <div id="bossRequest" class="boss-request"></div>
+                        <div id="bossProgress" class="boss-progress"></div>
+                        <div id="bossQueue" class="boss-queue"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="tool-btn" id="feedBossBtn">FEED BEETROOT</button>
+            <div class="boss-status" id="bossStatus">Deliver exactly what's asked to keep the monster hungry.</div>
+            <button class="close-btn" id="closeBossBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="calculatorModal" class="modal">
+        <div class="modal-content">
+            <h2>> FARM CALCULATOR</h2>
+            <p>Compare crop speed vs reward, test custom entries, and see how long upgrades need to pay for themselves.
+            </p>
+            <div
+                style="margin:12px 0; border:var(--border); padding:8px; display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.7rem; letter-spacing:1px;">COMPARE CROP</label>
+                <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <select id="calcCropSelect"
+                        style="flex:1; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
+                    <div id="calcStatValue" style="font-size:0.85rem; letter-spacing:1px;"></div>
+                </div>
+                <div id="calcCropStats" style="font-size:0.75rem; color:#ccc;"></div>
+                <div id="calcComparisonList"
+                    style="display:flex; flex-wrap:wrap; gap:4px; font-size:0.65rem; color:#aaa;"></div>
+            </div>
+            <div
+                style="margin-bottom:12px; border:var(--border); padding:8px; display:flex; flex-direction:column; gap:6px;">
+                <div style="font-size:0.7rem; letter-spacing:1px;">SPEED VS COST</div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <input id="calcSpeedInput" type="number" placeholder="growth speed" min="0" step="0.1"
+                        style="flex:1; background:var(--c-bg); border:var(--border); color:var(--c-fg); font-family:inherit; padding:6px 8px;">
+                    <input id="calcCostInput" type="number" placeholder="cost" min="0" step="1"
+                        style="flex:1; background:var(--c-bg); border:var(--border); color:var(--c-fg); font-family:inherit; padding:6px 8px;">
+                </div>
+                <div id="calcCostResult" style="font-size:0.7rem; color:var(--c-dim);"></div>
+            </div>
+            <div class="custom-area" id="calcCustomArea">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.7rem; letter-spacing:1px;">CUSTOM CROPS</span>
+                    <button class="tool-btn" id="calcClearCustom"
+                        style="font-size:0.6rem; padding:4px 8px;">CLEAR</button>
+                </div>
+                <div id="calcCustomList" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <input id="calcCustomName" placeholder="name"
+                        style="flex:1; background:var(--c-bg); border:var(--border); color:var(--c-fg); padding:6px 8px;"
+                        maxlength="12">
+                    <input id="calcCustomSpeed" type="number" placeholder="speed" min="0" step="0.1"
+                        style="width:120px; background:var(--c-bg); border:var(--border); color:var(--c-fg); padding:6px 8px;">
+                    <input id="calcCustomPrice" type="number" placeholder="sell" min="0" step="1"
+                        style="width:120px; background:var(--c-bg); border:var(--border); color:var(--c-fg); padding:6px 8px;">
+                    <button class="tool-btn" id="calcAddCustomBtn" style="padding:6px 14px;">ADD</button>
+                </div>
+                <div class="custom-overlay" id="customFeatureOverlay">
+                    After you 100% the game you get this feature.
+                </div>
+            </div>
+            <button class="close-btn" id="closeCalculatorBtn">CLOSE</button>
+        </div>
+    </div>
+
     <!-- NEW: JOURNAL MODAL -->
     <div id="journalModal" class="modal">
         <div class="modal-content" style="max-width:520px;">
@@ -1264,7 +1584,10 @@
                     GROWN</div>
                 <div id="journalTopCrops" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
             </div>
-            <button class="close-btn" id="closeJournalBtn">CLOSE</button>
+            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:12px;">
+                <button class="tool-btn" id="journalResetBtn" style="padding:6px 14px;">RESET</button>
+                <button class="close-btn" id="closeJournalBtn">CLOSE</button>
+            </div>
         </div>
     </div>
 
@@ -1274,10 +1597,16 @@
         <button id="cheatClear">☁</button>
         <button id="cheatClose">✖</button>
     </div>
+    <div id="achievementPopup">
+        <div class="popup-content">
+            <h3 id="achievementPopupTitle"></h3>
+            <p id="achievementPopupDesc"></p>
+        </div>
+    </div>
 
     <script>
         (function () {
-            const VERSION = '1.0';
+            const VERSION = '1.5';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -1299,9 +1628,10 @@
             const EXOTIC_PRICES = [50, 100, 150, 200, 250, 300];
             const EXOTIC_START_ID = COUNT;
             for (let i = 0; i < EXOTIC_NAMES.length; i++) {
-                DATA.push({ id: EXOTIC_START_ID + i, name: EXOTIC_NAMES[i], abbr: EXOTIC_NAMES[i].substring(0, 3).toUpperCase(), buy: 9999, sell: EXOTIC_PRICES[i] * 2, waterUse: 0.1, growthSpeed: 0.25, perennial: false });
+                DATA.push({ id: EXOTIC_START_ID + i, name: EXOTIC_NAMES[i], abbr: EXOTIC_NAMES[i].substring(0, 3).toUpperCase(), buy: 9999, sell: EXOTIC_PRICES[i] * 3, waterUse: 0.1, growthSpeed: 0.25, perennial: false });
             }
             COUNT = DATA.length;
+            const UZZY_ID = EXOTIC_START_ID + EXOTIC_NAMES.indexOf('UZZY');
 
             const COMPANIONS = { 6: [15], 15: [6] };
             const COMPANION_BOOST = 1.2;
@@ -1324,7 +1654,8 @@
                 { id: 13, name: "Exotic Master", desc: "Obtain all six exotic seeds", check: (s) => s.exoticObtained.every(v => v) },
                 { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 },
                 { id: 15, name: "Ultimate Farmer", desc: "Reach 5000 total harvests", check: (s) => s.totalHarvested >= 5000 },
-                { id: 16, name: "Journaler", desc: "Log 10 journal entries", check: (s) => s.journalEntries >= 10 }
+                { id: 16, name: "Journaler", desc: "Log 10 journal entries", check: (s) => s.journalEntries >= 10 },
+                { id: 17, name: "I Fed the Monster", desc: "Keep the beetroot boss alive by feeding it through its frenzy.", check: (s) => (s.monsterFed || 0) >= 1 }
             ];
             const ACHIEVEMENT_COUNT = ACHIEVEMENTS.length;
 
@@ -1336,7 +1667,7 @@
                 totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(),
                 grownOriginalCount: 0, coins: 40, waterCount: 0, perennialHarvested: 0,
                 totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false),
-                blackMarketSales: 0, journalEntries: 0
+                blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0
             };
             let achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
 
@@ -1356,6 +1687,19 @@
 
             let journalLog = [];
             let sessionStart = Date.now();
+            let achievementPopupTimeout = null;
+            const MARKET_LIMIT = 42;
+            const STOCK_HISTORY_LENGTH = 60;
+            const BOSS_ROUNDS = 20;
+            let stockInterval = null;
+            let stockState = {
+                selected: 0,
+                price: DATA[0].sell,
+                history: [],
+                positions: Array.from({ length: MARKET_LIMIT }, () => ({ qty: 0, avgCost: 0 }))
+            };
+            let bossState = { queue: [], index: 0 };
+            let calcCustomEntries = [];
 
             function addJournalEntry(text) {
                 let now = new Date();
@@ -1363,6 +1707,42 @@
                 journalLog.unshift('[' + hm + '] ' + text);
                 if (journalLog.length > 50) journalLog.pop();
                 stats.journalEntries = (stats.journalEntries || 0) + 1;
+            }
+
+            function attachHoldAction(btn, handler) {
+                if (!btn) return;
+                let timer = null;
+                let startTime = 0;
+                btn._skipClick = false;
+                const stop = () => {
+                    if (timer) { clearTimeout(timer); timer = null; }
+                    btn.classList.remove('active');
+                };
+                const loop = () => {
+                    if (btn.disabled) { stop(); return; }
+                    const elapsed = Date.now() - startTime;
+                    const delay = Math.max(80, 380 - Math.floor(elapsed / 250) * 60);
+                    timer = setTimeout(() => {
+                        handler();
+                        loop();
+                    }, delay);
+                };
+                const start = (e) => {
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
+                    e.preventDefault();
+                    if (btn.disabled) return;
+                    handler();
+                    btn._skipClick = true;
+                    btn.classList.add('active');
+                    startTime = Date.now();
+                    timer = setTimeout(loop, 360);
+                };
+                btn.addEventListener('pointerdown', start);
+                ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => btn.addEventListener(evt, stop));
+                btn.addEventListener('click', (e) => {
+                    if (btn._skipClick) { btn._skipClick = false; e.preventDefault(); return; }
+                    handler();
+                });
             }
 
             function cyrb53(str, seed = 0) {
@@ -1465,6 +1845,322 @@
                 updateWeatherHud();
             }
 
+            function ensureBossQueue() {
+                if (!bossState.queue || bossState.queue.length !== BOSS_ROUNDS) generateBossQueue();
+            }
+
+            function generateBossQueue() {
+                bossState.queue = Array.from({ length: BOSS_ROUNDS }, () => Math.floor(Math.random() * MARKET_LIMIT));
+                bossState.index = 0;
+            }
+
+            function getBossRequest() {
+                ensureBossQueue();
+                if (bossState.index < BOSS_ROUNDS) {
+                    const target = bossState.queue[bossState.index];
+                    return { id: target, amount: 30, phase: bossState.index + 1 };
+                }
+                return { id: UZZY_ID, amount: 10, phase: BOSS_ROUNDS + 1 };
+            }
+
+            function updateBossModal() {
+                const req = getBossRequest();
+                const label = DATA[req.id].name;
+                const stage = Math.min(req.phase, BOSS_ROUNDS + 1);
+                const requestEl = document.getElementById('bossRequest');
+                const progressEl = document.getElementById('bossProgress');
+                const queueEl = document.getElementById('bossQueue');
+                if (requestEl) requestEl.textContent = `Round ${stage}/${BOSS_ROUNDS + 1} — ${req.amount} ${label}`;
+                if (progressEl) progressEl.textContent = `Tributes completed: ${Math.min(bossState.index, BOSS_ROUNDS)}/${BOSS_ROUNDS}`;
+                if (queueEl) {
+                    if (bossState.index < BOSS_ROUNDS) queueEl.textContent = `Random requests remaining: ${Math.max(0, BOSS_ROUNDS - bossState.index)}`;
+                    else queueEl.textContent = 'Final challenge: 10 UZZY seeds';
+                }
+            }
+
+            function feedBoss() {
+                const req = getBossRequest();
+                if (!req) return;
+                if ((crops[req.id] || 0) < req.amount) {
+                    showMessage(`need ${req.amount} ${DATA[req.id].abbr}`);
+                    return;
+                }
+                crops[req.id] -= req.amount;
+                addJournalEntry(`Fed boss ${req.amount} ${DATA[req.id].name}.`);
+                if (bossState.index < BOSS_ROUNDS) {
+                    bossState.index++;
+                    showMessage(`boss accepted ${req.amount} ${DATA[req.id].abbr}`);
+                } else {
+                    coins = 0;
+                    stats.monsterFed = (stats.monsterFed || 0) + 1;
+                    showMessage('Beetroot satisfied — wallet wiped.');
+                    addJournalEntry('I fed the monster and lost my coins.');
+                    generateBossQueue();
+                }
+                updateUI();
+                updateBossModal();
+                checkAchievements();
+            }
+
+            function populateStockSelect() {
+                const select = document.getElementById('stockCropSelect');
+                if (!select) return;
+                select.innerHTML = '';
+                for (let i = 0; i < MARKET_LIMIT; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${DATA[i].abbr} · ${DATA[i].name}`;
+                    select.appendChild(option);
+                }
+                select.value = stockState.selected;
+            }
+
+            function changeStockCrop(id) {
+                stockState.selected = id;
+                stockState.price = DATA[id].sell;
+                stockState.history = [stockState.price];
+                updateStockInfo();
+                drawStockChart();
+            }
+
+            function updateStockInfo() {
+                const priceEl = document.getElementById('stockCurrentPrice');
+                if (priceEl) priceEl.textContent = `$${stockState.price.toFixed(2)}`;
+                const position = stockState.positions[stockState.selected];
+                const hintEl = document.getElementById('stockHint');
+                if (hintEl) {
+                    if (position && position.qty > 0) {
+                        const unrealized = (stockState.price - position.avgCost) * position.qty;
+                        hintEl.textContent = `Avg $${position.avgCost.toFixed(2)} · Unrealized ${unrealized >= 0 ? '+' : ''}$${unrealized.toFixed(2)}`;
+                    } else {
+                        hintEl.textContent = 'No holdings for this crop.';
+                    }
+                }
+                const listEl = document.getElementById('stockHoldingsList');
+                if (listEl) {
+                    listEl.innerHTML = '';
+                    let any = false;
+                    stockState.positions.forEach((pos, idx) => {
+                        if (pos.qty > 0) {
+                            const badge = document.createElement('span');
+                            badge.className = 'inv-badge';
+                            const profit = ((stockState.price - pos.avgCost) * pos.qty).toFixed(2);
+                            badge.textContent = `${DATA[idx].abbr} ×${pos.qty} avg $${pos.avgCost.toFixed(2)} (${profit >= 0 ? '+' : ''}$${profit})`;
+                            listEl.appendChild(badge);
+                            any = true;
+                        }
+                    });
+                    if (!any) listEl.innerHTML = '<span style="color:var(--c-dim); font-size:0.7rem;">no stock positions</span>';
+                }
+            }
+
+            function drawStockChart() {
+                const canvas = document.getElementById('stockChart');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const width = canvas.clientWidth;
+                const height = canvas.height;
+                const ratio = window.devicePixelRatio || 1;
+                canvas.width = Math.max(220, width) * ratio;
+                canvas.height = height * ratio;
+                ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+                ctx.clearRect(0, 0, width, height);
+                const history = stockState.history.slice();
+                if (history.length === 0) return;
+                const max = Math.max(...history);
+                const min = Math.min(...history);
+                const range = Math.max(1, max - min);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#66ff88';
+                ctx.fillStyle = 'rgba(102,255,136,0.15)';
+                ctx.beginPath();
+                history.forEach((value, index) => {
+                    const x = (index / (history.length - 1 || 1)) * width;
+                    const y = height - ((value - min) / range) * height;
+                    if (index === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                history.forEach((value, index) => {
+                    const x = (index / (history.length - 1 || 1)) * width;
+                    const y = height - ((value - min) / range) * height;
+                    if (index === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+            }
+
+            function tickStockPrice() {
+                const volatility = (Math.random() * 2 - 1) * 0.04;
+                const maxPrice = DATA[stockState.selected].sell * 3;
+                const nextRaw = Math.max(1, Math.min(maxPrice, stockState.price * (1 + volatility)));
+                const next = Math.round(nextRaw);
+                stockState.price = next;
+                stockState.history.push(next);
+                if (stockState.history.length > STOCK_HISTORY_LENGTH) stockState.history.shift();
+                updateStockInfo();
+                drawStockChart();
+            }
+
+            function stopStockTicker() {
+                if (stockInterval) {
+                    clearInterval(stockInterval);
+                    stockInterval = null;
+                }
+            }
+
+            function startStockTicker() {
+                stopStockTicker();
+                changeStockCrop(stockState.selected);
+                stockInterval = setInterval(tickStockPrice, 1200);
+            }
+
+            function tradeStock(action) {
+                const id = stockState.selected;
+                const price = stockState.price;
+                const position = stockState.positions[id];
+                if (action === 'buy') {
+                    if (coins < price) {
+                        showMessage(`need $${Math.max(0, (price - coins)).toFixed(2)} more`);
+                        return;
+                    }
+                    coins -= price;
+                    const total = position.avgCost * position.qty + price;
+                    position.qty++;
+                    position.avgCost = total / position.qty;
+                    showMessage(`bought ${DATA[id].abbr} stock $${price.toFixed(2)}`);
+                    addJournalEntry(`Stock buy — ${DATA[id].name} for $${price.toFixed(2)}.`);
+                } else {
+                    if (position.qty <= 0) {
+                        showMessage('no holdings');
+                        return;
+                    }
+                    position.qty--;
+                    coins += price;
+                    if (position.qty === 0) position.avgCost = 0;
+                    showMessage(`sold ${DATA[id].abbr} stock +$${price.toFixed(2)}`);
+                    addJournalEntry(`Stock sell — ${DATA[id].name} for $${price.toFixed(2)}.`);
+                }
+                updateUI();
+                updateStockInfo();
+                checkAchievements();
+            }
+
+            function populateCalcCropSelect() {
+                const select = document.getElementById('calcCropSelect');
+                if (!select) return;
+                select.innerHTML = '';
+                for (let i = 0; i < COUNT; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${DATA[i].abbr} · ${DATA[i].name}`;
+                    select.appendChild(option);
+                }
+            }
+
+            function refreshCalcStats() {
+                const select = document.getElementById('calcCropSelect');
+                const statEl = document.getElementById('calcStatValue');
+                const infoEl = document.getElementById('calcCropStats');
+                const comparisonEl = document.getElementById('calcComparisonList');
+                if (!select || !statEl || !infoEl || !comparisonEl) return;
+                const idx = +select.value;
+                const crop = DATA[idx];
+                const timePer = crop.growthSpeed > 0 ? (100 / crop.growthSpeed).toFixed(1) : '—';
+                const valuePerMin = crop.growthSpeed > 0 ? (crop.sell * crop.growthSpeed * 0.6).toFixed(1) : '0.0';
+                statEl.textContent = `≈ $${valuePerMin}/min`;
+                infoEl.textContent = `Sell $${crop.sell} · Growth ${crop.growthSpeed.toFixed(2)} · ~${timePer}s/harvest`;
+                const top = DATA.slice(0, MARKET_LIMIT).map((p, i) => ({ idx: i, value: p.sell * p.growthSpeed })).sort((a, b) => b.value - a.value).slice(0, 3);
+                comparisonEl.innerHTML = '';
+                top.forEach(entry => {
+                    const badge = document.createElement('span');
+                    badge.className = 'inv-badge';
+                    const p = DATA[entry.idx];
+                    badge.textContent = `${p.abbr} $${p.sell} · ${(entry.value * 0.6).toFixed(1)}/min`;
+                    comparisonEl.appendChild(badge);
+                });
+            }
+
+            function updateCalcCostResult() {
+                const speedInput = document.getElementById('calcSpeedInput');
+                const costInput = document.getElementById('calcCostInput');
+                const select = document.getElementById('calcCropSelect');
+                const resultEl = document.getElementById('calcCostResult');
+                if (!speedInput || !costInput || !select || !resultEl) return;
+                const speed = parseFloat(speedInput.value) || 0;
+                const cost = parseFloat(costInput.value) || 0;
+                const crop = DATA[+select.value];
+                if (speed <= 0 || cost <= 0 || !crop || crop.sell <= 0) {
+                    resultEl.textContent = 'Enter positive speed/cost and select a crop to see pay back.';
+                    return;
+                }
+                const timePerHarvest = 100 / speed;
+                const harvests = Math.max(1, Math.ceil(cost / crop.sell));
+                const totalTime = (timePerHarvest * harvests).toFixed(1);
+                resultEl.textContent = `~${timePerHarvest.toFixed(1)}s/harvest · ${harvests} harvests to recover $${cost} (~${totalTime}s).`;
+            }
+
+            function renderCalcCustomList() {
+                const container = document.getElementById('calcCustomList');
+                if (!container) return;
+                container.innerHTML = '';
+                if (calcCustomEntries.length === 0) {
+                    container.innerHTML = '<span style="color:var(--c-dim); font-size:0.7rem;">no custom entries yet</span>';
+                    return;
+                }
+                calcCustomEntries.forEach(entry => {
+                    const badge = document.createElement('span');
+                    badge.className = 'inv-badge';
+                    const value = (entry.sell * entry.speed * 0.6).toFixed(1);
+                    badge.textContent = `${entry.name}: $${entry.sell} @ ${entry.speed.toFixed(1)} → ${value}/min`;
+                    container.appendChild(badge);
+                });
+            }
+
+            function updateCustomOverlay() {
+                const overlay = document.getElementById('customFeatureOverlay');
+                if (!overlay) return;
+                const unlocked = achievements.every(v => v);
+                overlay.style.display = unlocked ? 'none' : 'flex';
+            }
+
+            function addCalcCustomEntry() {
+                const nameInput = document.getElementById('calcCustomName');
+                const speedInput = document.getElementById('calcCustomSpeed');
+                const priceInput = document.getElementById('calcCustomPrice');
+                if (!nameInput || !speedInput || !priceInput) return;
+                const name = nameInput.value.trim().toUpperCase();
+                const speed = parseFloat(speedInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                if (!name || speed <= 0 || price <= 0) {
+                    showMessage('Enter a name, speed, and sell price.');
+                    return;
+                }
+                calcCustomEntries.unshift({ name, speed, sell: price });
+                if (calcCustomEntries.length > 5) calcCustomEntries.pop();
+                nameInput.value = '';
+                speedInput.value = '';
+                priceInput.value = '';
+                renderCalcCustomList();
+            }
+
+            function clearCalcCustomEntries() {
+                calcCustomEntries = [];
+                renderCalcCustomList();
+            }
+
+            function updateCalculator() {
+                populateCalcCropSelect();
+                refreshCalcStats();
+                renderCalcCustomList();
+                updateCalcCostResult();
+                updateCustomOverlay();
+            }
+
             class Plot {
                 constructor() { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; this.plantTime = 0; }
 
@@ -1531,6 +2227,18 @@
                 bar.innerText = msg;
                 if (messageTimeout) clearTimeout(messageTimeout);
                 if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2200);
+            }
+
+            function showAchievementPopup(title, desc) {
+                const popup = document.getElementById('achievementPopup');
+                if (!popup) return;
+                document.getElementById('achievementPopupTitle').textContent = title;
+                document.getElementById('achievementPopupDesc').textContent = desc;
+                popup.classList.add('active');
+                if (achievementPopupTimeout) clearTimeout(achievementPopupTimeout);
+                achievementPopupTimeout = setTimeout(() => {
+                    popup.classList.remove('active');
+                }, 3200);
             }
 
             function renderGrid() {
@@ -1611,6 +2319,34 @@
                 renderGrid(); updateUI();
             }
 
+            function buySeed(id) {
+                const price = DATA[id].buy;
+                if (coins >= price) {
+                    coins -= price;
+                    seeds[id]++;
+                    showMessage(`bought ${DATA[id].abbr}`);
+                    addJournalEntry(`Bought ${DATA[id].name} seed for $${price}.`);
+                    updateUI();
+                    renderGrid();
+                    checkAchievements();
+                } else {
+                    showMessage(`need $${price - coins} more`);
+                }
+            }
+
+            function sellCrop(id) {
+                if (crops[id] > 0) {
+                    const price = DATA[id].sell;
+                    crops[id]--;
+                    coins += price;
+                    showMessage(`sold ${DATA[id].abbr} +$${price}`);
+                    addJournalEntry(`Sold ${DATA[id].name} for $${price}.`);
+                    updateUI();
+                    renderGrid();
+                    checkAchievements();
+                }
+            }
+
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
                 ['toolHand', 'toolWater', 'toolInfo', 'toolHoe', 'toolDelete'].forEach(id => document.getElementById(id).classList.remove('active'));
@@ -1635,29 +2371,41 @@
                 }
 
                 let buyDiv = document.getElementById('buyList'); buyDiv.innerHTML = '';
-                DATA.forEach((p, i) => {
-                    if (i < 42) {
-                        let row = document.createElement('div'); row.className = 'shop-row';
-                        row.innerHTML = `<span>${p.abbr} ${p.name}${p.perennial ? ' (P)' : ''}</span><span>$${p.buy}</span><button class="buy-btn" data-id="${i}">BUY</button>`;
-                        buyDiv.appendChild(row);
-                    }
-                });
-                buyDiv.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); let id = +e.target.dataset.id, price = DATA[id].buy;
-                    if (coins >= price) { coins -= price; seeds[id]++; showMessage(`bought ${DATA[id].abbr}`); addJournalEntry(`Bought ${DATA[id].name} seed for $${price}.`); updateUI(); renderGrid(); checkAchievements(); }
-                    else showMessage(`need $${price - coins} more`);
-                }));
+                for (let i = 0; i < MARKET_LIMIT; i++) {
+                    let p = DATA[i];
+                    let row = document.createElement('div'); row.className = 'shop-row';
+                    let label = document.createElement('span');
+                    label.textContent = `${p.abbr} ${p.name}${p.perennial ? ' (P)' : ''}`;
+                    let price = document.createElement('span');
+                    price.textContent = `$${p.buy}`;
+                    let btn = document.createElement('button');
+                    btn.className = 'buy-btn';
+                    btn.textContent = 'BUY';
+                    attachHoldAction(btn, () => buySeed(i));
+                    row.appendChild(label);
+                    row.appendChild(price);
+                    row.appendChild(btn);
+                    buyDiv.appendChild(row);
+                }
 
                 let sellDiv = document.getElementById('sellList'); sellDiv.innerHTML = '';
-                for (let i = 0; i < COUNT; i++) if (crops[i] > 0) {
-                    let p = DATA[i]; let row = document.createElement('div'); row.className = 'shop-row';
-                    row.innerHTML = `<span>${p.abbr} x${crops[i]}</span><span>$${p.sell}</span><button class="sell-btn" data-id="${i}">SELL</button>`;
+                for (let i = 0; i < COUNT; i++) {
+                    if (crops[i] <= 0) continue;
+                    let p = DATA[i];
+                    let row = document.createElement('div'); row.className = 'shop-row';
+                    let label = document.createElement('span');
+                    label.textContent = `${p.abbr} x${crops[i]}`;
+                    let price = document.createElement('span');
+                    price.textContent = `$${p.sell}`;
+                    let btn = document.createElement('button');
+                    btn.className = 'sell-btn';
+                    btn.textContent = 'SELL';
+                    attachHoldAction(btn, () => sellCrop(i));
+                    row.appendChild(label);
+                    row.appendChild(price);
+                    row.appendChild(btn);
                     sellDiv.appendChild(row);
                 }
-                sellDiv.querySelectorAll('.sell-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); let id = +e.target.dataset.id;
-                    if (crops[id] > 0) { crops[id]--; coins += DATA[id].sell; showMessage(`sold ${DATA[id].abbr} +$${DATA[id].sell}`); addJournalEntry(`Sold ${DATA[id].name} for $${DATA[id].sell}.`); updateUI(); renderGrid(); checkAchievements(); }
-                }));
 
                 updateExoticModal(); checkAchievements();
                 document.getElementById('buyWaterUpgrade').disabled = upgrades.waterArea;
@@ -1667,7 +2415,23 @@
                 document.getElementById('buyHarvestUpgrade').textContent = upgrades.harvestArea ? 'OWNED' : 'BUY';
                 document.getElementById('buyBonemealUpgrade').textContent = upgrades.bonemealUnlocked ? 'OWNED' : 'BUY';
                 if (document.getElementById('blackMarketModal').classList.contains('active')) updateBlackMarketModal();
-                document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
+                const allDone = achievements.every(v => v);
+                document.getElementById('completionBadge').style.display = allDone ? 'inline-block' : 'none';
+                updateNoteButton();
+            }
+
+            function updateNoteButton() {
+                const noteBtn = document.getElementById('noteBtn');
+                if (!noteBtn) return;
+                noteBtn.style.display = achievements.every(v => v) ? 'inline-flex' : 'none';
+            }
+
+            function unlockDevNote() {
+                if (stats.devNoteSent) return;
+                stats.devNoteSent = 1;
+                addJournalEntry('Note from dev unlocked: thanks for playing!');
+                showMessage('Note from dev unlocked!');
+                updateNoteButton();
             }
 
             function checkAchievements() {
@@ -1677,10 +2441,13 @@
                     if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) {
                         achievements[i] = true; showMessage(`★ ACHIEVEMENT: ${ACHIEVEMENTS[i].name}`);
                         addJournalEntry(`Achievement unlocked: ${ACHIEVEMENTS[i].name}`);
+                        showAchievementPopup(ACHIEVEMENTS[i].name, ACHIEVEMENTS[i].desc);
                         let card = document.querySelector(`.achievement-card[data-index="${i}"]`);
                         if (card) { card.classList.add('new'); setTimeout(() => card.classList.remove('new'), 1500); }
                     }
                 }
+                updateCustomOverlay();
+                if (achievements.every(v => v)) unlockDevNote();
             }
 
             function updateAchievementsModal() {
@@ -1702,6 +2469,7 @@
                         else if (i === 14) desc += `\nSales: ${stats.blackMarketSales}`;
                         else if (i === 15) desc += `\n${stats.totalHarvested}/5000`;
                         else if (i === 16) desc += `\n${stats.journalEntries || 0}/10`;
+                        else if (i === 17) desc += `\n${stats.monsterFed || 0}/1`;
                         document.getElementById('achievementDetailDesc').textContent = desc;
                         let pv = null;
                         if (i === 1) pv = (stats.cropCounts[15] || 0) / 1000;
@@ -1712,6 +2480,7 @@
                         else if (i === 9) pv = stats.totalSeeds / 1000;
                         else if (i === 15) pv = stats.totalHarvested / 5000;
                         else if (i === 16) pv = (stats.journalEntries || 0) / 10;
+                        else if (i === 17) pv = (stats.monsterFed || 0);
                         let prog = document.getElementById('achievementDetailProgress');
                         if (pv !== null) { prog.style.display = 'block'; document.getElementById('achievementDetailBar').style.width = Math.min(pv, 1) * 100 + '%'; }
                         else prog.style.display = 'none';
@@ -1771,6 +2540,7 @@
                     stat('CROPS IN HAND', totalCrops) +
                     stat('SEEDS IN HAND', totalSeedsCount) +
                     stat('ACHIEVEMENTS', achievements.filter(v => v).length + '/' + ACHIEVEMENT_COUNT) +
+                    stat('BOSS FEEDS', stats.monsterFed || 0) +
                     stat('WATER EVENTS', stats.waterCount);
                 let logEl = document.getElementById('journalLog');
                 if (journalLog.length === 0) logEl.innerHTML = '<span style="color:var(--c-dim);">no entries yet</span>';
@@ -1820,7 +2590,11 @@
             document.getElementById('pdfGoPage').addEventListener('click', () => { let p = +document.getElementById('pdfPageInput').value; if (pdfDoc) { if (p >= 1 && p <= pageCount) { pageNum = p; renderPage(p); } } else if (cbzImages.length > 0) { if (p >= 1 && p <= cbzImages.length) { cbzCurrentPage = p; renderPage(p); } } });
 
             function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
-            function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
+            function closeModal(id) {
+                document.getElementById(id).classList.remove('active');
+                document.body.classList.remove('modal-open');
+                if (id === 'stockModal') stopStockTicker();
+            }
 
             function setWeather(type, cost = 0) {
                 if (cost > 0 && coins < cost) { showMessage(`need ${cost} coins`); return; }
@@ -1846,7 +2620,15 @@
             }
 
             const bindModal = (openId, modalId, closeId) => {
-                document.getElementById(openId).addEventListener('click', () => { openModal(modalId); if (modalId === 'achievementsModal') updateAchievementsModal(); if (modalId === 'blackMarketModal') updateBlackMarketModal(); if (modalId === 'journalModal') updateJournalModal(); });
+                document.getElementById(openId).addEventListener('click', () => {
+                    openModal(modalId);
+                    if (modalId === 'achievementsModal') updateAchievementsModal();
+                    if (modalId === 'blackMarketModal') updateBlackMarketModal();
+                    if (modalId === 'journalModal') updateJournalModal();
+                    if (modalId === 'stockModal') { populateStockSelect(); startStockTicker(); updateStockInfo(); }
+                    if (modalId === 'bossModal') updateBossModal();
+                    if (modalId === 'calculatorModal') updateCalculator();
+                });
                 document.getElementById(closeId).addEventListener('click', () => closeModal(modalId));
                 document.getElementById(modalId).addEventListener('click', (e) => { if (e.target.id === modalId) closeModal(modalId); });
             };
@@ -1857,15 +2639,26 @@
             bindModal('blackMarketBtn', 'blackMarketModal', 'closeBlackMarketBtn');
             bindModal('pdfReaderBtn', 'pdfReaderModal', 'closePdfBtn');
             bindModal('weatherBtn', 'weatherModal', 'closeWeatherBtn');
-            document.getElementById('closeJournalBtn').addEventListener('click', () => closeModal('journalModal'));
-            document.getElementById('journalModal').addEventListener('click', (e) => { if (e.target.id === 'journalModal') closeModal('journalModal'); });
+            bindModal('stockBtn', 'stockModal', 'closeStockBtn');
+            bindModal('bossBtn', 'bossModal', 'closeBossBtn');
+            bindModal('calculatorBtn', 'calculatorModal', 'closeCalculatorBtn');
+            bindModal('journalBtn', 'journalModal', 'closeJournalBtn');
+            bindModal('noteBtn', 'noteModal', 'closeNoteBtn');
 
             document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
             document.getElementById('weatherRainyBtn').addEventListener('click', () => setWeather('rainy', 100));
             document.getElementById('weatherSunnyBtn').addEventListener('click', () => setWeather('sunny', 100));
             document.getElementById('weatherClearBtn').addEventListener('click', () => setWeather('clear', 50));
-
-            document.getElementById('resetBtn').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'block'; document.getElementById('resetStep2').style.display = 'none'; openModal('resetConfirmModal'); });
+            document.getElementById('stockCropSelect').addEventListener('change', (e) => changeStockCrop(+e.target.value));
+            attachHoldAction(document.getElementById('stockBuyBtn'), () => tradeStock('buy'));
+            attachHoldAction(document.getElementById('stockSellBtn'), () => tradeStock('sell'));
+            document.getElementById('feedBossBtn').addEventListener('click', feedBoss);
+            document.getElementById('calcCropSelect').addEventListener('change', () => { refreshCalcStats(); updateCalcCostResult(); });
+            document.getElementById('calcSpeedInput').addEventListener('input', updateCalcCostResult);
+            document.getElementById('calcCostInput').addEventListener('input', updateCalcCostResult);
+            document.getElementById('calcAddCustomBtn').addEventListener('click', addCalcCustomEntry);
+            document.getElementById('calcClearCustom').addEventListener('click', clearCalcCustomEntries);
+            document.getElementById('journalResetBtn').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'block'; document.getElementById('resetStep2').style.display = 'none'; openModal('resetConfirmModal'); });
             document.getElementById('resetYes1').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'none'; document.getElementById('resetStep2').style.display = 'block'; });
             document.getElementById('resetNo1').addEventListener('click', () => closeModal('resetConfirmModal'));
             document.getElementById('resetYes2').addEventListener('click', () => { resetGame(); closeModal('resetConfirmModal'); });
@@ -1897,7 +2690,14 @@
             function saveGame() {
                 let save = {
                     coins, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
-                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0 },
+                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0, monsterFed: stats.monsterFed || 0, devNoteSent: stats.devNoteSent || 0 },
+                    bossState,
+                    stockState: {
+                        selected: stockState.selected,
+                        price: stockState.price,
+                        positions: stockState.positions.map(p => ({ qty: p.qty, avgCost: p.avgCost }))
+                    },
+                    calcCustomEntries,
                     gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime })))
                 };
                 localStorage.setItem('crubsSave', JSON.stringify(save));
@@ -1919,10 +2719,28 @@
                         grownPlants: new Set(d.stats.grownPlants || []), coins: coins, waterCount: d.stats.waterCount || 0,
                         perennialHarvested: d.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
                         fullFarm: false, exoticObtained: d.stats.exoticObtained || new Array(6).fill(false),
-                        grownOriginalCount: 0, blackMarketSales: d.stats.blackMarketSales || 0, journalEntries: d.stats.journalEntries || 0
-                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0 };
+                        grownOriginalCount: 0, blackMarketSales: d.stats.blackMarketSales || 0, journalEntries: d.stats.journalEntries || 0,
+                        monsterFed: d.stats.monsterFed || 0, devNoteSent: d.stats.devNoteSent || 0
+                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0 };
                     if (stats.cropCounts.length < COUNT) stats.cropCounts = stats.cropCounts.concat(new Array(COUNT - stats.cropCounts.length).fill(0));
                     grid = d.gridData.map(row => row.map(pd => { let p = new Plot(); p.plantId = pd.plantId; p.water = pd.water; p.stage = pd.stage; p.prog = pd.prog; p.age = pd.age; p.plantTime = pd.plantTime || 0; return p; }));
+                    if (d.bossState) {
+                        bossState.queue = Array.isArray(d.bossState.queue) ? d.bossState.queue.slice(0, BOSS_ROUNDS) : [];
+                        while (bossState.queue.length < BOSS_ROUNDS) bossState.queue.push(Math.floor(Math.random() * MARKET_LIMIT));
+                        bossState.index = Math.min(d.bossState.index || 0, BOSS_ROUNDS);
+                    } else {
+                        generateBossQueue();
+                    }
+                    if (d.stockState) {
+                        stockState.selected = d.stockState.selected ?? stockState.selected;
+                        stockState.price = d.stockState.price || DATA[stockState.selected].sell;
+                        stockState.positions = stockState.positions.map((p, idx) => {
+                            const saved = (d.stockState.positions || [])[idx];
+                            return { qty: saved ? saved.qty : 0, avgCost: saved ? saved.avgCost : 0 };
+                        });
+                        stockState.history = [stockState.price];
+                    }
+                    calcCustomEntries = d.calcCustomEntries || [];
                     return true;
                 } catch (e) { return false; }
             }
@@ -1932,8 +2750,17 @@
                 crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
                 achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
                 upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
-                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0 };
+                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0 };
                 cheatActive = false; manualWeatherActive = false; manualWeatherType = null; journalLog = [];
+                bossState = { queue: [], index: 0 };
+                generateBossQueue();
+                stockState = {
+                    selected: 0,
+                    price: DATA[0].sell,
+                    history: [],
+                    positions: Array.from({ length: MARKET_LIMIT }, () => ({ qty: 0, avgCost: 0 }))
+                };
+                calcCustomEntries = [];
                 sessionStart = Date.now(); initGrid(); updateUI(); renderGrid(); showMessage('fresh start'); saveGame();
             }
 
@@ -1970,10 +2797,17 @@
                 updateUI(); renderGrid();
                 document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
 
-                let journalFooterBtn = document.createElement('button');
-                journalFooterBtn.id = 'journalBtn'; journalFooterBtn.textContent = 'JOURNAL';
-                journalFooterBtn.addEventListener('click', () => { openModal('journalModal'); updateJournalModal(); });
-                document.querySelector('.footer-grid').appendChild(journalFooterBtn);
+                const helpSearch = document.getElementById('helpSearch');
+                if (helpSearch) {
+                    const helpSections = document.querySelectorAll('#helpModal .help-section:not([data-no-filter])');
+                    helpSearch.addEventListener('input', () => {
+                        const term = helpSearch.value.trim().toLowerCase();
+                        helpSections.forEach(section => {
+                            section.style.display = term === '' || section.textContent.toLowerCase().includes(term) ? '' : 'none';
+                        });
+                    });
+                }
+
             });
         })();
     </script>
