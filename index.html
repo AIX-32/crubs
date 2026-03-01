@@ -142,6 +142,35 @@
             justify-content: center;
         }
 
+        .start-dlc-btn {
+            border: var(--border);
+            background: var(--c-bg);
+            color: var(--c-fg);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s;
+            min-width: 180px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+        }
+
+        .start-dlc-btn:hover:not(:disabled) {
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        .start-dlc-top-left {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 5;
+        }
+
         #installBtn {
             display: none;
         }
@@ -230,6 +259,18 @@
             font-size: 1rem;
             letter-spacing: 1px;
             min-width: 90px;
+        }
+
+        .wallet.gold {
+            border-color: #b78b00;
+            color: #ffe37b;
+            background: #1d1500;
+        }
+
+        .wallet.gold {
+            border-color: #b78b00;
+            color: #ffe37b;
+            background: #1d1500;
         }
 
         .status-chip {
@@ -378,6 +419,17 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            overflow: hidden;
+        }
+
+        .panel-scroll {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            padding-right: 2px;
+            min-height: 0;
         }
 
         .panel h3 {
@@ -430,11 +482,20 @@
         }
 
         .shop-list {
-            max-height: 100px;
+            max-height: 60px;
+            min-height: 100px;
             overflow-y: auto;
             border: var(--border);
             padding: 3px;
             margin-bottom: 4px;
+        }
+
+        #buyList {
+            min-height: 100px;
+        }
+
+        #sellList {
+            min-height: 100px;
         }
 
         .shop-row {
@@ -619,6 +680,145 @@
             color: var(--c-bg);
         }
 
+        .golda-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 60%);
+            pointer-events: none;
+        }
+
+        .golda-modal-actions,
+        .golda-modal-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .golda-modal-row input {
+            flex: 1;
+            border: 1px solid #555;
+            background: #0c0c0c;
+            padding: 8px 10px;
+            font-family: inherit;
+            letter-spacing: 1px;
+            color: var(--c-fg);
+        }
+
+        .golda-modal-actions button,
+        .golda-modal-row button {
+            background: var(--c-bg);
+            color: var(--c-fg);
+            border: var(--border);
+            padding: 8px 12px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .golda-modal-actions button:hover,
+        .golda-modal-row button:hover {
+            background: var(--c-hover);
+        }
+
+        .golda-footnote {
+            font-size: 0.7rem;
+            color: #a3a3a3;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .gold-market-section {
+            border: var(--border);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .gold-market-section span {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .gold-seed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .gold-market-body {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .gold-market-column {
+            flex: 1 1 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 260px;
+        }
+
+        .gold-market-seeds,
+        .gold-market-upgrades {
+            border: 1px solid #333;
+            padding: 8px;
+            background: #050505;
+        }
+
+        .gold-seed-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 2px;
+        }
+
+        .stock-label {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: #bbb;
+            text-transform: uppercase;
+        }
+
+        .gold-seed-row {
+            border: var(--border);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .gold-seed-row span {
+            font-size: 0.8rem;
+            color: var(--c-dim);
+        }
+
+       .gold-seed-row button {
+           background: var(--c-bg);
+           color: var(--c-fg);
+           border: var(--border);
+           padding: 4px 10px;
+           letter-spacing: 1px;
+           cursor: pointer;
+       }
+
+        .gold-seed-row button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 480px) {
             .modal-content {
                 width: calc(100vw - 24px);
@@ -760,6 +960,45 @@
             font-size: 1.1rem;
             margin: 8px 0;
             letter-spacing: 1px;
+        }
+
+        .stock-market-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stock-market-left,
+        .stock-market-right {
+            flex: 1 1 260px;
+            border: var(--border);
+            padding: 10px;
+            background: #050505;
+        }
+
+        .stock-market-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stock-market-right {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stock-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .stock-chart-wrapper {
+            border: var(--border);
+            background: #010101;
+            padding: 6px;
         }
 
         .achievement-grid {
@@ -1160,6 +1399,7 @@
 
     <div class="game-wrapper">
         <div id="startScreen" class="screen">
+            <button class="start-dlc-btn start-dlc-top-left" id="goldaModalTrigger">GOLDa DLC</button>
             <div class="start-title-row">
                 <h1>crubs</h1>
                 <span id="completionBadge" class="completion-badge" style="display:none;">100%</span>
@@ -1176,12 +1416,15 @@
                     <span class="install-text">INSTALL</span>
                 </button>
             </div>
+            <div id="goldaStatus" style="text-align:center; font-size:0.7rem; color:#b3b3b3; letter-spacing:1px;">Golda
+                Edition locked</div>
         </div>
 
         <div id="gameScreen">
             <div class="hud">
                 <div class="hud-left">
                     <div class="wallet">$<span id="coinDisplay">40</span></div>
+                    <div class="wallet gold" id="goldWallet">GOLD <span id="goldNuggetAmount">0</span></div>
                 </div>
                 <div class="hud-center">
                     <div class="toolbar">
@@ -1203,47 +1446,49 @@
             <div class="main-area">
                 <div class="farm-grid" id="farmGrid"></div>
                 <div class="panel">
-                    <div class="inv-section">
-                        <div class="inv-title">> CROPS</div>
-                        <div class="inv-items" id="cropInvList"></div>
-                    </div>
-                    <div class="inv-section">
-                        <div class="inv-title">> SEEDS</div>
-                        <div class="inv-items" id="seedInvList"></div>
-                    </div>
+                    <div class="panel-scroll">
+                        <div class="inv-section">
+                            <div class="inv-title">> CROPS</div>
+                            <div class="inv-items" id="cropInvList"></div>
+                        </div>
+                        <div class="inv-section">
+                            <div class="inv-title">> SEEDS</div>
+                            <div class="inv-items" id="seedInvList"></div>
+                        </div>
 
-                    <h3>> BUY SEEDS</h3>
-                    <div class="shop-list" id="buyList"></div>
+                        <h3>> BUY SEEDS</h3>
+                        <div class="shop-list" id="buyList"></div>
 
-                    <h3>> SELL CROPS</h3>
-                    <div class="shop-list" id="sellList"></div>
+                        <h3>> SELL CROPS</h3>
+                        <div class="shop-list" id="sellList"></div>
 
-                    <div class="footer">
-                        <div class="footer-section">
-                            <div class="footer-section-title">NAVIGATION</div>
-                            <div class="footer-grid">
-                                <button id="exoticBtn">EXOTIC</button>
-                                <button id="toolShopBtn">SHOP</button>
-                                <button id="blackMarketBtn">MARKET</button>
-                                <button id="pdfReaderBtn">READER</button>
-                                <button id="achievementsBtn">ACHIEVE</button>
-                                <button id="weatherBtn">WEATHER</button>
-                                <button id="stockBtn">STOCK</button>
-                                <button id="bossBtn">BOSS</button>
-                                <button id="calculatorBtn">CALC</button>
+                        <div class="footer">
+                            <div class="footer-section">
+                                <div class="footer-section-title">NAVIGATION</div>
+                                <div class="footer-grid">
+                                    <button id="exoticBtn">EXOTIC</button>
+                                    <button id="toolShopBtn">SHOP</button>
+                                    <button id="blackMarketBtn">MARKET</button>
+                                    <button id="pdfReaderBtn">READER</button>
+                                    <button id="achievementsBtn">ACHIEVE</button>
+                                    <button id="weatherBtn">WEATHER</button>
+                                    <button id="stockBtn">STOCK</button>
+                                    <button id="bossBtn">BOSS</button>
+                                    <button id="calculatorBtn">CALC</button>
+                                    <button id="goldenMarketBtn">GOLDa</button>
+                                </div>
+                            </div>
+                            <div class="footer-section">
+                                <div class="footer-section-title">UTILITY</div>
+                                <div class="footer-meta">
+                                    <button id="menuBtn">MENU</button>
+                                    <button id="helpBtn">HELP</button>
+                                    <button id="journalBtn">JOURNAL</button>
+                                    <button id="noteBtn" style="display:none;">NOTE</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="footer-section">
-                            <div class="footer-section-title">UTILITY</div>
-                            <div class="footer-meta">
-                                <button id="menuBtn">MENU</button>
-                                <button id="helpBtn">HELP</button>
-                                <button id="journalBtn">JOURNAL</button>
-                                <button id="noteBtn" style="display:none;">NOTE</button>
-                            </div>
-                        </div>
                     </div>
-
                     <div class="message-bar" id="messageDisplay">welcome to the farm</div>
                 </div>
             </div>
@@ -1304,8 +1549,8 @@
             </div>
             <div class="help-section">
                 <h3>STOCK MARKET</h3>
-                <p>Pick a crop and watch the simulated price chart. Hit BUY/SELL to trade at the shown integer price —
-                    holding the buttons speeds the trade.</p>
+                <p>Pick a crop and watch the simulated price chart. Hit BUY/SELL to trade at the shown integer price.
+                </p>
             </div>
             <div class="help-section">
                 <h3>BEETROOT BOSS</h3>
@@ -1464,30 +1709,94 @@
     <div id="stockModal" class="modal">
         <div class="modal-content">
             <h2>> STOCK MARKET</h2>
-            <p>Pick a crop, watch the volatile chart, and time your buys/sells. The market swings randomly — profits are
-                not guaranteed.</p>
-            <div style="display:flex; flex-direction:column; gap:8px; margin:12px 0;">
-                <label style="font-size:0.7rem; letter-spacing:1px;">SELECT CROP</label>
-                <select id="stockCropSelect"
-                    style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
+            <p>Pick a crop race, watch the volatile chart, and time your buys/sells. Markets swing randomly — profits are
+                never guaranteed.</p>
+            <div class="stock-market-body">
+                <div class="stock-market-left">
+                    <label class="stock-label">SELECT CROP</label>
+                    <select id="stockCropSelect"
+                        style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
+                    <div class="stock-market-section">
+                        <span>CURRENT PRICE</span>
+                        <strong id="stockCurrentPrice">$0.00</strong>
+                    </div>
+                    <div class="stock-chart-wrapper">
+                        <canvas id="stockChart" height="160" style="width:100%; height:160px;"></canvas>
+                    </div>
+                </div>
+                <div class="stock-market-right">
+                    <div class="stock-chart-wrapper">
+                        <div style="margin-bottom:6px;">Holdings</div>
+                        <div id="stockHoldingsList" style="display:flex; flex-wrap:wrap; gap:4px; min-height:68px;"></div>
+                    </div>
+                    <div class="stock-chart-wrapper">
+                        <div style="margin-bottom:6px;">Insights</div>
+                        <div id="stockHint" style="font-size:0.75rem; color:#ccc;">Average cost and unrealized gain update as the price moves.</div>
+                    </div>
+                    <div class="stock-controls">
+                        <button class="buy-btn tool-btn" id="stockBuyBtn">BUY</button>
+                        <button class="sell-btn tool-btn" id="stockSellBtn">SELL</button>
+                    </div>
+                </div>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
-                <span>CURRENT PRICE</span>
-                <strong id="stockCurrentPrice">$0.00</strong>
-            </div>
-            <canvas id="stockChart" height="160"
-                style="width:100%; border:var(--border); margin-top:8px; background:#010101;"></canvas>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
-                <button class="buy-btn tool-btn" id="stockBuyBtn" style="flex:1;">BUY</button>
-                <button class="sell-btn tool-btn" id="stockSellBtn" style="flex:1;">SELL</button>
-            </div>
-            <div style="margin-top:12px; font-size:0.75rem; color:var(--c-dim);">
-                Holdings:
-            </div>
-            <div id="stockHoldingsList" style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;"></div>
-            <div style="margin-top:10px; font-size:0.7rem; color:#aaa;" id="stockHint">Average cost and unrealized gain
-                update as the price moves.</div>
             <button class="close-btn" id="closeStockBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="goldenMarketModal" class="modal">
+        <div class="modal-content">
+            <h2>> GOLDEN MARKET</h2>
+            <p>Spend Gold Nuggets on elite seeds and gear.</p>
+            <div class="gold-market-body">
+                <div class="gold-market-column gold-market-seeds">
+                    <div class="gold-market-section">
+                        <span>Gold Nuggets</span>
+                        <strong id="goldMarketBalance">0</strong>
+                    </div>
+                    <div class="gold-seed-header">
+                        <span>SEEDS</span>
+                        <small>cost / payout</small>
+                    </div>
+                    <div class="gold-seed-list" id="goldenSeedList"></div>
+                </div>
+                <div class="gold-market-column gold-market-upgrades">
+                    <div class="gold-seed-header">
+                        <span>UPGRADES</span>
+                        <small>gold-only gear</small>
+                    </div>
+                    <div class="upgrade-row">
+                        <div class="upg-info">
+                            <div class="upg-name">Golden Hoe — +20% growth speed</div>
+                            <div class="upg-cost" style="color:#ffd77c;">Cost: 80 Gold Nuggets</div>
+                        </div>
+                        <button id="buyGoldenHoe">BUY</button>
+                    </div>
+                    <div class="upgrade-row">
+                        <div class="upg-info">
+                            <div class="upg-name">Golden Watering Can — +30 water / +30 per tile area</div>
+                            <div class="upg-cost" style="color:#ffd77c;">Cost: 60 Gold Nuggets</div>
+                            <div style="font-size:0.65rem; color:#888;">Area splash applies +30 to every tile in the 3×3.</div>
+                        </div>
+                        <button id="buyGoldenCan">BUY</button>
+                    </div>
+                </div>
+            </div>
+            <button class="close-btn" id="closeGoldenMarketBtn">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="goldaModal" class="modal">
+        <div class="modal-content">
+            <h2>> GOLDa DLC</h2>
+            <p style="margin-bottom:6px;">Unlock golden crops, Gold Nuggets, and elite upgrades with the secret Golda code.</p>
+            <div class="golda-modal-row">
+                <input id="goldaCodeInput" placeholder="Type the Golda code" autocomplete="off">
+                <button id="goldaConfirmBtn">APPLY CODE</button>
+            </div>
+            <div class="golda-modal-actions">
+                <span class="golda-footnote">You can get the code on the discord.</span>
+                <button class="close-btn" id="closeGoldaModalBtn">CLOSE</button>
+            </div>
         </div>
     </div>
 
@@ -1606,7 +1915,7 @@
 
     <script>
         (function () {
-            const VERSION = '1.5';
+            const VERSION = '1.7';
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -1632,11 +1941,38 @@
             }
             COUNT = DATA.length;
             const UZZY_ID = EXOTIC_START_ID + EXOTIC_NAMES.indexOf('UZZY');
+            const GOLDEN_CROP_DEFS = [
+                { name: "AURUM", abbr: "AUR", sell: 820, waterUse: 0.08, growthSpeed: 0.24, goldSeedCost: 18, goldReward: 22 },
+                { name: "SOLARE", abbr: "SOL", sell: 760, waterUse: 0.07, growthSpeed: 0.22, goldSeedCost: 22, goldReward: 26 },
+                { name: "LUMINA", abbr: "LUM", sell: 900, waterUse: 0.09, growthSpeed: 0.19, goldSeedCost: 25, goldReward: 30 },
+                { name: "NOVA", abbr: "NVA", sell: 700, waterUse: 0.06, growthSpeed: 0.26, goldSeedCost: 16, goldReward: 20 },
+                { name: "ORBLE", abbr: "ORB", sell: 980, waterUse: 0.1, growthSpeed: 0.18, goldSeedCost: 28, goldReward: 32 },
+                { name: "ZENITH", abbr: "ZEN", sell: 860, waterUse: 0.05, growthSpeed: 0.2, goldSeedCost: 24, goldReward: 28 }
+            ];
+            const GOLDEN_START_ID = COUNT;
+            for (let i = 0; i < GOLDEN_CROP_DEFS.length; i++) {
+                let def = GOLDEN_CROP_DEFS[i];
+                DATA.push({
+                    id: GOLDEN_START_ID + i,
+                    name: def.name,
+                    abbr: def.abbr,
+                    buy: 0,
+                    sell: def.sell,
+                    waterUse: def.waterUse,
+                    growthSpeed: def.growthSpeed,
+                    perennial: false,
+                    isGolden: true,
+                    goldSeedCost: def.goldSeedCost,
+                    goldReward: def.goldReward
+                });
+            }
+            COUNT = DATA.length;
 
             const COMPANIONS = { 6: [15], 15: [6] };
             const COMPANION_BOOST = 1.2;
             const RAIN_WATER_LEVEL = 70;
 
+            const GOLD_INITIATE_ACHIEVEMENT_ID = 18;
             const ACHIEVEMENTS = [
                 { id: 0, name: "First Harvest", desc: "Harvest your first crop", check: (s) => s.totalHarvested >= 1 },
                 { id: 1, name: "Bean Man", desc: "Harvest 1000 beans", check: (s) => s.cropCounts[15] >= 1000 },
@@ -1655,19 +1991,25 @@
                 { id: 14, name: "Sketchy People", desc: "Sell to the black market", check: (s) => s.blackMarketSales >= 1 },
                 { id: 15, name: "Ultimate Farmer", desc: "Reach 5000 total harvests", check: (s) => s.totalHarvested >= 5000 },
                 { id: 16, name: "Journaler", desc: "Log 10 journal entries", check: (s) => s.journalEntries >= 10 },
-                { id: 17, name: "I Fed the Monster", desc: "Keep the beetroot boss alive by feeding it through its frenzy.", check: (s) => (s.monsterFed || 0) >= 1 }
+                { id: 17, name: "I Fed the Monster", desc: "Keep the beetroot boss alive by feeding it through its frenzy.", check: (s) => (s.monsterFed || 0) >= 1 },
+                { id: 18, name: "Golda Initiate", desc: "Unlock the Golda Edition DLC.", check: (s) => s.goldaUnlocked },
+                { id: 19, name: "Golden Farmer", desc: "Harvest 20 golden crops.", check: (s) => s.goldHarvested >= 20 },
+                { id: 20, name: "Nugget Hoarder", desc: "Earn 100 Gold Nuggets.", check: (s) => s.goldNuggetsEarned >= 100 },
+                { id: 21, name: "Plated Growth", desc: "Buy the Golden Hoe upgrade.", check: (s) => s.goldHoePurchased },
+                { id: 22, name: "Hydrated Luxe", desc: "Buy the Golden Watering Can upgrade.", check: (s) => s.goldCanPurchased }
             ];
             const ACHIEVEMENT_COUNT = ACHIEVEMENTS.length;
 
             let coins = 40;
             let seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4;
             let crops = new Array(COUNT).fill(0);
-            let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
+            let upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false, goldenHoe: false, goldenCan: false };
             let stats = {
                 totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(),
                 grownOriginalCount: 0, coins: 40, waterCount: 0, perennialHarvested: 0,
                 totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false),
-                blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0
+                blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0,
+                goldHarvested: 0, goldNuggetsEarned: 0, goldaUnlocked: false, goldHoePurchased: false, goldCanPurchased: false
             };
             let achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
 
@@ -1691,6 +2033,10 @@
             const MARKET_LIMIT = 42;
             const STOCK_HISTORY_LENGTH = 60;
             const BOSS_ROUNDS = 20;
+            const GOLD_EDITION_CODE = 'GOLDA2026';
+            const GOLDEN_HOE_COST = 80;
+            const GOLDEN_CAN_COST = 60;
+            const GOLDEN_WATER_AMOUNT = 30;
             let stockInterval = null;
             let stockState = {
                 selected: 0,
@@ -1700,6 +2046,8 @@
             };
             let bossState = { queue: [], index: 0 };
             let calcCustomEntries = [];
+            let goldaUnlocked = false;
+            let goldNuggets = 0;
 
             function addJournalEntry(text) {
                 let now = new Date();
@@ -1707,42 +2055,6 @@
                 journalLog.unshift('[' + hm + '] ' + text);
                 if (journalLog.length > 50) journalLog.pop();
                 stats.journalEntries = (stats.journalEntries || 0) + 1;
-            }
-
-            function attachHoldAction(btn, handler) {
-                if (!btn) return;
-                let timer = null;
-                let startTime = 0;
-                btn._skipClick = false;
-                const stop = () => {
-                    if (timer) { clearTimeout(timer); timer = null; }
-                    btn.classList.remove('active');
-                };
-                const loop = () => {
-                    if (btn.disabled) { stop(); return; }
-                    const elapsed = Date.now() - startTime;
-                    const delay = Math.max(80, 380 - Math.floor(elapsed / 250) * 60);
-                    timer = setTimeout(() => {
-                        handler();
-                        loop();
-                    }, delay);
-                };
-                const start = (e) => {
-                    if (e.pointerType === 'mouse' && e.button !== 0) return;
-                    e.preventDefault();
-                    if (btn.disabled) return;
-                    handler();
-                    btn._skipClick = true;
-                    btn.classList.add('active');
-                    startTime = Date.now();
-                    timer = setTimeout(loop, 360);
-                };
-                btn.addEventListener('pointerdown', start);
-                ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => btn.addEventListener(evt, stop));
-                btn.addEventListener('click', (e) => {
-                    if (btn._skipClick) { btn._skipClick = false; e.preventDefault(); return; }
-                    handler();
-                });
             }
 
             function cyrb53(str, seed = 0) {
@@ -2182,6 +2494,7 @@
                     if (this.water >= 4 && this.stage < 2) {
                         let factor = Math.min(1, this.water / 100);
                         let speed = p.growthSpeed;
+                        if (upgrades.goldenHoe) speed *= 1.2;
                         if (currentWeatherType === 'sunny') speed *= 1.2;
                         if (this.hasCompanion(row, col)) speed *= COMPANION_BOOST;
                         this.prog += speed * factor;
@@ -2200,6 +2513,7 @@
                     let id = this.plantId;
                     let name = DATA[id].abbr;
                     crops[id]++; stats.totalHarvested++; stats.cropCounts[id]++; stats.grownPlants.add(id);
+                    if (DATA[id].isGolden) stats.goldHarvested++;
                     if (DATA[id].perennial) { stats.perennialHarvested++; this.stage = 1; this.prog = 0; this.age = 0; }
                     else { this.plantId = null; this.water = 50; this.stage = 0; this.prog = 0; this.age = 0; }
                     updateExoticObtained(); checkAchievements(); return name;
@@ -2229,6 +2543,124 @@
                 if (isToast) messageTimeout = setTimeout(() => { bar.innerText = ''; }, 2200);
             }
 
+            function updateGoldaStatus() {
+                const status = document.getElementById('goldaStatus');
+                if (!status) return;
+                status.textContent = goldaUnlocked ? 'Golda Edition unlocked' : 'Golda Edition locked';
+                status.style.color = goldaUnlocked ? '#ffd77c' : '#b3b3b3';
+            }
+
+            function updateGoldDisplay() {
+                const amount = document.getElementById('goldNuggetAmount');
+                if (amount) amount.textContent = goldNuggets;
+                const balance = document.getElementById('goldMarketBalance');
+                if (balance) balance.textContent = goldNuggets;
+                const button = document.getElementById('goldenMarketBtn');
+                if (button) {
+                    button.disabled = !goldaUnlocked;
+                    button.style.display = goldaUnlocked ? '' : 'none';
+                }
+                const wallet = document.getElementById('goldWallet');
+                if (wallet) {
+                    wallet.style.display = goldaUnlocked ? 'inline-block' : 'none';
+                }
+                updateGoldaGateUI();
+            }
+
+            function updateGoldaGateUI() {
+                const trigger = document.getElementById('goldaModalTrigger');
+                if (trigger) trigger.style.display = goldaUnlocked ? 'none' : 'inline-flex';
+            }
+
+            function hydrateGoldaState() {
+                const save = localStorage.getItem('crubsSave');
+                if (!save) return;
+                try {
+                    const parsed = JSON.parse(save);
+                    goldaUnlocked = parsed.goldaUnlocked ?? (parsed.stats?.goldaUnlocked ?? goldaUnlocked);
+                    goldNuggets = parsed.goldNuggets ?? goldNuggets;
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            const GOLDEN_START_NUGGETS = 20;
+
+            function applyGoldaCode() {
+                const input = document.getElementById('goldaCodeInput');
+                if (!input) return;
+                const code = input.value.trim().toUpperCase();
+                if (code === GOLD_EDITION_CODE) {
+                    if (!goldaUnlocked) {
+                        goldaUnlocked = true;
+                        stats.goldaUnlocked = true;
+                        goldNuggets += GOLDEN_START_NUGGETS;
+                        stats.goldNuggetsEarned += GOLDEN_START_NUGGETS;
+                        achievements[GOLD_INITIATE_ACHIEVEMENT_ID] = true;
+                        addJournalEntry('Golda Edition activated.');
+                        showMessage('Golda Edition unlocked!');
+                        updateGoldaStatus();
+                        updateUI();
+                        saveGame();
+                    } else {
+                        showMessage('Golda Edition already active.');
+                    }
+                    closeModal('goldaModal');
+                } else {
+                    showMessage('invalid Golda code');
+                }
+                input.value = '';
+            }
+
+            function renderGoldenSeedList() {
+                const container = document.getElementById('goldenSeedList');
+                if (!container) return;
+                container.innerHTML = '';
+                GOLDEN_CROP_DEFS.forEach((def, idx) => {
+                    const id = GOLDEN_START_ID + idx;
+                    const row = document.createElement('div');
+                    row.className = 'gold-seed-row';
+                    const info = document.createElement('div');
+                    info.innerHTML = `<strong>${def.abbr}</strong> ${def.name}`;
+                    const cost = document.createElement('span');
+                    cost.textContent = `${def.goldSeedCost} NG`;
+                    const reward = document.createElement('div');
+                    reward.style.fontSize = '0.75rem';
+                    reward.style.color = '#ffd77c';
+                    reward.style.marginTop = '2px';
+                    reward.textContent = `Sells for ${def.goldReward} NG`;
+                    const btn = document.createElement('button');
+                    btn.textContent = 'BUY';
+                    btn.addEventListener('click', () => buyGoldenSeed(id));
+                    row.appendChild(info);
+                    row.appendChild(cost);
+                    row.appendChild(reward);
+                    row.appendChild(btn);
+                    container.appendChild(row);
+                });
+            }
+
+            function buyGoldenSeed(id) {
+                if (!goldaUnlocked) {
+                    showMessage('enter the Golda code first');
+                    return;
+                }
+                const defIndex = id - GOLDEN_START_ID;
+                if (defIndex < 0 || defIndex >= GOLDEN_CROP_DEFS.length) return;
+                const def = GOLDEN_CROP_DEFS[defIndex];
+                if (goldNuggets < def.goldSeedCost) {
+                    showMessage(`need ${def.goldSeedCost - goldNuggets} more gold`);
+                    return;
+                }
+                goldNuggets -= def.goldSeedCost;
+                seeds[id]++;
+                showMessage(`bought ${DATA[id].abbr} seed`);
+                addJournalEntry(`Bought ${DATA[id].name} golden seed.`);
+                updateUI();
+                renderGoldenSeedList();
+                saveGame();
+            }
+
             function showAchievementPopup(title, desc) {
                 const popup = document.getElementById('achievementPopup');
                 if (!popup) return;
@@ -2250,7 +2682,7 @@
                         let p = DATA[plot.plantId];
                         let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
                         let waterDigit = Math.floor(plot.water / 10);
-                        let marks = (p.perennial ? 'P' : '') + (plot.plantId >= EXOTIC_START_ID ? 'X' : '');
+                        let marks = (p.perennial ? 'P' : '') + (plot.plantId >= EXOTIC_START_ID ? (p.isGolden ? 'G' : 'X') : '');
                         tile.textContent = `${p.abbr}${stageChar}${waterDigit}${marks}`;
                         if (plot.stage === 2) tile.classList.add('ready');
                         else if (plot.water < 4) tile.classList.add('low-water');
@@ -2294,10 +2726,11 @@
                         else showMessage('not ready');
                     }
                 } else if (tool === 'water') {
+                    const waterAmt = upgrades.goldenCan ? GOLDEN_WATER_AMOUNT : 20;
                     if (upgrades.waterArea) {
-                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { let nr = row + dr, nc = col + dc; if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(20); }
+                        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { let nr = row + dr, nc = col + dc; if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) grid[nr][nc].waterPlot(waterAmt); }
                         showMessage('area watered');
-                    } else { plot.waterPlot(20); showMessage('watered'); }
+                    } else { plot.waterPlot(waterAmt); showMessage('watered'); }
                 } else if (tool === 'hoe') {
                     if (plot.plantId === null && seeds[selected] > 0) { plot.plant(selected); seeds[selected]--; showMessage(`planted ${DATA[selected].abbr}`); addJournalEntry(`Planted ${DATA[selected].name}.`); }
                     else if (plot.plantId !== null) showMessage('plot occupied');
@@ -2334,21 +2767,35 @@
                 }
             }
 
-            function sellCrop(id) {
-                if (crops[id] > 0) {
-                    const price = DATA[id].sell;
-                    crops[id]--;
-                    coins += price;
-                    showMessage(`sold ${DATA[id].abbr} +$${price}`);
-                    addJournalEntry(`Sold ${DATA[id].name} for $${price}.`);
-                    updateUI();
-                    renderGrid();
-                    checkAchievements();
+                function sellCrop(id) {
+                    if (crops[id] > 0) {
+                        const p = DATA[id];
+                        const price = p.sell;
+                        crops[id]--;
+                        let message = `sold ${p.abbr}`;
+                        let desc = `Sold ${p.name}`;
+                        if (p.isGolden) {
+                            const reward = p.goldReward || Math.max(1, Math.floor(price / 100));
+                            goldNuggets += reward;
+                            stats.goldNuggetsEarned += reward;
+                            message += ` +${reward} nuggets`;
+                            desc += ` for ${reward} Gold Nuggets.`;
+                        } else {
+                            coins += price;
+                            message += ` +$${price}`;
+                            desc += ` for $${price}.`;
+                        }
+                        showMessage(message);
+                        addJournalEntry(desc);
+                        updateUI();
+                        renderGrid();
+                        checkAchievements();
+                    }
                 }
-            }
 
             function updateUI() {
                 document.getElementById('coinDisplay').innerText = coins;
+                updateGoldDisplay();
                 ['toolHand', 'toolWater', 'toolInfo', 'toolHoe', 'toolDelete'].forEach(id => document.getElementById(id).classList.remove('active'));
                 const toolMap = { hand: 'toolHand', water: 'toolWater', info: 'toolInfo', hoe: 'toolHoe', delete: 'toolDelete', bonemeal: 'toolBonemeal' };
                 if (toolMap[tool]) document.getElementById(toolMap[tool]).classList.add('active');
@@ -2381,7 +2828,7 @@
                     let btn = document.createElement('button');
                     btn.className = 'buy-btn';
                     btn.textContent = 'BUY';
-                    attachHoldAction(btn, () => buySeed(i));
+                    btn.addEventListener('click', () => buySeed(i));
                     row.appendChild(label);
                     row.appendChild(price);
                     row.appendChild(btn);
@@ -2396,11 +2843,11 @@
                     let label = document.createElement('span');
                     label.textContent = `${p.abbr} x${crops[i]}`;
                     let price = document.createElement('span');
-                    price.textContent = `$${p.sell}`;
+                    price.textContent = p.isGolden ? `${p.goldReward || Math.max(1, Math.floor(p.sell / 100))} NG` : `$${p.sell}`;
                     let btn = document.createElement('button');
                     btn.className = 'sell-btn';
                     btn.textContent = 'SELL';
-                    attachHoldAction(btn, () => sellCrop(i));
+                    btn.addEventListener('click', () => sellCrop(i));
                     row.appendChild(label);
                     row.appendChild(price);
                     row.appendChild(btn);
@@ -2415,27 +2862,48 @@
                 document.getElementById('buyHarvestUpgrade').textContent = upgrades.harvestArea ? 'OWNED' : 'BUY';
                 document.getElementById('buyBonemealUpgrade').textContent = upgrades.bonemealUnlocked ? 'OWNED' : 'BUY';
                 if (document.getElementById('blackMarketModal').classList.contains('active')) updateBlackMarketModal();
+                const goldenHoeBtn = document.getElementById('buyGoldenHoe');
+                if (goldenHoeBtn) {
+                    goldenHoeBtn.disabled = upgrades.goldenHoe;
+                    goldenHoeBtn.textContent = upgrades.goldenHoe ? 'OWNED' : 'BUY';
+                }
+                const goldenCanBtn = document.getElementById('buyGoldenCan');
+                if (goldenCanBtn) {
+                    goldenCanBtn.disabled = upgrades.goldenCan;
+                    goldenCanBtn.textContent = upgrades.goldenCan ? 'OWNED' : 'BUY';
+                }
                 const allDone = achievements.every(v => v);
                 document.getElementById('completionBadge').style.display = allDone ? 'inline-block' : 'none';
                 updateNoteButton();
+                syncPanelHeight();
             }
 
-            function updateNoteButton() {
-                const noteBtn = document.getElementById('noteBtn');
-                if (!noteBtn) return;
-                noteBtn.style.display = achievements.every(v => v) ? 'inline-flex' : 'none';
+        function syncPanelHeight() {
+            const grid = document.getElementById('farmGrid');
+            const panel = document.querySelector('.panel');
+            if (grid && panel) {
+                panel.style.maxHeight = grid.clientHeight + 'px';
             }
+        }
 
-            function unlockDevNote() {
-                if (stats.devNoteSent) return;
-                stats.devNoteSent = 1;
-                addJournalEntry('Note from dev unlocked: thanks for playing!');
-                showMessage('Note from dev unlocked!');
-                updateNoteButton();
-            }
+        function updateNoteButton() {
+            const noteBtn = document.getElementById('noteBtn');
+            if (!noteBtn) return;
+            noteBtn.style.display = achievements.every(v => v) ? 'inline-flex' : 'none';
+        }
+
+        function unlockDevNote() {
+            if (stats.devNoteSent) return;
+            stats.devNoteSent = 1;
+            addJournalEntry('Note from dev unlocked: thanks for playing!');
+            showMessage('Note from dev unlocked!');
+            updateNoteButton();
+            syncPanelHeight();
+        }
 
             function checkAchievements() {
                 stats.coins = coins; stats.totalSeeds = seeds.reduce((a, b) => a + b, 0); checkFullFarm(); updateExoticObtained();
+                stats.goldaUnlocked = goldaUnlocked;
                 stats.grownOriginalCount = 0; stats.grownPlants.forEach(id => { if (id < 42) stats.grownOriginalCount++; });
                 for (let i = 0; i < ACHIEVEMENT_COUNT; i++) {
                     if (!achievements[i] && ACHIEVEMENTS[i].check(stats)) {
@@ -2470,6 +2938,11 @@
                         else if (i === 15) desc += `\n${stats.totalHarvested}/5000`;
                         else if (i === 16) desc += `\n${stats.journalEntries || 0}/10`;
                         else if (i === 17) desc += `\n${stats.monsterFed || 0}/1`;
+                        else if (i === 18) desc += stats.goldaUnlocked ? '\nUnlocked' : '\nLocked';
+                        else if (i === 19) desc += `\n${stats.goldHarvested}/20`;
+                        else if (i === 20) desc += `\n${stats.goldNuggetsEarned}/100`;
+                        else if (i === 21) desc += upgrades.goldenHoe ? '\nOwned' : '\nMissing';
+                        else if (i === 22) desc += upgrades.goldenCan ? '\nOwned' : '\nMissing';
                         document.getElementById('achievementDetailDesc').textContent = desc;
                         let pv = null;
                         if (i === 1) pv = (stats.cropCounts[15] || 0) / 1000;
@@ -2481,6 +2954,11 @@
                         else if (i === 15) pv = stats.totalHarvested / 5000;
                         else if (i === 16) pv = (stats.journalEntries || 0) / 10;
                         else if (i === 17) pv = (stats.monsterFed || 0);
+                        else if (i === 18) pv = stats.goldaUnlocked ? 1 : 0;
+                        else if (i === 19) pv = stats.goldHarvested / 20;
+                        else if (i === 20) pv = stats.goldNuggetsEarned / 100;
+                        else if (i === 21) pv = upgrades.goldenHoe ? 1 : 0;
+                        else if (i === 22) pv = upgrades.goldenCan ? 1 : 0;
                         let prog = document.getElementById('achievementDetailProgress');
                         if (pv !== null) { prog.style.display = 'block'; document.getElementById('achievementDetailBar').style.width = Math.min(pv, 1) * 100 + '%'; }
                         else prog.style.display = 'none';
@@ -2596,6 +3074,16 @@
                 if (id === 'stockModal') stopStockTicker();
             }
 
+            function openGoldenMarket() {
+                if (!goldaUnlocked) {
+                    showMessage('enter the Golda code first');
+                    return;
+                }
+                renderGoldenSeedList();
+                updateGoldDisplay();
+                openModal('goldenMarketModal');
+            }
+
             function setWeather(type, cost = 0) {
                 if (cost > 0 && coins < cost) { showMessage(`need ${cost} coins`); return; }
                 if (cost > 0) coins -= cost;
@@ -2644,14 +3132,24 @@
             bindModal('calculatorBtn', 'calculatorModal', 'closeCalculatorBtn');
             bindModal('journalBtn', 'journalModal', 'closeJournalBtn');
             bindModal('noteBtn', 'noteModal', 'closeNoteBtn');
+            document.getElementById('goldenMarketBtn').addEventListener('click', openGoldenMarket);
+            document.getElementById('closeGoldenMarketBtn').addEventListener('click', () => closeModal('goldenMarketModal'));
+            document.getElementById('goldenMarketModal').addEventListener('click', (e) => { if (e.target.id === 'goldenMarketModal') closeModal('goldenMarketModal'); });
+            document.getElementById('goldaModalTrigger').addEventListener('click', () => {
+                document.getElementById('goldaCodeInput').value = '';
+                openModal('goldaModal');
+                setTimeout(() => { document.getElementById('goldaCodeInput').focus(); }, 120);
+            });
+            document.getElementById('closeGoldaModalBtn').addEventListener('click', () => closeModal('goldaModal'));
+            document.getElementById('goldaModal').addEventListener('click', (e) => { if (e.target.id === 'goldaModal') closeModal('goldaModal'); });
 
             document.getElementById('rollExoticBtn').addEventListener('click', rollExotic);
             document.getElementById('weatherRainyBtn').addEventListener('click', () => setWeather('rainy', 100));
             document.getElementById('weatherSunnyBtn').addEventListener('click', () => setWeather('sunny', 100));
             document.getElementById('weatherClearBtn').addEventListener('click', () => setWeather('clear', 50));
             document.getElementById('stockCropSelect').addEventListener('change', (e) => changeStockCrop(+e.target.value));
-            attachHoldAction(document.getElementById('stockBuyBtn'), () => tradeStock('buy'));
-            attachHoldAction(document.getElementById('stockSellBtn'), () => tradeStock('sell'));
+            document.getElementById('stockBuyBtn').addEventListener('click', () => tradeStock('buy'));
+            document.getElementById('stockSellBtn').addEventListener('click', () => tradeStock('sell'));
             document.getElementById('feedBossBtn').addEventListener('click', feedBoss);
             document.getElementById('calcCropSelect').addEventListener('change', () => { refreshCalcStats(); updateCalcCostResult(); });
             document.getElementById('calcSpeedInput').addEventListener('input', updateCalcCostResult);
@@ -2664,10 +3162,52 @@
             document.getElementById('resetYes2').addEventListener('click', () => { resetGame(); closeModal('resetConfirmModal'); });
             document.getElementById('resetNo2').addEventListener('click', () => { document.getElementById('resetStep1').style.display = 'block'; document.getElementById('resetStep2').style.display = 'none'; });
             document.getElementById('resetConfirmModal').addEventListener('click', (e) => { if (e.target.id === 'resetConfirmModal') closeModal('resetConfirmModal'); });
+            const gridEl = document.getElementById('farmGrid');
+            if (gridEl && typeof ResizeObserver === 'function') {
+                const observer = new ResizeObserver(syncPanelHeight);
+                observer.observe(gridEl);
+            }
+            window.addEventListener('resize', syncPanelHeight);
+            setTimeout(syncPanelHeight, 100);
 
             document.getElementById('buyWaterUpgrade').addEventListener('click', () => { if (coins >= 500 && !upgrades.waterArea) { coins -= 500; upgrades.waterArea = true; showMessage('Water upgrade unlocked!'); addJournalEntry('Bought bigger water bucket upgrade.'); updateUI(); saveGame(); } else if (!upgrades.waterArea) showMessage('need 500 coins'); });
             document.getElementById('buyHarvestUpgrade').addEventListener('click', () => { if (coins >= 800 && !upgrades.harvestArea) { coins -= 800; upgrades.harvestArea = true; showMessage('Harvest upgrade unlocked!'); addJournalEntry('Bought bigger harvest tool upgrade.'); updateUI(); saveGame(); } else if (!upgrades.harvestArea) showMessage('need 800 coins'); });
             document.getElementById('buyBonemealUpgrade').addEventListener('click', () => { if (coins >= 200 && !upgrades.bonemealUnlocked) { coins -= 200; upgrades.bonemealUnlocked = true; showMessage('Bonemeal unlocked!'); addJournalEntry('Bought bonemeal tool upgrade.'); updateUI(); saveGame(); } else if (!upgrades.bonemealUnlocked) showMessage('need 200 coins'); });
+            document.getElementById('buyGoldenHoe').addEventListener('click', () => {
+                if (!goldaUnlocked) { showMessage('unlock the Golda code first'); return; }
+                if (upgrades.goldenHoe) { showMessage('you already own the Golden Hoe'); return; }
+                if (goldNuggets < GOLDEN_HOE_COST) { showMessage(`need ${GOLDEN_HOE_COST - goldNuggets} more gold`); return; }
+                goldNuggets -= GOLDEN_HOE_COST;
+                upgrades.goldenHoe = true;
+                stats.goldHoePurchased = true;
+                addJournalEntry('Bought Golden Hoe upgrade.');
+                showMessage('Golden Hoe unlocked!');
+                updateGoldDisplay();
+                updateUI();
+                renderGoldenSeedList();
+                saveGame();
+            });
+            document.getElementById('buyGoldenCan').addEventListener('click', () => {
+                if (!goldaUnlocked) { showMessage('unlock the Golda code first'); return; }
+                if (upgrades.goldenCan) { showMessage('you already own the Golden Can'); return; }
+                if (goldNuggets < GOLDEN_CAN_COST) { showMessage(`need ${GOLDEN_CAN_COST - goldNuggets} more gold`); return; }
+                goldNuggets -= GOLDEN_CAN_COST;
+                upgrades.goldenCan = true;
+                stats.goldCanPurchased = true;
+                addJournalEntry('Bought Golden Watering Can.');
+                showMessage('Golden Watering Can unlocked!');
+                updateGoldDisplay();
+                updateUI();
+                renderGoldenSeedList();
+                saveGame();
+            });
+            document.getElementById('goldaConfirmBtn').addEventListener('click', applyGoldaCode);
+            document.getElementById('goldaCodeInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    applyGoldaCode();
+                }
+            });
 
             document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; infoTooltip.style.display = 'none'; updateUI(); });
             document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; infoTooltip.style.display = 'none'; updateUI(); });
@@ -2689,8 +3229,8 @@
 
             function saveGame() {
                 let save = {
-                    coins, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
-                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0, monsterFed: stats.monsterFed || 0, devNoteSent: stats.devNoteSent || 0 },
+                    coins, goldNuggets, goldaUnlocked, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
+                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0, monsterFed: stats.monsterFed || 0, devNoteSent: stats.devNoteSent || 0, goldHarvested: stats.goldHarvested, goldNuggetsEarned: stats.goldNuggetsEarned, goldaUnlocked: stats.goldaUnlocked, goldHoePurchased: stats.goldHoePurchased, goldCanPurchased: stats.goldCanPurchased },
                     bossState,
                     stockState: {
                         selected: stockState.selected,
@@ -2720,9 +3260,14 @@
                         perennialHarvested: d.stats.perennialHarvested || 0, totalSeeds: seeds.reduce((a, b) => a + b, 0),
                         fullFarm: false, exoticObtained: d.stats.exoticObtained || new Array(6).fill(false),
                         grownOriginalCount: 0, blackMarketSales: d.stats.blackMarketSales || 0, journalEntries: d.stats.journalEntries || 0,
-                        monsterFed: d.stats.monsterFed || 0, devNoteSent: d.stats.devNoteSent || 0
-                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0 };
+                        monsterFed: d.stats.monsterFed || 0, devNoteSent: d.stats.devNoteSent || 0,
+                        goldHarvested: d.stats.goldHarvested || 0, goldNuggetsEarned: d.stats.goldNuggetsEarned || 0,
+                        goldaUnlocked: d.stats.goldaUnlocked || false, goldHoePurchased: d.stats.goldHoePurchased || false,
+                        goldCanPurchased: d.stats.goldCanPurchased || false
+                    } : { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: coins, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0, goldHarvested: 0, goldNuggetsEarned: 0, goldaUnlocked: false, goldHoePurchased: false, goldCanPurchased: false };
                     if (stats.cropCounts.length < COUNT) stats.cropCounts = stats.cropCounts.concat(new Array(COUNT - stats.cropCounts.length).fill(0));
+                    goldaUnlocked = d.goldaUnlocked ?? stats.goldaUnlocked ?? false;
+                    goldNuggets = d.goldNuggets ?? 0;
                     grid = d.gridData.map(row => row.map(pd => { let p = new Plot(); p.plantId = pd.plantId; p.water = pd.water; p.stage = pd.stage; p.prog = pd.prog; p.age = pd.age; p.plantTime = pd.plantTime || 0; return p; }));
                     if (d.bossState) {
                         bossState.queue = Array.isArray(d.bossState.queue) ? d.bossState.queue.slice(0, BOSS_ROUNDS) : [];
@@ -2749,8 +3294,9 @@
                 coins = 40; seeds = new Array(COUNT).fill(0); seeds[0] = 6; seeds[1] = 4;
                 crops = new Array(COUNT).fill(0); selected = 0; tool = 'hand';
                 achievements = new Array(ACHIEVEMENT_COUNT).fill(false);
-                upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false };
-                stats = { totalHarvested: 0, cropCounts: new Array(COUNT).fill(0), grownPlants: new Set(), coins: 40, waterCount: 0, perennialHarvested: 0, totalSeeds: 10, fullFarm: false, exoticObtained: new Array(6).fill(false), grownOriginalCount: 0, blackMarketSales: 0, journalEntries: 0, monsterFed: 0, devNoteSent: 0 };
+                upgrades = { waterArea: false, harvestArea: false, bonemealUnlocked: false, goldenHoe: false, goldenCan: false };
+                goldNuggets = 0;
+                goldaUnlocked = false;
                 cheatActive = false; manualWeatherActive = false; manualWeatherType = null; journalLog = [];
                 bossState = { queue: [], index: 0 };
                 generateBossQueue();
@@ -2762,6 +3308,7 @@
                 };
                 calcCustomEntries = [];
                 sessionStart = Date.now(); initGrid(); updateUI(); renderGrid(); showMessage('fresh start'); saveGame();
+                updateGoldaStatus();
             }
 
             function startGame(continueGame) {
@@ -2771,6 +3318,7 @@
                 else resetGame();
                 sessionStart = Date.now();
                 updateUI(); renderGrid(); updateAchievementsModal();
+                updateGoldaStatus();
                 if (window._interval) clearInterval(window._interval);
                 window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
             }
@@ -2782,6 +3330,7 @@
                 document.getElementById('startScreen').style.display = 'flex';
                 document.getElementById('gameScreen').style.display = 'none';
                 document.getElementById('startBtn').textContent = localStorage.getItem('crubsSave') ? '> CONTINUE' : '> START';
+                updateGoldaStatus();
             });
 
             let installBtn = document.getElementById('installBtn'), deferredPrompt;
@@ -2793,8 +3342,10 @@
             window.addEventListener('appinstalled', () => showMessage('app installed!'));
 
             window.addEventListener('DOMContentLoaded', () => {
+                hydrateGoldaState();
                 document.getElementById('version').textContent = 'v' + VERSION;
                 updateUI(); renderGrid();
+                updateGoldaStatus();
                 document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
 
                 const helpSearch = document.getElementById('helpSearch');
