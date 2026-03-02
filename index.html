@@ -1390,6 +1390,77 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #666;
         }
+
+        .tutorial-overlay {
+            position: fixed;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+            background: rgba(4, 4, 4, 0.95);
+            border: var(--border-dim);
+            padding: 14px 18px;
+            border-radius: 8px;
+            z-index: 10005;
+            width: min(420px, calc(100vw - 24px));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .tutorial-overlay.hidden {
+            display: none;
+        }
+
+        .tutorial-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .tutorial-card h3 {
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+            color: var(--c-fg);
+        }
+
+        .tutorial-controls {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-controls button {
+            flex: 1;
+            padding: 6px 10px;
+            border: var(--border);
+            background: transparent;
+            color: var(--c-fg);
+            font-family: inherit;
+            cursor: pointer;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .tutorial-controls button:hover:not(:disabled) {
+            background: var(--c-fg);
+            color: var(--c-bg);
+        }
+
+        .tutorial-progress {
+            font-size: 0.7rem;
+            color: var(--c-dim);
+            letter-spacing: 1px;
+        }
+
+        .tutorial-highlighted {
+            position: relative;
+            z-index: 10003;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8),
+                0 0 16px rgba(255, 255, 255, 0.4);
+            transition: box-shadow 0.2s;
+        }
     </style>
 </head>
 
@@ -1913,9 +1984,124 @@
         </div>
     </div>
 
+    <div id="tutorialOverlay" class="tutorial-overlay">
+        <div class="tutorial-card">
+            <h3 id="tutorialTitle">Tutorial</h3>
+            <p id="tutorialText">Follow the steps to learn the basics.</p>
+            <div class="tutorial-progress" id="tutorialProgress">Step 1/5</div>
+            <div class="tutorial-controls">
+                <button id="tutorialBackBtn" disabled>BACK</button>
+                <button id="tutorialNextBtn">NEXT</button>
+                <button id="tutorialSkipBtn">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function () {
-            const VERSION = '1.7';
+            const VERSION = '1.8';
+            const TUTORIAL_STEPS = [
+                { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
+                { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
+                { title: '3. Pick a Seed', text: 'Select a seed from the inventory so you can plant.', selector: '#seedInvList' },
+                { title: '4. Water the Soil', text: 'Switch to the water tool so you can water your crubs. This is needed*', selector: '#toolWater' },
+                { title: '5. Wait & Harvest', text: 'Wait and water your crubs to later collect the ready (#) crop with the hand tool.', selector: '#farmGrid' },
+                { title: '6. Sell Crops', text: 'Use the sell list to turn harvested crubs into coins.', selector: '#sellList' }
+            ];
+            const tutorialState = { overlay: null, titleEl: null, textEl: null, progressEl: null, nextBtn: null, backBtn: null, current: 0, highlightEl: null };
+            const TUTORIAL_SEEN_KEY = 'crubsTutorialSeen';
+
+            function removeTutorialHighlight() {
+                if (tutorialState.highlightEl) {
+                    tutorialState.highlightEl.classList.remove('tutorial-highlighted');
+                    tutorialState.highlightEl = null;
+                }
+            }
+
+            function applyTutorialHighlight(selector) {
+                removeTutorialHighlight();
+                if (!selector) return;
+                const target = document.querySelector(selector);
+                if (!target) return;
+                target.classList.add('tutorial-highlighted');
+                tutorialState.highlightEl = target;
+                if (typeof target.scrollIntoView === 'function') {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                }
+            }
+
+            function closeTutorial() {
+                if (!tutorialState.overlay) return;
+                tutorialState.overlay.classList.add('hidden');
+                removeTutorialHighlight();
+                localStorage.setItem(TUTORIAL_SEEN_KEY, '1');
+            }
+
+            function showTutorialStep(index) {
+                if (!tutorialState.overlay) return;
+                const safeIndex = Math.max(0, Math.min(index, TUTORIAL_STEPS.length - 1));
+                const step = TUTORIAL_STEPS[safeIndex];
+                if (!step) {
+                    closeTutorial();
+                    return;
+                }
+                tutorialState.current = safeIndex;
+                tutorialState.titleEl.textContent = step.title;
+                tutorialState.textEl.textContent = step.text;
+                tutorialState.progressEl.textContent = `Step ${safeIndex + 1}/${TUTORIAL_STEPS.length}`;
+                tutorialState.backBtn.disabled = safeIndex === 0;
+                tutorialState.nextBtn.textContent = safeIndex === TUTORIAL_STEPS.length - 1 ? 'FINISH' : 'NEXT';
+                tutorialState.overlay.classList.remove('hidden');
+                applyTutorialHighlight(step.selector);
+            }
+
+            function nextTutorialStep() {
+                if (tutorialState.current >= TUTORIAL_STEPS.length - 1) {
+                    closeTutorial();
+                    return;
+                }
+                showTutorialStep(tutorialState.current + 1);
+            }
+
+            function initTutorial() {
+                const overlay = document.getElementById('tutorialOverlay');
+                if (!overlay) return;
+                tutorialState.overlay = overlay;
+                if (localStorage.getItem(TUTORIAL_SEEN_KEY) === '1') {
+                    overlay.classList.add('hidden');
+                    return;
+                }
+                tutorialState.titleEl = document.getElementById('tutorialTitle');
+                tutorialState.textEl = document.getElementById('tutorialText');
+                tutorialState.progressEl = document.getElementById('tutorialProgress');
+                tutorialState.nextBtn = document.getElementById('tutorialNextBtn');
+                tutorialState.backBtn = document.getElementById('tutorialBackBtn');
+                tutorialState.nextBtn?.addEventListener('click', nextTutorialStep);
+                tutorialState.backBtn?.addEventListener('click', () => showTutorialStep(tutorialState.current - 1));
+                document.getElementById('tutorialSkipBtn')?.addEventListener('click', closeTutorial);
+                showTutorialStep(tutorialState.current);
+            }
+
+            function advanceTutorialAfterStart() {
+                if (tutorialState.current === 0) {
+                    nextTutorialStep();
+                }
+            }
+
+            function tutorialSeedSelected() {
+                if (tutorialState.current === 2) {
+                    nextTutorialStep();
+                }
+            }
+
+            function tutorialToolSelected(toolName) {
+                if (tutorialState.current === 1 && toolName === 'hoe') {
+                    nextTutorialStep();
+                } else if (tutorialState.current === 3 && toolName === 'water') {
+                    nextTutorialStep();
+                }
+            }
+
             let savedVer = localStorage.getItem('appVersion');
             if (savedVer !== VERSION) {
                 localStorage.clear();
@@ -2808,7 +2994,12 @@
                 let seedDiv = document.getElementById('seedInvList'); seedDiv.innerHTML = '';
                 for (let i = 0; i < COUNT; i++) if (seeds[i] > 0) {
                     let b = document.createElement('span'); b.className = `inv-badge${i === selected ? ' selected' : ''}`; b.textContent = `${DATA[i].abbr} ${seeds[i]}`; b.dataset.id = i;
-                    b.addEventListener('click', (e) => { selected = +e.target.dataset.id; showMessage(`selected ${DATA[selected].abbr}`); updateUI(); });
+                    b.addEventListener('click', (e) => {
+                        selected = +e.target.dataset.id;
+                        showMessage(`selected ${DATA[selected].abbr}`);
+                        updateUI();
+                        tutorialSeedSelected();
+                    });
                     seedDiv.appendChild(b);
                 }
 
@@ -3212,7 +3403,7 @@
             document.getElementById('toolHand').addEventListener('click', () => { tool = 'hand'; infoTooltip.style.display = 'none'; updateUI(); });
             document.getElementById('toolWater').addEventListener('click', () => { tool = 'water'; infoTooltip.style.display = 'none'; updateUI(); });
             document.getElementById('toolInfo').addEventListener('click', () => { tool = 'info'; updateUI(); showMessage('hover tiles for info'); });
-            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; infoTooltip.style.display = 'none'; updateUI(); });
+            document.getElementById('toolHoe').addEventListener('click', () => { tool = 'hoe'; infoTooltip.style.display = 'none'; updateUI(); tutorialToolSelected('hoe'); });
             document.getElementById('toolDelete').addEventListener('click', () => { tool = 'delete'; infoTooltip.style.display = 'none'; updateUI(); });
             document.getElementById('toolBonemeal').addEventListener('click', () => { if (upgrades.bonemealUnlocked) { tool = 'bonemeal'; infoTooltip.style.display = 'none'; updateUI(); } });
 
@@ -3319,6 +3510,7 @@
                 sessionStart = Date.now();
                 updateUI(); renderGrid(); updateAchievementsModal();
                 updateGoldaStatus();
+                advanceTutorialAfterStart();
                 if (window._interval) clearInterval(window._interval);
                 window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
             }
@@ -3347,6 +3539,7 @@
                 updateUI(); renderGrid();
                 updateGoldaStatus();
                 document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
+                initTutorial();
 
                 const helpSearch = document.getElementById('helpSearch');
                 if (helpSearch) {
