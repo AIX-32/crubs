@@ -2009,7 +2009,7 @@
 
     <script>
         (function () {
-            const VERSION = '1.9';
+            const VERSION = '1.9.1';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -2113,11 +2113,34 @@
                 }
             }
 
-            let savedVer = localStorage.getItem('appVersion');
-            if (savedVer !== VERSION) {
-                localStorage.clear();
-                localStorage.setItem('appVersion', VERSION);
+            const SAVE_KEY = 'crubsSave';
+            const VERSION_KEY = 'appVersion';
+            let versionUpgradeFrom = null;
+            let progressPreserved = false;
+            let hadPreviousSave = false;
+
+            function preserveSaveOnVersionChange() {
+                const savedVersion = localStorage.getItem(VERSION_KEY);
+                if (savedVersion === VERSION) return;
+                if (savedVersion) {
+                    versionUpgradeFrom = savedVersion;
+                }
+                const existingSave = localStorage.getItem(SAVE_KEY);
+                if (existingSave) {
+                    hadPreviousSave = true;
+                    try {
+                        JSON.parse(existingSave);
+                        progressPreserved = true;
+                    } catch (err) {
+                        console.warn('Corrupted save detected while migrating version', savedVersion, err);
+                        localStorage.removeItem(SAVE_KEY);
+                        progressPreserved = false;
+                    }
+                }
+                localStorage.setItem(VERSION_KEY, VERSION);
             }
+
+            preserveSaveOnVersionChange();
 
             let pwaInstallAvailable = false;
 
@@ -3551,6 +3574,12 @@
                 updateGoldaStatus();
                 document.getElementById('completionBadge').style.display = achievements.every(v => v) ? 'inline-block' : 'none';
                 initTutorial();
+                if (versionUpgradeFrom && hadPreviousSave) {
+                    const messageText = progressPreserved
+                        ? `Updated from v${versionUpgradeFrom} → v${VERSION}; progress preserved.`
+                        : `Saved progress from v${versionUpgradeFrom} couldn't be restored; starting fresh.`;
+                    showMessage(messageText);
+                }
 
                 const helpSearch = document.getElementById('helpSearch');
                 if (helpSearch) {
