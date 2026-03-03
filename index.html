@@ -222,35 +222,25 @@
 
         .hud {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             border: var(--border);
             padding: 6px 10px;
             font-size: 0.85rem;
-            gap: 8px;
-            row-gap: 10px;
+            gap: 6px;
         }
 
-        .hud-left,
-        .hud-right,
-        .hud-center {
-            display: flex;
+        .hud-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 6px;
             align-items: center;
-            gap: 8px;
+            width: 100%;
         }
 
-        .hud-left {
-            flex: 0 1 auto;
-        }
-
-        .hud-center {
-            flex: 1 1 240px;
+        .hud-toolbar-row {
+            display: flex;
             justify-content: center;
-        }
-
-        .hud-right {
-            flex: 0 1 auto;
+            width: 100%;
         }
 
         .wallet {
@@ -824,6 +814,28 @@
                 width: calc(100vw - 24px);
                 max-width: calc(100vw - 24px);
                 padding: 12px;
+            }
+        }
+
+        .hud-stats-grid .wallet-wide {
+            grid-column: span 2;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 640px) {
+            .hud-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            .hud-toolbar-row {
+                justify-content: center;
+            }
+            .hud-toolbar-row .toolbar {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .hud-stats-grid .wallet-wide {
+                grid-column: span 1;
             }
         }
 
@@ -1492,27 +1504,25 @@
         </div>
 
         <div id="gameScreen">
-            <div class="hud">
-                <div class="hud-left">
-                    <div class="wallet">$<span id="coinDisplay">40</span></div>
-                    <div class="wallet gold" id="goldWallet">GOLD <span id="goldNuggetAmount">0</span></div>
-                </div>
-                <div class="hud-center">
-                    <div class="toolbar">
-                        <button class="tool-btn" id="toolHand" data-tooltip="Harvest (H)">H</button>
-                        <button class="tool-btn" id="toolWater" data-tooltip="Water (W)">W</button>
-                        <button class="tool-btn" id="toolInfo" data-tooltip="Info hover (I)">I</button>
-                        <button class="tool-btn" id="toolHoe" data-tooltip="Plant seed (P)">P</button>
-                        <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
-                        <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal — 10 coins"
-                            style="display:none;">B</button>
+                <div class="hud">
+                    <div class="hud-stats-grid">
+                        <div class="wallet wallet-wide">$<span id="coinDisplay">40</span></div>
+                        <div class="wallet gold" id="goldWallet">GOLD <span id="goldNuggetAmount">0</span></div>
+                        <div class="selected-seed status-chip" id="selectedSeedDisplay">CAR (6)</div>
+                        <div class="weather-hud status-chip" id="weatherHud">NO WEATHER</div>
+                    </div>
+                    <div class="hud-toolbar-row">
+                        <div class="toolbar">
+                            <button class="tool-btn" id="toolHand" data-tooltip="Harvest (H)">H</button>
+                            <button class="tool-btn" id="toolWater" data-tooltip="Water (W)">W</button>
+                            <button class="tool-btn" id="toolInfo" data-tooltip="Info hover (I)">I</button>
+                            <button class="tool-btn" id="toolHoe" data-tooltip="Plant seed (P)">P</button>
+                            <button class="tool-btn" id="toolDelete" data-tooltip="Remove crop (D)">D</button>
+                            <button class="tool-btn" id="toolBonemeal" data-tooltip="Bonemeal — 10 coins"
+                                style="display:none;">B</button>
+                        </div>
                     </div>
                 </div>
-                <div class="hud-right">
-                    <div class="selected-seed status-chip" id="selectedSeedDisplay">CAR (6)</div>
-                    <div class="weather-hud status-chip" id="weatherHud">NO WEATHER</div>
-                </div>
-            </div>
 
             <div class="main-area">
                 <div class="farm-grid" id="farmGrid"></div>
@@ -1989,7 +1999,7 @@
             <h3 id="tutorialTitle">Tutorial</h3>
             <p id="tutorialText">Follow the steps to learn the basics.</p>
             <div class="tutorial-progress" id="tutorialProgress">Step 1/5</div>
-            <div class="tutorial-controls">
+            <div class="tutorial-controls"> 
                 <button id="tutorialBackBtn" disabled>BACK</button>
                 <button id="tutorialNextBtn">NEXT</button>
                 <button id="tutorialSkipBtn">CLOSE</button>
@@ -1999,7 +2009,7 @@
 
     <script>
         (function () {
-            const VERSION = '1.8';
+            const VERSION = '1.9';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -3185,7 +3195,7 @@
             function updateBlackMarketModal() {
                 let cropId = getDailyCropId(), crop = DATA[cropId];
                 let dealDiv = document.getElementById('marketDeal'); if (!dealDiv) return;
-                let dealPrice = crop.sell * 10, owned = crops[cropId] || 0;
+                let dealPrice = crop.sell * 100, owned = crops[cropId] || 0;
                 dealDiv.innerHTML = `<div style="font-size:1.2rem; margin-bottom:8px; letter-spacing:2px;">${crop.abbr} — ${crop.name}</div><div style="color:#aaa; font-size:0.8rem;">Normal: $${crop.sell} each</div><div class="market-price">10 for $${dealPrice} <span style="color:var(--c-dim); font-size:0.8rem;">(10× value)</span></div><div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">You own: ${owned}</div><button class="tool-btn" id="sellDailyBtn" style="padding:6px 14px;">SELL 10 FOR $${dealPrice}</button>`;
                 let btn = document.getElementById('sellDailyBtn');
                 if (btn) btn.addEventListener('click', () => {
