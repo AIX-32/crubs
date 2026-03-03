@@ -822,22 +822,7 @@
             justify-content: space-between;
         }
 
-        @media (max-width: 640px) {
-            .hud-stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            }
-            .hud-toolbar-row {
-                justify-content: center;
-            }
-            .hud-toolbar-row .toolbar {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 4px;
-            }
-            .hud-stats-grid .wallet-wide {
-                grid-column: span 1;
-            }
-        }
+
 
         .info-tooltip {
             position: fixed;
@@ -2009,7 +1994,7 @@
 
     <script>
         (function () {
-            const VERSION = '1.9.4';
+            const VERSION = '1.9.5';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
