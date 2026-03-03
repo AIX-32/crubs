@@ -2009,7 +2009,7 @@
 
     <script>
         (function () {
-            const VERSION = '1.9.1';
+            const VERSION = '1.9.2';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -3493,7 +3493,20 @@
                     if (stats.cropCounts.length < COUNT) stats.cropCounts = stats.cropCounts.concat(new Array(COUNT - stats.cropCounts.length).fill(0));
                     goldaUnlocked = d.goldaUnlocked ?? stats.goldaUnlocked ?? false;
                     goldNuggets = d.goldNuggets ?? 0;
-                    grid = d.gridData.map(row => row.map(pd => { let p = new Plot(); p.plantId = pd.plantId; p.water = pd.water; p.stage = pd.stage; p.prog = pd.prog; p.age = pd.age; p.plantTime = pd.plantTime || 0; return p; }));
+                    if (Array.isArray(d.gridData)) {
+                        grid = d.gridData.map(row => row.map(pd => {
+                            let p = new Plot();
+                            p.plantId = pd.plantId;
+                            p.water = pd.water;
+                            p.stage = pd.stage;
+                            p.prog = pd.prog;
+                            p.age = pd.age;
+                            p.plantTime = pd.plantTime || 0;
+                            return p;
+                        }));
+                    } else {
+                        initGrid();
+                    }
                     if (d.bossState) {
                         bossState.queue = Array.isArray(d.bossState.queue) ? d.bossState.queue.slice(0, BOSS_ROUNDS) : [];
                         while (bossState.queue.length < BOSS_ROUNDS) bossState.queue.push(Math.floor(Math.random() * MARKET_LIMIT));
