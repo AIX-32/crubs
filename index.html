@@ -2232,6 +2232,25 @@
             let manualWeatherActive = false;
             let manualWeatherType = null;
 
+            // background music setup
+            let bgAudio, bgTracks, bgTrackIndex;
+            function initBgMusic() {
+                bgTracks = ['ost/COST1.MP4','ost/COST2.MP4'];
+                bgTrackIndex = 0;
+                bgAudio = new Audio();
+                bgAudio.volume = 0.5; // adjust as needed
+                bgAudio.addEventListener('ended', () => {
+                    bgTrackIndex = (bgTrackIndex + 1) % bgTracks.length;
+                    bgAudio.src = bgTracks[bgTrackIndex];
+                    bgAudio.play().catch(()=>{});
+                });
+            }
+            function startBgMusic() {
+                if (!bgAudio) initBgMusic();
+                bgAudio.src = bgTracks[bgTrackIndex];
+                bgAudio.play().catch(()=>{});
+            }
+
             let journalLog = [];
             let sessionStart = Date.now();
             let achievementPopupTimeout = null;
@@ -2952,9 +2971,18 @@
             }
 
             function tick() {
-                updateWeather();
-                for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) grid[r][c].tick(r, c);
-                renderGrid(); updateUI();
+                try {
+                    updateWeather();
+                    for (let r = 0; r < SIZE; r++) {
+                        if (!grid[r]) continue;
+                        for (let c = 0; c < SIZE; c++) {
+                            if (grid[r][c]) grid[r][c].tick(r, c);
+                        }
+                    }
+                    renderGrid(); updateUI();
+                } catch (err) {
+                    console.warn('tick() error', err);
+                }
             }
 
             function buySeed(id) {
@@ -3438,19 +3466,24 @@
             document.getElementById('cheatClose').addEventListener('click', () => document.getElementById('cheatWeatherMenu').style.display = 'none');
 
             function saveGame() {
-                let save = {
-                    coins, goldNuggets, goldaUnlocked, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
-                    stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0, monsterFed: stats.monsterFed || 0, devNoteSent: stats.devNoteSent || 0, goldHarvested: stats.goldHarvested, goldNuggetsEarned: stats.goldNuggetsEarned, goldaUnlocked: stats.goldaUnlocked, goldHoePurchased: stats.goldHoePurchased, goldCanPurchased: stats.goldCanPurchased },
-                    bossState,
-                    stockState: {
-                        selected: stockState.selected,
-                        price: stockState.price,
-                        positions: stockState.positions.map(p => ({ qty: p.qty, avgCost: p.avgCost }))
-                    },
-                    calcCustomEntries,
-                    gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime })))
-                };
-                localStorage.setItem('crubsSave', JSON.stringify(save));
+                try {
+                    let save = {
+                        coins, goldNuggets, goldaUnlocked, seeds, crops, selected, tool, achievements, upgrades, manualWeatherActive, manualWeatherType, journalLog,
+                        stats: { totalHarvested: stats.totalHarvested, cropCounts: stats.cropCounts, grownPlants: Array.from(stats.grownPlants), waterCount: stats.waterCount, perennialHarvested: stats.perennialHarvested, exoticObtained: stats.exoticObtained, blackMarketSales: stats.blackMarketSales, journalEntries: stats.journalEntries || 0, monsterFed: stats.monsterFed || 0, devNoteSent: stats.devNoteSent || 0, goldHarvested: stats.goldHarvested, goldNuggetsEarned: stats.goldNuggetsEarned, goldaUnlocked: stats.goldaUnlocked, goldHoePurchased: stats.goldHoePurchased, goldCanPurchased: stats.goldCanPurchased },
+                        bossState,
+                        stockState: {
+                            selected: stockState.selected,
+                            price: stockState.price,
+                            positions: stockState.positions.map(p => ({ qty: p.qty, avgCost: p.avgCost }))
+                        },
+                        calcCustomEntries,
+                        gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime })))
+                    };
+                    localStorage.setItem('crubsSave', JSON.stringify(save));
+                } catch (e) {
+                    console.warn('saveGame failed', e);
+                    // if storage quota exceeded or other error, we silently ignore to avoid freezing ticks
+                }
             }
 
             function loadGame() {
@@ -3489,6 +3522,22 @@
                             p.plantTime = (pd && typeof pd.plantTime === 'number') ? pd.plantTime : 0;
                             return p;
                         }) : Array.from({ length: SIZE }, () => new Plot()));
+                        // ensure grid has correct dimensions even if save was corrupted/truncated
+                        if (!Array.isArray(grid) || grid.length !== SIZE) {
+                            initGrid();
+                        } else {
+                            for (let r = 0; r < SIZE; r++) {
+                                if (!Array.isArray(grid[r]) || grid[r].length !== SIZE) {
+                                    grid[r] = Array.from({ length: SIZE }, () => new Plot());
+                                } else {
+                                    for (let c = 0; c < SIZE; c++) {
+                                        if (!(grid[r][c] instanceof Plot)) {
+                                            grid[r][c] = new Plot();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         initGrid();
                     }
@@ -3540,6 +3589,7 @@
                 if (continueGame) { if (!loadGame()) resetGame(); }
                 else resetGame();
                 sessionStart = Date.now();
+                startBgMusic();
                 updateUI(); renderGrid(); updateAchievementsModal();
                 updateGoldaStatus();
                 advanceTutorialAfterStart();
