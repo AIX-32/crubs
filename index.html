@@ -8,6 +8,7 @@
     <meta name="description" content="&quot;Small&quot; text based farming game.">
     <link rel="icon" href="./favicon.png">
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name="theme-color" content="#ffffff">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -190,24 +191,14 @@
             transition: background 0.1s, color 0.1s;
         }
 
-        .icon-btn img {
-            width: 16px;
-            height: 16px;
-            filter: invert(1) brightness(2);
+        .icon-btn i {
+            font-size: 1.2rem;
+            line-height: 1;
         }
 
         .icon-btn:hover {
             background: var(--c-fg);
             color: var(--c-bg);
-        }
-
-        .icon-btn:hover img {
-            filter: invert(0);
-        }
-
-        #installBtn img {
-            width: 18px;
-            height: 18px;
         }
 
         #installBtn .install-text {
@@ -245,10 +236,14 @@
 
         .wallet {
             border: var(--border);
-            padding: 4px 10px;
-            font-size: 1rem;
+            padding: 3px 10px;
+            font-size: 0.85rem;
             letter-spacing: 1px;
             min-width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
         }
 
         .wallet.gold {
@@ -271,6 +266,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            min-height: 24px;
         }
 
         .selected-seed {
@@ -892,6 +888,25 @@
             }
         }
 
+        @media (min-width: 768px) {
+            .hud {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .hud-stats-grid {
+                display: flex;
+                gap: 10px;
+                width: auto;
+            }
+
+            .hud-toolbar-row {
+                justify-content: flex-end;
+                width: auto;
+            }
+        }
+
         .pdf-toolbar {
             display: flex;
             gap: 4px;
@@ -1479,15 +1494,14 @@
             <div class="start-tagline">"Small" text based farming game.</div>
             <div class="start-controls">
                 <button class="start-btn" id="startBtn">> START</button>
-                <button class="icon-btn" id="settingsBtn" title="Settings">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19.14 12.94c.04-.32.06-.66.06-1s-.02-.68-.06-1l2.03-1.58c.18-.14.23-.4.12-.61l-1.92-3.32c-.11-.2-.36-.28-.57-.22l-2.39.96a7.007 7.007 0 0 0-1.73-1.01l-.36-2.54a.495.495 0 0 0-.49-.42h-3.84c-.24 0-.44.17-.49.42l-.36 2.54c-.63.24-1.22.56-1.73 1.01l-2.39-.96a.495.495 0 0 0-.57.22l-1.92 3.32c-.11.2-.06.47.12.61l2.03 1.58c-.04.32-.06.66-.06 1s.02.68.06 1l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.11.2.36.28.57.22l2.39-.96c.51.45 1.1.77 1.73 1.01l.36 2.54c.05.25.25.42.49.42h3.84c.24 0 .44-.17.49-.42l.36-2.54c.63-.24 1.22-.56 1.73-1.01l2.39.96c.21.06.46-.02.57-.22l1.92-3.32a.5.5 0 0 0-.12-.61l-2.03-1.58zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5S10.07 8.5 12 8.5s3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z'/%3E%3C/svg%3E" alt="">
+                <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">
+                    <i class="fas fa-cog" aria-hidden="true"></i>
                 </button>
-                <button class="icon-btn" id="discordBtn" title="Discord">
-                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
+                <button class="icon-btn" id="discordBtn" title="Discord" aria-label="Discord">
+                    <i class="fab fa-discord" aria-hidden="true"></i>
                 </button>
-                <button class="icon-btn" id="installBtn" title="Install App">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5'/%3E%3C/svg%3E"
-                        alt="">
+                <button class="icon-btn" id="installBtn" title="Install App" aria-label="Install App">
+                    <i class="fas fa-download" aria-hidden="true"></i>
                     <span class="install-text">INSTALL</span>
                 </button>
             </div>
