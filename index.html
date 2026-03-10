@@ -16,7 +16,7 @@
 
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#5a3015">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -1845,8 +1845,7 @@
     <div id="goldaModal" class="modal">
         <div class="modal-content">
             <h2>> GOLDa DLC</h2>
-            <p style="margin-bottom:6px;">Unlock golden crops, Gold Nuggets, and elite upgrades with the secret Golda
-                code.</p>
+            <p style="margin-bottom:6px;">Unlock golden crops, Gold Nuggets, and elite upgrades. Still in beta.</p>
             <div class="golda-modal-row">
                 <input id="goldaCodeInput" placeholder="Type the Golda code" autocomplete="off">
                 <button id="goldaConfirmBtn">APPLY CODE</button>
@@ -1985,7 +1984,7 @@
 
     <script>
         (function () {
-            const VERSION = '2.0.1';
+            const VERSION = '2.0.2';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -2713,8 +2712,9 @@
                 }
 
                 tick(row, col) {
-                    if (this.plantId === null) return;
+                    if (this.plantId === null || this.plantId < 0 || this.plantId >= COUNT) return;
                     let p = DATA[this.plantId];
+                    if (!p) return; // extra safety
                     this.water = Math.max(0, this.water - p.waterUse);
                     if (this.water >= 4 && this.stage < 2) {
                         let factor = Math.min(1, this.water / 100);
@@ -2903,25 +2903,33 @@
                 for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
                     let plot = grid[r][c]; let tile = document.createElement('div'); tile.className = 'tile';
                     tile.dataset.row = r; tile.dataset.col = c;
-                    if (plot.plantId !== null) {
+                    if (plot.plantId !== null && plot.plantId >= 0 && plot.plantId < COUNT) {
                         let p = DATA[plot.plantId];
-                        let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
-                        let waterDigit = Math.floor(plot.water / 10);
-                        let marks = (p.perennial ? 'P' : '') + (plot.plantId >= EXOTIC_START_ID ? (p.isGolden ? 'G' : 'X') : '');
-                        tile.textContent = `${p.abbr}${stageChar}${waterDigit}${marks}`;
-                        if (plot.stage === 2) tile.classList.add('ready');
-                        else if (plot.water < 4) tile.classList.add('low-water');
+                        if (p) {
+                            let stageChar = plot.stage === 0 ? '.' : (plot.stage === 1 ? '+' : '#');
+                            let waterDigit = Math.floor(plot.water / 10);
+                            let marks = (p.perennial ? 'P' : '') + (plot.plantId >= EXOTIC_START_ID ? (p.isGolden ? 'G' : 'X') : '');
+                            tile.textContent = `${p.abbr}${stageChar}${waterDigit}${marks}`;
+                            if (plot.stage === 2) tile.classList.add('ready');
+                            else if (plot.water < 4) tile.classList.add('low-water');
+                        } else {
+                            tile.textContent = '???'; // invalid plant
+                        }
                     } else { tile.textContent = '···'; tile.classList.add('empty'); }
                     tile.addEventListener('click', (e) => handleTile(+e.currentTarget.dataset.row, +e.currentTarget.dataset.col));
                     tile.addEventListener('mouseenter', (e) => {
                         if (tool !== 'info') return;
                         let row = +e.currentTarget.dataset.row, col = +e.currentTarget.dataset.col;
                         let p = grid[row][col];
-                        if (p.plantId !== null) {
+                        if (p.plantId !== null && p.plantId >= 0 && p.plantId < COUNT) {
                             let pd = DATA[p.plantId];
-                            let stageLabel = p.stage === 0 ? 'sprouting' : (p.stage === 1 ? 'growing' : 'READY');
-                            let hasComp = p.hasCompanion(row, col);
-                            infoTooltip.innerHTML = `${pd.name}<br>stage: ${stageLabel}<br>water: ${Math.floor(p.water)}%<br>prog: ${Math.floor(p.prog)}%${hasComp ? '<br>companion ✓' : ''}`;
+                            if (pd) {
+                                let stageLabel = p.stage === 0 ? 'sprouting' : (p.stage === 1 ? 'growing' : 'READY');
+                                let hasComp = p.hasCompanion(row, col);
+                                infoTooltip.innerHTML = `${pd.name}<br>stage: ${stageLabel}<br>water: ${Math.floor(p.water)}%<br>prog: ${Math.floor(p.prog)}%${hasComp ? '<br>companion ✓' : ''}`;
+                            } else {
+                                infoTooltip.innerHTML = 'invalid plant';
+                            }
                         } else { infoTooltip.innerHTML = 'empty'; }
                         infoTooltip.style.display = 'block';
                     });
@@ -3526,11 +3534,11 @@
                     if (Array.isArray(d.gridData)) {
                         grid = d.gridData.map(row => Array.isArray(row) ? row.map(pd => {
                             let p = new Plot();
-                            p.plantId = (pd && typeof pd.plantId === 'number') ? pd.plantId : null;
-                            p.water = (pd && typeof pd.water === 'number') ? pd.water : 50;
-                            p.stage = (pd && typeof pd.stage === 'number') ? pd.stage : 0;
-                            p.prog = (pd && typeof pd.prog === 'number') ? pd.prog : 0;
-                            p.age = (pd && typeof pd.age === 'number') ? pd.age : 0;
+                            p.plantId = (pd && typeof pd.plantId === 'number' && pd.plantId >= 0 && pd.plantId < COUNT) ? pd.plantId : null;
+                            p.water = (pd && typeof pd.water === 'number') ? Math.max(0, Math.min(100, pd.water)) : 50;
+                            p.stage = (pd && typeof pd.stage === 'number') ? Math.max(0, Math.min(2, pd.stage)) : 0;
+                            p.prog = (pd && typeof pd.prog === 'number') ? Math.max(0, Math.min(99, pd.prog)) : 0;
+                            p.age = (pd && typeof pd.age === 'number') ? Math.max(0, pd.age) : 0;
                             p.plantTime = (pd && typeof pd.plantTime === 'number') ? pd.plantTime : 0;
                             return p;
                         }) : Array.from({ length: SIZE }, () => new Plot()));
