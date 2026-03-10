@@ -3,9 +3,9 @@
   "short_name": "crubs",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#000000",
+  "background_color": "#1a0e05",
   "scope": "/",
-  "theme_color": "#000000",
+  "theme_color": "#5a3015",
   "icons": [
     {
       "src": "logo.png",

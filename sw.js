@@ -1,13 +1,17 @@
-// use application version to namespace caches, so updates don't require cookie clearing
 const VERSION = '0.3';
 const CACHE_NAME = 'crubs-cache-v' + VERSION;
 const urlsToCache = [
-  '/',          // ensure root route is cached
+  '/',          
   '.',
   'index.html',
-  'manifest.json', // manifest must be cached so install works offline
+  'manifest.json',
   'logo.png',
-  'favicon.png',
+  '/favicon.ico',
+  '/favicon-16x16.png',
+  '/favicon-32x32.png',
+  '/apple-touch-icon.png',
+  '/android-chrome-192x192.png',
+  '/android-chrome-512x512.png',
 ];
 
 self.addEventListener('install', event => {
@@ -27,7 +31,7 @@ self.addEventListener('activate', event => {
       }))
     )
   );
-  self.clients.claim(); // take control immediately
+  self.clients.claim(); 
 });
 
 self.addEventListener('fetch', event => {
