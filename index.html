@@ -256,6 +256,7 @@
         .icon-btn i {
             font-size: 1.2rem;
             line-height: 1;
+            color: var(--c-dim);
         }
 
         .icon-btn:hover {
@@ -767,6 +768,116 @@
             background: var(--c-wood-light);
             color: var(--c-gold-light);
             border-color: var(--c-gold);
+        }
+
+
+        .stock-market-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .stock-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--c-wood-dark);
+            border: var(--border);
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 15px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .stock-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stock-section-title {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--c-gold-light);
+            text-transform: uppercase;
+        }
+
+        .stock-section-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--c-dim);
+        }
+
+        .stock-section-row strong {
+            color: var(--c-fg);
+            font-size: 1.3rem;
+        }
+
+        .stock-panel.expanded {
+            flex: 1;
+        }
+
+        .stock-panel--chart,
+        .stock-panel--actions {
+            grid-column: 1 / -1;
+        }
+
+        .stock-chart-panel {
+            border: var(--border);
+            padding: 10px;
+            background: var(--c-panel);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .stock-panel .stock-list {
+            min-height: 80px;
+            max-height: 160px;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .stock-panel .stock-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stock-panel .stock-controls button {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .stock-insight {
+            font-size: 0.75rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .stock-quantity-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stock-quantity-row label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            color: var(--c-dim);
+        }
+
+        .stock-quantity-row input {
+            width: 100%;
+            padding: 6px 8px;
+            font-size: 0.85rem;
+            background: var(--c-wood-mid);
+            color: var(--c-fg);
+            border: var(--border);
+            font-family: inherit;
         }
 
 
@@ -1766,33 +1877,42 @@
                 are
                 never guaranteed.</p>
             <div class="stock-market-body">
-                <div class="stock-market-left">
-                    <label class="stock-label">SELECT CROP</label>
-                    <select id="stockCropSelect"
-                        style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
-                    <div class="stock-market-section">
+                <div class="stock-panel stock-panel--chart expanded">
+                    <div class="stock-section">
+                        <span class="stock-section-title">Select crop</span>
+                        <select id="stockCropSelect"
+                            style="width:100%; border:var(--border); background:var(--c-bg); color:var(--c-fg); font-family:inherit; padding:6px 8px;"></select>
+                    </div>
+                    <div class="stock-section-row">
                         <span>CURRENT PRICE</span>
                         <strong id="stockCurrentPrice">$0.00</strong>
                     </div>
-                    <div class="stock-chart-wrapper">
+                    <div class="stock-chart-panel">
                         <canvas id="stockChart" height="160" style="width:100%; height:160px;"></canvas>
                     </div>
                 </div>
-                <div class="stock-market-right">
-                    <div class="stock-chart-wrapper">
-                        <div style="margin-bottom:6px;">Holdings</div>
-                        <div id="stockHoldingsList" style="display:flex; flex-wrap:wrap; gap:4px; min-height:68px;">
-                        </div>
-                    </div>
-                    <div class="stock-chart-wrapper">
-                        <div style="margin-bottom:6px;">Insights</div>
-                        <div id="stockHint" style="font-size:0.75rem; color:#ccc;">Average cost and unrealized gain
-                            update as the price moves.</div>
-                    </div>
+                <div class="stock-panel stock-panel--controls stock-panel--actions">
+                    <span class="stock-section-title">Actions</span>
                     <div class="stock-controls">
                         <button class="buy-btn tool-btn" id="stockBuyBtn">BUY</button>
                         <button class="sell-btn tool-btn" id="stockSellBtn">SELL</button>
                     </div>
+                    <div class="stock-quantity-row">
+                        <label>
+                            <span>Trade quantity</span>
+                            <input type="number" id="stockTradeQty" min="1" value="1" step="1">
+                        </label>
+                    </div>
+                </div>
+                <div class="stock-panel">
+                    <span class="stock-section-title">Holdings</span>
+                    <div id="stockHoldingsList" class="stock-list">
+                    </div>
+                </div>
+                <div class="stock-panel">
+                    <span class="stock-section-title">Insights</span>
+                    <div id="stockHint" class="stock-insight">Average cost and unrealized gain
+                        update as the price moves.</div>
                 </div>
             </div>
             <button class="close-btn" id="closeStockBtn">CLOSE</button>
@@ -1984,7 +2104,7 @@
 
     <script>
         (function () {
-            const VERSION = '2.0.3';
+            const VERSION = '2.0.4';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -2444,10 +2564,11 @@
                 const canvas = document.getElementById('stockChart');
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
-                const width = canvas.clientWidth;
-                const height = canvas.height;
-                const ratio = window.devicePixelRatio || 1;
-                canvas.width = Math.max(220, width) * ratio;
+                if (!ctx) return;
+                const width = Math.max(220, canvas.clientWidth || 220);
+                const height = canvas.clientHeight || 160;
+                const ratio = Math.min(window.devicePixelRatio || 1, 3);
+                canvas.width = width * ratio;
                 canvas.height = height * ratio;
                 ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
                 ctx.clearRect(0, 0, width, height);
@@ -2457,8 +2578,8 @@
                 const min = Math.min(...history);
                 const range = Math.max(1, max - min);
                 ctx.lineWidth = 2;
-                ctx.strokeStyle = '#66ff88';
-                ctx.fillStyle = 'rgba(102,255,136,0.15)';
+                ctx.strokeStyle = '#c79619';
+                ctx.fillStyle = 'rgba(199,150,25,0.25)';
                 ctx.beginPath();
                 history.forEach((value, index) => {
                     const x = (index / (history.length - 1 || 1)) * width;
@@ -2495,25 +2616,28 @@
                 stockInterval = setInterval(tickStockPrice, 1200);
             }
 
-            function tradeStock(action) {
+            function tradeStock(action, requestedQty = 1) {
                 const id = stockState.selected;
                 const price = stockState.price;
                 const position = stockState.positions[id];
+                const qty = Math.max(1, Math.floor(requestedQty));
                 if (action === 'buy') {
-                    if (coins < price) { showMessage(`need $${Math.max(0, (price - coins)).toFixed(2)} more`); return; }
-                    coins -= price;
-                    const total = position.avgCost * position.qty + price;
-                    position.qty++;
-                    position.avgCost = total / position.qty;
-                    showMessage(`bought ${DATA[id].abbr} stock $${price.toFixed(2)}`);
-                    addJournalEntry(`Stock buy — ${DATA[id].name} for $${price.toFixed(2)}.`);
+                    const cost = price * qty;
+                    if (coins < cost) { showMessage(`need $${Math.max(0, (cost - coins)).toFixed(2)} more`); return; }
+                    coins -= cost;
+                    const prevTotal = position.avgCost * position.qty;
+                    position.qty += qty;
+                    position.avgCost = position.qty > 0 ? (prevTotal + cost) / position.qty : 0;
+                    showMessage(`bought ${qty} ${DATA[id].abbr} stock $${price.toFixed(2)}`);
+                    addJournalEntry(`Stock buy — ${qty} ${DATA[id].name} for $${price.toFixed(2)}.`);
                 } else {
                     if (position.qty <= 0) { showMessage('no holdings'); return; }
-                    position.qty--;
-                    coins += price;
+                    if (position.qty < qty) { showMessage('not enough holdings'); return; }
+                    position.qty -= qty;
+                    coins += price * qty;
                     if (position.qty === 0) position.avgCost = 0;
-                    showMessage(`sold ${DATA[id].abbr} stock +$${price.toFixed(2)}`);
-                    addJournalEntry(`Stock sell — ${DATA[id].name} for $${price.toFixed(2)}.`);
+                    showMessage(`sold ${qty} ${DATA[id].abbr} stock +$${price.toFixed(2)}`);
+                    addJournalEntry(`Stock sell — ${qty} ${DATA[id].name} for $${price.toFixed(2)}.`);
                 }
                 updateUI(); updateStockInfo(); checkAchievements();
             }
@@ -3421,9 +3545,16 @@
             document.getElementById('weatherRainyBtn')?.addEventListener('click', () => setWeather('rainy', 100));
             document.getElementById('weatherSunnyBtn')?.addEventListener('click', () => setWeather('sunny', 100));
             document.getElementById('weatherClearBtn')?.addEventListener('click', () => setWeather('clear', 50));
+            const getStockQuantity = () => {
+                const input = document.getElementById('stockTradeQty');
+                if (!input) return 1;
+                const value = Math.max(1, Math.floor(Number(input.value) || 1));
+                input.value = value;
+                return value;
+            };
             document.getElementById('stockCropSelect')?.addEventListener('change', e => changeStockCrop(+e.target.value));
-            document.getElementById('stockBuyBtn')?.addEventListener('click', () => tradeStock('buy'));
-            document.getElementById('stockSellBtn')?.addEventListener('click', () => tradeStock('sell'));
+            document.getElementById('stockBuyBtn')?.addEventListener('click', () => tradeStock('buy', getStockQuantity()));
+            document.getElementById('stockSellBtn')?.addEventListener('click', () => tradeStock('sell', getStockQuantity()));
             document.getElementById('feedBossBtn')?.addEventListener('click', feedBoss);
             document.getElementById('calcCropSelect')?.addEventListener('change', () => { refreshCalcStats(); updateCalcCostResult(); });
             document.getElementById('calcSpeedInput')?.addEventListener('input', updateCalcCostResult);
