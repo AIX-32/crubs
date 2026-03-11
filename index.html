@@ -2104,7 +2104,7 @@
 
     <script>
         (function () {
-            const VERSION = '2.0.4';
+            const VERSION = '2.0.7';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -2178,7 +2178,9 @@
                 showTutorialStep(tutorialState.current);
             }
 
-            function advanceTutorialAfterStart() { if (tutorialState.current === 0) nextTutorialStep(); }
+            function advanceTutorialAfterStart() {
+                if (tutorialState.overlay && !tutorialState.overlay.classList.contains('hidden') && tutorialState.current === 0) nextTutorialStep();
+            }
             function tutorialSeedSelected() { if (tutorialState.current === 2) nextTutorialStep(); }
             function tutorialToolSelected(toolName) {
                 if (tutorialState.current === 1 && toolName === 'hoe') nextTutorialStep();
@@ -2754,9 +2756,9 @@
                     const p = DATA[this.plantId];
                     if (!p) return;
 
-                    this.water = Math.max(0, this.water - p.waterUse);
+                    if (this.stage < 2) this.water = Math.max(0, this.water - p.waterUse);
 
-                    if (this.stage < 2 && this.water >= 4) {
+                    if (this.stage < 2 && this.water >= 2) {
                         let speed = p.growthSpeed;
                         const factor = Math.min(1, this.water / 100);
                         if (upgrades.goldenHoe) speed *= 1.2;
@@ -3655,7 +3657,8 @@
                         bossState,
                         stockState: { selected: stockState.selected, price: stockState.price, positions: stockState.positions.map(p => ({ qty: p.qty, avgCost: p.avgCost })) },
                         calcCustomEntries,
-                        gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime })))
+                        gridData: grid.map(row => row.map(p => ({ plantId: p.plantId, water: p.water, stage: p.stage, prog: p.prog, age: p.age, plantTime: p.plantTime }))),
+                        dataCount: COUNT
                     }));
                 } catch (e) { console.warn('saveGame failed', e); }
             }
@@ -3665,10 +3668,26 @@
                 if (!save) return false;
                 try {
                     const d = JSON.parse(save);
-                    coins = d.coins;
-                    seeds = d.seeds; if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
-                    crops = d.crops; if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
-                    selected = d.selected; tool = d.tool;
+                    if (!d || typeof d !== 'object' || Array.isArray(d)) {
+                        console.warn('loadGame invalid save structure, clearing save');
+                        localStorage.removeItem('crubsSave');
+                        return false;
+                    }
+                    const fallbackCount = Math.min(42, COUNT);
+                    const savedCountRaw = (typeof d.dataCount === 'number' && Number.isFinite(d.dataCount)) ? Math.floor(d.dataCount) : fallbackCount;
+                    const savedCount = Math.max(0, Math.min(savedCountRaw, COUNT));
+                    const clampIndex = (value, limit) => {
+                        if (!Number.isFinite(value) || limit <= 0) return 0;
+                        return Math.max(0, Math.min(limit - 1, Math.floor(value)));
+                    };
+                    coins = (typeof d.coins === 'number' && Number.isFinite(d.coins)) ? d.coins : 40;
+                    const safeSelected = clampIndex(d.selected ?? 0, COUNT);
+                    selected = safeSelected;
+                    seeds = Array.isArray(d.seeds) ? d.seeds.slice() : new Array(COUNT).fill(0);
+                    if (seeds.length < COUNT) seeds = seeds.concat(new Array(COUNT - seeds.length).fill(0));
+                    crops = Array.isArray(d.crops) ? d.crops.slice() : new Array(COUNT).fill(0);
+                    if (crops.length < COUNT) crops = crops.concat(new Array(COUNT - crops.length).fill(0));
+                    tool = typeof d.tool === 'string' ? d.tool : 'hand';
                     achievements = d.achievements || new Array(ACHIEVEMENT_COUNT).fill(false);
                     if (achievements.length < ACHIEVEMENT_COUNT) achievements = achievements.concat(new Array(ACHIEVEMENT_COUNT - achievements.length).fill(false));
                     upgrades = Object.assign({ waterArea: false, harvestArea: false, bonemealUnlocked: false, goldenHoe: false, goldenCan: false }, d.upgrades);
@@ -3709,10 +3728,10 @@
                             if (!Array.isArray(row)) return Array.from({ length: SIZE }, () => new Plot());
                             return row.map(pd => {
                                 const p = new Plot();
-                                p.plantId = (pd && typeof pd.plantId === 'number' && pd.plantId >= 0 && pd.plantId < COUNT) ? pd.plantId : null;
+                                p.plantId = (pd && typeof pd.plantId === 'number' && pd.plantId >= 0 && pd.plantId < COUNT && pd.plantId < savedCount) ? pd.plantId : null;
                                 p.water = (pd && typeof pd.water === 'number') ? Math.max(0, Math.min(100, pd.water)) : 50;
                                 p.stage = (pd && typeof pd.stage === 'number') ? Math.max(0, Math.min(2, pd.stage)) : 0;
-                                p.prog = (pd && typeof pd.prog === 'number') ? Math.max(0, Math.min(99, pd.prog)) : 0;
+                                p.prog = (pd && typeof pd.prog === 'number') ? Math.max(0, Math.min(100, pd.prog)) : 0;
                                 p.age = (pd && typeof pd.age === 'number') ? Math.max(0, pd.age) : 0;
                                 p.plantTime = (pd && typeof pd.plantTime === 'number') ? pd.plantTime : 0;
                                 return p;
@@ -3725,6 +3744,13 @@
                                 else for (let c = 0; c < SIZE; c++) if (!(grid[r][c] instanceof Plot)) grid[r][c] = new Plot();
                             }
                         }
+                        // Ensure reloaded plants have enough water to resume growing
+                        for (let r = 0; r < SIZE; r++) {
+                            for (let c = 0; c < SIZE; c++) {
+                                const plot = grid[r][c];
+                                if (plot.plantId !== null && plot.water < 20) plot.water = 20;
+                            }
+                        }
                     } else { initGrid(); }
 
                     if (d.bossState) {
@@ -3734,7 +3760,7 @@
                     } else { generateBossQueue(); }
 
                     if (d.stockState) {
-                        stockState.selected = d.stockState.selected ?? 0;
+                        stockState.selected = clampIndex(d.stockState.selected ?? 0, COUNT);
                         stockState.price = d.stockState.price || DATA[stockState.selected].sell;
                         stockState.positions = stockState.positions.map((p, idx) => {
                             const saved = (d.stockState.positions || [])[idx];
@@ -3765,16 +3791,22 @@
             }
 
             function startGame(continueGame) {
-                document.getElementById('startScreen').style.display = 'none';
-                document.getElementById('gameScreen').style.display = 'flex';
-                if (continueGame) { if (!loadGame()) resetGame(); }
-                else resetGame();
-                sessionStart = Date.now();
-                updateMusicState(); startBgMusic();
-                updateUI(); renderGrid(); updateAchievementsModal(); updateGoldaStatus();
-                advanceTutorialAfterStart();
-                if (window._interval) clearInterval(window._interval);
-                window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
+                try {
+                    console.log('startGame called', { continueGame });
+                    document.getElementById('startScreen').style.display = 'none';
+                    document.getElementById('gameScreen').style.display = 'flex';
+                    if (continueGame) { if (!loadGame()) resetGame(); }
+                    else resetGame();
+                    sessionStart = Date.now();
+                    updateMusicState(); startBgMusic();
+                    updateUI(); renderGrid(); updateAchievementsModal(); updateGoldaStatus();
+                    advanceTutorialAfterStart();
+                    if (window._interval) clearInterval(window._interval);
+                    window._interval = setInterval(() => { tick(); saveGame(); }, 1000);
+                } catch (e) {
+                    console.error('startGame exploded:', e);
+                    throw e;
+                }
             }
 
             document.getElementById('startBtn')?.addEventListener('click', () => startGame(!!localStorage.getItem('crubsSave')));
