@@ -771,6 +771,78 @@
         }
 
 
+        .exotic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .exotic-grid-wrapper {
+            margin: 10px 0;
+        }
+
+        .exotic-card {
+            border: var(--border);
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 10px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .exotic-card strong {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .exotic-card .exotic-name {
+            font-size: 0.85rem;
+            color: var(--c-fg);
+            margin-bottom: 6px;
+        }
+
+        .exotic-card-meta {
+            font-size: 0.75rem;
+            color: var(--c-dim);
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .exotic-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .exotic-inventory-panel {
+            border: var(--border);
+            padding: 8px;
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .exotic-inventory {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 6px;
+        }
+
+        .exotic-inventory-title {
+            font-size: 0.75rem;
+            color: var(--c-dim);
+            letter-spacing: 1px;
+        }
+
+
         .stock-market-body {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1403,10 +1475,79 @@
             background: var(--c-wood-mid);
         }
 
-        .boss-request,
-        .boss-progress,
-        .boss-queue {
-            font-size: 0.8rem;
+        .boss-description p {
+            margin: 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--c-dim);
+        }
+
+        .boss-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .boss-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .boss-section-title {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--c-dim);
+            text-transform: uppercase;
+        }
+
+        .boss-stat-card {
+            border: var(--border);
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 80px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .boss-stat-value {
+            font-size: 0.95rem;
+            color: var(--c-fg);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .boss-section-title + .boss-stat-card {
+            margin-top: 0;
+        }
+
+        .boss-actions-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .boss-actions-row .tool-btn {
+            width: 100%;
+            min-height: 54px;
+            padding: 16px 22px;
+            max-width: none;
+            border: var(--border);
+        }
+
+        .boss-stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .boss-status {
+            border: var(--border);
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 0.75rem;
             letter-spacing: 1px;
             color: var(--c-dim);
         }
@@ -1620,12 +1761,10 @@
                                     <button id="exoticBtn">EXOTIC</button>
                                     <button id="toolShopBtn">SHOP</button>
                                     <button id="blackMarketBtn">MARKET</button>
-                                    <button id="pdfReaderBtn">READER</button>
                                     <button id="achievementsBtn">ACHIEVE</button>
                                     <button id="weatherBtn">WEATHER</button>
                                     <button id="stockBtn">STOCK</button>
                                     <button id="bossBtn">BOSS</button>
-                                    <button id="calculatorBtn">CALC</button>
                                     <button id="goldenMarketBtn">GOLDa</button>
                                 </div>
                             </div>
@@ -1688,7 +1827,7 @@
             </div>
             <div class="help-section">
                 <h3>BLACK MARKET</h3>
-                <p>A new crop is chosen each day. Sell 10 of it for 10× the normal price.</p>
+                <p>A new crop is chosen each day. Sell 10 of it for 4× the normal price.</p>
             </div>
             <div class="help-section">
                 <h3>COMPANION PLANTING</h3>
@@ -1764,17 +1903,16 @@
         <div class="modal-content">
             <h2>> EXOTIC PLANTS</h2>
             <p>Rare plants with slow growth and low water needs. Roll for 200 coins.</p>
-            <div style="margin:10px 0;">
+            <div class="exotic-grid-wrapper">
                 <div class="exotic-grid" id="exoticList"></div>
             </div>
             <div style="text-align:center; margin:12px 0;">
                 <button class="tool-btn" id="rollExoticBtn"
                     style="font-size:1rem; padding:8px 20px; letter-spacing:2px;">ROLL (200)</button>
             </div>
-            <div style="border:var(--border); padding:8px; margin:10px 0;">
-                <div style="font-size:0.75rem; color:var(--c-dim); margin-bottom:6px; letter-spacing:1px;">YOUR EXOTIC
-                    SEEDS</div>
-                <div id="exoticInventory" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+            <div class="exotic-inventory-panel">
+                <div class="exotic-inventory-title">YOUR EXOTIC SEEDS</div>
+                <div id="exoticInventory" class="exotic-inventory"></div>
             </div>
             <button class="close-btn" id="closeExoticBtn">CLOSE</button>
         </div>
@@ -1811,7 +1949,7 @@
     <div id="blackMarketModal" class="modal">
         <div class="modal-content">
             <h2>> BLACK MARKET</h2>
-            <p>Sell 10 of today's special crop for 10× the going rate.</p>
+            <p>Sell 10 of today's special crop for 4× the going rate.</p>
             <div id="marketDeal" class="market-deal">Loading...</div>
             <button class="close-btn" id="closeBlackMarketBtn">CLOSE</button>
         </div>
@@ -1980,21 +2118,38 @@
     <div id="bossModal" class="modal">
         <div class="modal-content">
             <h2>> BEETROOT BOSS</h2>
-            <div class="boss-layout">
-                <div class="boss-art">
-                    <pre>(b)</pre>
+            <div class="boss-panel">
+                <div class="boss-section boss-intro">
+                    <div class="boss-layout">
+                        <div class="boss-art">
+                            <pre>(b)</pre>
+                        </div>
+                        <div class="boss-description">
+                            <p>The beetroot monster demands tribute. Feed it 30 of a random crop 20 times, then finish it with
+                                10 UZZY seeds. Each tribute drains crops but keeps the challenge alive.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="boss-description">
-                    <p>The beetroot monster demands tribute. Feed it 30 of a random crop 20 times, then finish it with
-                        10 UZZY seeds. Each tribute drains crops but keeps the challenge alive.</p>
-                    <div class="boss-stats">
-                        <div id="bossRequest" class="boss-request"></div>
-                        <div id="bossProgress" class="boss-progress"></div>
-                        <div id="bossQueue" class="boss-queue"></div>
+                <div class="boss-section boss-request-section">
+                    <div class="boss-section-title">CURRENT REQUEST</div>
+                    <div class="boss-stat-card">
+                        <div id="bossRequest" class="boss-stat-value boss-request"></div>
+                    </div>
+                </div>
+                <div class="boss-section boss-actions-row">
+                    <button class="tool-btn" id="feedBossBtn">FEED BEETROOT</button>
+                </div>
+                <div class="boss-section boss-stats-row">
+                    <div class="boss-stat-card boss-progress-card">
+                        <div class="boss-section-title">PROGRESS</div>
+                        <div id="bossProgress" class="boss-stat-value boss-progress"></div>
+                    </div>
+                    <div class="boss-stat-card boss-queue-card">
+                        <div class="boss-section-title">QUEUE</div>
+                        <div id="bossQueue" class="boss-stat-value boss-queue"></div>
                     </div>
                 </div>
             </div>
-            <button class="tool-btn" id="feedBossBtn">FEED BEETROOT</button>
             <div class="boss-status" id="bossStatus">Deliver exactly what's asked to keep the monster hungry.</div>
             <button class="close-btn" id="closeBossBtn">CLOSE</button>
         </div>
@@ -2104,7 +2259,7 @@
 
     <script>
         (function () {
-            const VERSION = '2.0.7';
+            const VERSION = '2.0.8';
             const TUTORIAL_STEPS = [
                 { title: '1. Start Farming', text: 'Press START to leave the menu and load the farm map.', selector: '#startBtn' },
                 { title: '2. Select Plant Tool', text: 'Click the top button labeled P to switch to the planting tool.', selector: '#toolHoe' },
@@ -3327,7 +3482,16 @@
                     const idx = EXOTIC_START_ID + i, p = DATA[idx];
                     const div = document.createElement('div');
                     div.className = 'exotic-card';
-                    div.innerHTML = `<strong>${p.abbr}</strong>${p.name}<br><span style="color:var(--c-dim)">sells $${p.sell} · rarity ${EXOTIC_PRICES[i]}</span>`;
+                div.innerHTML = `
+                    <div>
+                        <strong>${p.abbr}</strong>
+                        <span class="exotic-name">${p.name}</span>
+                    </div>
+                    <div class="exotic-card-meta">
+                        <span>Sell $${p.sell}</span>
+                        <span>Rarity ${EXOTIC_PRICES[i]}</span>
+                    </div>
+                `;
                     el.appendChild(div);
                 }
                 const invDiv = document.getElementById('exoticInventory');
@@ -3364,8 +3528,8 @@
                 const cropId = getDailyCropId(), crop = DATA[cropId];
                 const dealDiv = document.getElementById('marketDeal');
                 if (!dealDiv) return;
-                const dealPrice = crop.sell * 100, owned = crops[cropId] || 0;
-                dealDiv.innerHTML = `<div style="font-size:1.2rem; margin-bottom:8px; letter-spacing:2px;">${crop.abbr} — ${crop.name}</div><div style="color:#aaa; font-size:0.8rem;">Normal: $${crop.sell} each</div><div class="market-price">10 for $${dealPrice} <span style="color:var(--c-dim); font-size:0.8rem;">(10× value)</span></div><div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">You own: ${owned}</div><button class="tool-btn" id="sellDailyBtn" style="padding:6px 14px;">SELL 10 FOR $${dealPrice}</button>`;
+                const dealPrice = crop.sell * 40, owned = crops[cropId] || 0;
+                dealDiv.innerHTML = `<div style="font-size:1.2rem; margin-bottom:8px; letter-spacing:2px;">${crop.abbr} — ${crop.name}</div><div style="color:#aaa; font-size:0.8rem;">Normal: $${crop.sell} each</div><div class="market-price">10 for $${dealPrice} <span style="color:var(--c-dim); font-size:0.8rem;">(4× value)</span></div><div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">You own: ${owned}</div><button class="tool-btn" id="sellDailyBtn" style="padding:6px 14px;">SELL 10 FOR $${dealPrice}</button>`;
                 const btn = document.getElementById('sellDailyBtn');
                 if (btn) btn.addEventListener('click', () => {
                     if (crops[cropId] >= 10) {
